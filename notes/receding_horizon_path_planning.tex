@@ -1,0 +1,51 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{nicefrac}
+\usepackage{graphicx}
+\usepackage{breqn}
+\usepackage{tabularx}
+
+\graphicspath{{./plots/}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{property}{Property}
+\newtheorem{problem}{Problem}
+
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+
+\usepackage[all]{xy}
+\usepackage{amssymb}
+
+\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
+\newcommand{\transition}{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
+  }
+\newcommand{\labelledtransition}[1]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
+  }
+  
+\begin{document}
+
+
+\title{Experiment over the second integrator model}
+\author{Paul Rousse}
+
+\maketitle
+
+\section{Notation}
+
+\section{Introduction}
+
+\section{Receding horizon}
+
+\section{Recovery}
+
+
+\end{document}

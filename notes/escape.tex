@@ -1,0 +1,228 @@
+\documentclass{article}
+
+
+% ----------------- MATH  ----------------- %
+\usepackage{amsfonts,amsmath,amsmath,amssymb,amsthm}
+
+\usepackage{nicefrac}
+\usepackage{stmaryrd}
+
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{property}{Property}
+
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+
+\begin{document}
+
+\section*{Notations}
+
+Let $\llbracket a,b \rrbracket = \left \{n \in \mathbb{N} \mid a \leq n \leq b \right \}$, $\left [ a,b \right ]= \left \{x \in \mathbb{R} \mid a \leq n \leq b \right \}$, $\mathbb{R}_+$ the positive subset of $\mathbb{R}$, $\mathbb{R}_+^\star = \mathbb{R}_+ \setminus \{0\}$.
+Let $\left \| X \right \|$ the maximum distance of 2 points in the set $X$ ( $\left \| X \right \| = \sup_{a,b \in X} \left \| a-b\right \|$).
+For a set $X$, $X^\mathbb{N}$ is an infinite sequence in $X$, for $x$ in $X^\mathbb{N}$ and $k$ in $\mathbb{N}$, $x_k$ is the $k^\textrm{th}$ element of the sequence $x$.
+The Minkowski sum of $A,B \in X$ noted $A+B$ is the set $\left \{a+b \mid a \in A, b\in B \right \}$.
+For $r>0$, let $\mathcal{B}(r) = \left \{ x \in \mathbb{R}^n \mid \left \| x \right \| \leq r \right \}$ the closed ball of radius $r$.
+
+\section*{Introduction}
+Most of the attempts of considering the noise are using markov decision processes, this bring us to consider not any formal methods any more but statistical model checking methods. When the noise have an unbounded density repartition (every other states of the system can be reached from on state), formal method cannot be applied anymore because no parts of the system is deterministic. However, if the magnitude of the noise is bounded, and is the control action is higher than the noise action (system is controllable), we can use this determinism at our advantage. (cite Pierre Jean).
+To "see" (observe) the fact that the system is controlled, we must have a state space discretization that is actually smaller than the smallest displacement of the agent. This increase the state space representation. In this work we are using a property to take the noise in account (if $w<u$, ie the model is controllable).
+
+Lets consider a product automaton $\Pi_\varphi$ between a finite transition system $\mathcal{F}$ and a nondeterministic b\"uchi automaton $\mathcal{A}_\varphi$ obtained from a LTL property $\varphi$. Lets call $\widetilde{\Pi}_\varphi$ the finite transition system that have the same nodes, initial states and transitions than $\Pi_\varphi$.
+
+In the case that $\Pi_\varphi$ have cycles that does not contain any accepting nodes, it can happen that a run is in $\widetilde{\Pi}_\varphi$ but not in $\Pi_\varphi$.
+This happen when the cycle "block" the system (the state will never escape the cycle). In order to suppress this behaviour, we have to detect which control sequence can block the system.
+
+In the section \ref{sec_escape}, we will lever a practical criteria over control actions to check if the state of a system can escape a subset of the state space in a finite time.
+Then (section \ref{sec_ext_escape}) we will extend the criteria to the noisy case.
+And finally (section \ref{sec_timing}) we will integrate the notion of escaping time to use this criteria in frameworks with time constraints such as Metric Interval Temporal Logic (MITL).
+
+\section{Escaping proof}\label{sec_escape}
+In this section we will derive a condition over the control sequence of a first integrator system to check if the system can escape a bounded subset of the state space in a finite time.
+
+Let the system $S$:
+\begin{equation}
+S:\left \{
+  \begin{tabular}{ll}
+  $x_{k+1}$ &$= x_k + u_k$\\
+  $x_k$ & $\in \mathbb{R}^N$\\
+  $x_0$ & $\in X_0$\\
+  $u_k$ & $\in \mathcal{U}$
+  \end{tabular}
+\right.
+\end{equation}
+with $k \in \mathbb{N}$ the timestep, $N \in \mathbb{N}$ the state space dimension, $X_0$ a bounded subset of $\mathbb{R}^N$, and $\mathcal{U} = \left \{v_1,...,v_n \right \}$ a finite set of control inputs in $\mathbb{R}^N$, let $n$ the cardinality of $\mathcal{U}$.
+Let $\mathcal{X}_S \subset (X \times \mathcal{U})^\mathbb{N}$ the set of all the possible trajectories of $S$.
+
+\begin{definition}
+A trajectory $(x,u)$ of a system $S$ escapes $X_0$ in finite time if there exists $k$ in $\mathbb{N}$ so that $x_k \in X_0$ and $x_{k+1} \notin X_0$.
+\end{definition}
+
+\begin{property} \label{prop_escape}
+For a trajectory $(x,u) \in \mathcal{X}_S$ 
+$$
+\exists \alpha \in \mathbb{R}^N, \forall k \in \mathbb{N}, u_k \cdot \alpha > 0
+\Rightarrow
+(x,u) \textit{ escape } X_0 \textit{ in a finite time} 
+$$
+\end{property}
+
+\begin{proof}
+Let $(x,u)$ a trajectory of the system $S$.
+Let assume that there exists $\alpha$ in $\mathbb{R}^N$ so that $\forall k \in \mathbb{N}, u_k \cdot \alpha > 0$.
+By computing the scalar product of the sequence $\{x_i \}_{i \in \mathbb{N}}$, with $\alpha$ and thanks to the strict inequality of the scalar product, we will show that the state diverges.
+
+Let $k \in \mathbb{N}$, we have $x_{k} = x_0 + \sum_{i=0}^{k} u_i$.
+By taking the scalar product of the previous expression and $\alpha$, we have $x_k \cdot \alpha = x_0 \cdot \alpha + \sum_{i=0}^{k} u_i \cdot \alpha$.
+ 
+Let $E = \left \{ u_k \cdot \alpha \mid k \in \mathbb{N} \right \}$, by assumption $E$ is bounded by 0, so $\epsilon  = \inf E$ exists. As $\mathcal{U}$ is closed and bounded, $E$ is closed and bounded as well, so $\epsilon$ is a minimum and belong to $E$, so $\epsilon > 0$.
+
+By taking the scalar product of the state sequence, we have $x_k \cdot \alpha \geq x_0 \cdot \alpha + k \, \epsilon$, so $\lim_{k \rightarrow + \infty} x_k \cdot \alpha = +\infty$ this imply that $\lim_{k \rightarrow + \infty} \left \| x_k \right \| = +\infty$ (this implication can be proved by a \textit{reductio ad absurdum}).
+As $X_0$ is bounded, there exists a timestep $k_0$ for which $x_{k_0} \notin X_0$.
+\end{proof}
+
+For $V \subset \mathbb{R}^N$:
+$$F(V) = \left \{ \alpha \in \mathbb{R}^N| \forall v \in V, v \cdot \alpha >0 \right \}$$
+
+The property \ref{prop_escape} can be expressed in this way: for a trajectory $(x,u) \in \mathcal{X}_S$ with a control sequence chosen in $\mathcal{U}_t \subseteq \mathcal{U}$, if $F(\mathcal{U}_t) \neq \emptyset$ then the state $x_k$ escape $X_0$ in a finite time.
+
+\section{Extension to convex input sets}\label{sec_ext_escape}
+
+In our case, the system $S$ is not sufficiently expressive, 
+we aim to use this model to abstract models that have an asymptotic single integrator behaviour.
+The differences between the two systems will be modelled with noise.
+
+Let the system $S'$:
+\begin{equation}
+S':\left \{
+  \begin{tabular}{ll}
+  $x_{k+1}$ &$= x_k + u_k + w_k$\\
+  $x_k$ & $\in \mathbb{R}^N$\\
+  $x_0$ & $\in X_0$\\
+  $u_k$ & $\in \mathcal{U}$\\
+  $w_k$ & $\in \mathcal{W}$
+  \end{tabular}
+\right.
+\end{equation}
+with $k \in \mathbb{N}$ the timestep, $N \in \mathbb{N}$ the state space dimension, $X_0$ a bounded subset of $\mathbb{R}^N$, and $\mathcal{U} = \left \{v_1,...,v_n \right \}$ a finite set of controls inputs in $\mathbb{R}^N$, $n$ the cardinality of $\mathcal{U}$ and $\mathcal{W} \subset \mathbb{R}^N$ the set of noise.
+
+Contrary to the previous section, the difference between 2 consecutive states does not belong to a finite subset of controls inputs but in the set $\mathcal{U} + \mathcal{W}$.
+If $\mathcal{U} + \mathcal{W}$ is a closed and bounded set then the results of Property \ref{prop_escape} can be applied to get equivalent results.
+
+\begin{property} \label{prop_escape_noise}
+For a trajectory $(x,u) \in \mathcal{X}_{S'}$ 
+\begin{equation}
+\begin{split}
+\exists \alpha \in \mathbb{R}^N,
+\forall k \in \mathbb{N},
+\forall v \in \{u_k\} + \mathcal{W}, v \cdot \alpha > 0 \\
+\Rightarrow
+(x,u) \textit{ escape } X_0 \textit{ in a finite time} 
+\end{split}
+\end{equation}
+\end{property}
+
+\begin{proof}
+Same proof as for Property \ref{prop_escape}. As by assumption the set $\mathcal{U} + \mathcal{W}$ is bounded and closed we can find an $\epsilon$ that minor all the scalar product of the elements of $\{u_k\} + \mathcal{W}$ for $k$ in $\mathbb{N}$.
+\end{proof}
+
+In the case of the single integrator with a finite input set, the escaping property is usable in practice because we have to check a finite number of control inputs.
+For the single integrator with noise we have to check the property over an infinite amount of values: this is not algorithmically doable.
+In order to reduce the complexity of the problem, we will use a convex bounded polyhedra set for $\mathcal{W}$.
+
+Any points in a convex bounded polyhedra set can be expressed as a linear combination of the vertices: if $\mathcal{P}$ is a convex bounded polyhedra with a set $\mathcal{V}$ of vertices, then for any $x$ in $\mathcal{P}$, there exist $n_{\mathcal{V}} = \left | \mathcal{V} \right |$ real numbers $t_i \in [0,1]$ for $i \in \llbracket 1,n_{\mathcal{V}} \rrbracket$ that verify $\sum_{i=1}^{n_{\mathcal{V}}} t_i = 1$, so that $x = \sum_{i=1}^{n_{\mathcal{V}}} t_i \, v_i$.
+
+Moreover, the convexity property conserve the scalar product inequality: for $u,v,\alpha$ in $\mathbb{R}^N$, if  $u \cdot \alpha > 0$ and $v \cdot \alpha > 0$, then for all $t$ in $[0,1]$, $ (t \, u + (1-t) \, v ) \cdot \alpha> 0$.
+In the case of the convex bounded polyhedra $\mathcal{P}$ with a set $\mathcal{V}$ of vertices: if for all $v \in \mathcal{V}$ the scalar product with $\alpha$ is positive, then the scalar product of all points inside $\mathcal{P}$ is positive. This reduce the size of the problem to a finite number of points.
+
+The previous paragraph showed that $\forall \alpha \in \mathbb{R}^N, \alpha \in F(\mathcal{V}) \Rightarrow \alpha \in F(\mathcal{P})$, so $F(\mathcal{V}) \subseteq F(\mathcal{P})$. As $\mathcal{V} \subset \mathcal{P}$, $F(\mathcal{P}) \subseteq F(\mathcal{V})$. Therefore, $F(\mathcal{V}) = F(\mathcal{P})$.
+
+Lets consider a sequence $\{u_k\}_{k \in \mathbb{N}}$ of control chosen in  $\mathcal{U}_t \subseteq \mathcal{U}$.
+As $\mathcal{U}_t + \mathcal{W} = \bigcup_{ u \in \mathcal{U}_t}\left ( \left \{ u \right\} + \mathcal{W} \right )$ where each $\left \{ u \right\} + \mathcal{W}$ is a convex bounded polyhedra, we would like to compute the set $F$ of an union of two sets.
+Let $A$ and $B$ two subsets of $\mathbb{R}^N$, and $\alpha \in\mathbb{R}^N$:
+\begin{equation}\label{Funion}
+\begin{aligned}
+  \alpha \in F(A) \cap F(B) & \Leftrightarrow \forall x \in A,x \cdot \alpha > 0 \textit{ and } \forall x \in B,x \cdot \alpha > 0
+  \\ & \Leftrightarrow \forall x \in A \cup B,x \cdot \alpha > 0
+  \\ & \Leftrightarrow \alpha \in F(A \cup B)
+\end{aligned}
+\end{equation}
+
+so $F(A \cup B) = F(A) \cap F(B)$.
+
+Lets $\mathcal{V}^t_i$ the set of all the vertices of the convex bounded polyhedra $\left \{ v_i \right \} + \mathcal{W}$, thanks to the definition of convex sets and from the fact that a convex bounded polyhedra can be expressed as a finite sum of its vertices, we have:
+
+\begin{align*}
+F(\mathcal{U}_t + \mathcal{W}) &= F(\bigcup_{i\in \llbracket 1,n^t \rrbracket} \left \{ \left \{ v_i \right \} + \mathcal{W} \right \} ) \\
+&= \bigcap_{i\in \llbracket 1,n^t \rrbracket} F(\left \{ v_i \right \} + \mathcal{W}) && \text{(thanks to equivalence \ref{Funion})}\\
+&= \bigcap_{i\in \llbracket 1,n^t \rrbracket} F(\mathcal{V}^t_i) \\
+&= F( \bigcup_{i\in \llbracket 1,n^t \rrbracket} \mathcal{V}^t_i) \\
+\end{align*}
+
+The set $\bigcup_{i\in \llbracket 1,n^t \rrbracket} \mathcal{V}^t_i$ is a finite subset of $\mathbb{R}^N$ therefore, it can be used as a practical criteria.
+
+It follows that for any trajectories $(x,u)$ of the system $S'$ with controls chosen in $\mathcal{U}_t \subseteq \mathcal{U}$, $F( \bigcup_{i\in \llbracket 1,n^t \rrbracket} \mathcal{V}^t_i) \neq \emptyset$ implies that the state $x_k$ will escape $X_0$ in a finite time.
+
+
+\section{Timing  information}\label{sec_timing}
+In this section, we will show how to use the previous results to get an upper bound of the escaping time of $S$ trajectories starting in $X_0$.
+This can be used to generate controllers with time specifications (such as in MITL frameworks).
+
+The escaping property asserts that if all control actions of a trajectory are oriented in a preferential direction, the system will always escape the initial subset.
+If we manage to find the minimum control action that is applied in a direction at each iteration, then we can find an upper bound of the iteration needed to escape the initial set.
+
+\begin{property}
+Let $\mathcal{U}_t \subseteq \mathcal{U}$ a subset of controls so that $F(\mathcal{U}_t) \neq \emptyset$. Let $\mathcal{U}_t = \{v_1^t,...,v_{n_t}^t\}$ with $n_t$ in $\mathbb{N}$.
+There exists 
+$ u_m = \argmin_{u \in C_{\mathcal{U}_t}} \left \| u \right \|$ so that $u_m \neq 0$ with
+\begin{equation}
+C_{\mathcal{U}_t}=
+\left \{
+\sum_{i=1}^{n_t} k_i \, v^t_i
+\mid 
+\forall (k_1,...,k_{n_t}) \in [0,1]^{n_t},
+\sum_{i=1}^{n_t} k_i = 1,
+\right \}
+\end{equation}
+
+
+
+All trajectories with control inputs chosen in $\mathcal{U}_t$  of system $S$ starting in $X_0$ escape $X_0$ in less than $T_{escape} =\frac{\left \| X_0 \right \|}{\left \| u_m \right \|}$ timesteps.
+\end{property}
+
+\begin{proof}
+Firstly we will show the existence of $T_{escape}$, then that for all trajectories of the system $S$, the escaping time from $X_0$ is smaller than $T_{escape}$.
+We will study all the trajectories generated by the control sequences chosen in $\mathcal{U}_t^\mathbb{N}$.
+
+Intuitively $C_{\mathcal{U}_t}$ represents the temporal mean of the control sequences that we can apply with controls chosen in $\mathcal{U}_t$.
+We will try to find what is the smallest control (in term of norm) that we can apply over an infinite sequence of control.
+This control will give us information about the slowest escape from $X_0$ of our system for a chosen subset of controls.
+
+Let $\mathcal{K} =  \left \{ k \in \left[0,1\right]^n \mid \sum_{i=1}^n k_i = 1 \right \}$. $\mathcal{K}$ is a closed bounded set.
+Let $f_{\mathcal{U}_t}(\mathbf{k}) = \sum_{i=1}^n k_i \, v^t_i$ for $\mathbf{k} \in \mathcal{K}$, as $f$ is continuous and bounded by the closed ball $\mathcal{B} \left( \sum_{u \in {\mathcal{U}_t}} \left \| u \right \| \right)$ on $\mathcal{K}$, $C_{\mathcal{U}_t} = f_{\mathcal{U}_t}(\mathcal{K})$ is bounded and closed.
+
+Since $C_{\mathcal{U}_t}$ is a bounded and closed set, and $\left \| \cdot \right \|$ is continuous, the image of $C_{\mathcal{U}_t}$ by $\left \| \cdot \right \|$ is a bounded closed set as well.
+Therefore  $\min_{  u \in C_{\mathcal{U}_t}} \left \| u \right \|$ exists and is reached in $C_{\mathcal{U}_t}$. Let $u_m$ an element of $C_{\mathcal{U}_t}$ so that $\left \| u_m \right \| = \min_{  u \in C_{\mathcal{U}_t}} \left \| u \right \|$.
+
+As $F(\mathcal{U}_t) \neq \emptyset$, $0 \notin \mathcal{U}_t$ and $0 \notin \mathcal{K}$ so $0 \notin C_{\mathcal{U}_t}$.
+Therefore $u_m \neq 0$ and $\left \| u_m \right \| \neq 0$.
+We can then define the finite number:
+\begin{equation}
+T_{escape} = \frac{\left \| X_0 \right \|}{\left \| u_m \right \|}
+\end{equation}
+where $\left \| X_0 \right \|$ is the maximum distance of 2 points taken in $X_0$.
+
+Now, we need to prove that for any control sequence in $\mathcal{U}_t^\mathbb{N}$ applied in $X_0$, the state will escape $X_0$ it $T \leq T_{escape}$.
+
+As $F(\mathcal{U}_t) \neq \emptyset$, for all trajectories $(x,u)$ with controls chosen in $\mathcal{U}_t$ the state will escape the subset $X_0$, so there exist a $T$ in $\mathbb{N}$ where $x_{T} \in X_0$ and $x_{T+1} \notin X_0$. Let define $\bar{u}$:
+\begin{equation}
+\bar{u} = \frac{1}{T} \sum_{i=0}^{T-1} u_i
+\end{equation}
+we have $x_T = x_0 + T \, \bar{u}$. $\bar{u}$ is an element of $C_{\mathcal{U}_t}$ so $\left \| \bar{u} \right \| \geq \left \| u_m \right \|$, and by definition $\left \| x_0 - x_T \right \| \leq \left \| X_0 \right \|$, therefore $T \leq T_ {escape}$.
+\end{proof}
+
+\end{document}

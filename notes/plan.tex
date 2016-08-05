@@ -1,0 +1,203 @@
+\documentclass[notitlepage]{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{nicefrac}
+\usepackage{graphicx}
+\usepackage{breqn}
+\usepackage{tabularx}
+
+\graphicspath{{./plots/}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{property}{Property}
+
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+
+\usepackage[all]{xy}
+\usepackage{amssymb}
+
+\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
+\newcommand{\transition}{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
+  }
+\newcommand{\labelledtransition}[1]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
+  } 
+
+\begin{document}
+
+
+\title{Master thesis plan}
+\author{Paul Rousse}
+
+\maketitle
+
+
+% -- -- -- INTRODUCTION -- -- -- 
+\section{Introduction}
+Introduction
+
+Start with the wind turbine problem. Explain how the quads can enhance this process. Money we can save... Try to bring the main sub problems of it (non determinism, multiagent, timing constraints, cooperation, proof that quads will not destroy the wind turbine...).
+
+The forever path planning problem in robotic. Explain difference between path planning and LTL, more end-user.
+
+Explain why temporal logic are interesting, how they have been used...
+
+
+% -- -- -- RELATED WORK -- -- -- 
+\section{Related work}
+Subdivide the master thesis in several parts: abstraction, LTL, multiagent.
+
+\subsection{Linear temporal logic}
+present the LTL framework here?
+
+abstraction for undeterministic models
+
+\subsection{Abstraction/Hybrid systems}
+Talk about the objectif of the abstraction, complexity 
+
+Tabuada
+simulation relation
+
+Calin belta
+
+Reissing
+
+
+% -- -- -- ABSTRACTION -- -- -- 
+\section{Abstraction}
+
+\subsection{Monotone systems}
+Define the different property
+
+Explain why they are interesting, easy to manipulate the order relation, extension of the order relation on $\mathbb{R}$ in $\mathbb{R}^n$.
+
+\subsection{Complexity of abstraction}
+Simple example + define criteria
+
+complexity of the algorithm that we will use
+
+
+\subsection{Single integrator}
+Really simple, just show that it is monotonic
+
+Talk about the controllability (we must have $noise<control$)
+
+Show that under some conditions, we might need to decrease the sampling time: try to find an inequality between the size of the environment, the magnitude of the control, the noise, the sampling time (reduce the size of the system by just accepting the nondeterminism $\rightarrow$ escape property).
+
+Study the link between abstraction size and the control action.
+Talk about the non determinism of the system.
+
+The fact that self crate asynchronous systems
+
+Introduction of the escape time property, motivations and so on...
+
+\subsection{Double integrator}
+Same
+Introduction of the size reduction of the abstraction.
+
+\subsection{Reduction of a linear monotone system}
+Little bit of theory there
+Show when it is interesting to do that
+
+Talk about Reissing 
+
+\subsection{Discretization}
+Show that it can reduce the amplitude of the noise
+
+\subsection{Discussion over the different abstractions}
+Impact over the criteria
+
+% Timing Info
+\subsection{Timing information}
+Introduce why it could be nice to do that.
+
+Also explain why we want to proov that the system will leave the cell
+
+\subsubsection{Escape property and Maximal escaping time}
+
+\subsubsection{Maximal escaping time with graph constraints}
+Most of the results in graph theory are interested in propabilities, access time, and so on... Mine is different.
+
+\subsubsection{Use as a criteria for the graph search}
+
+
+% -- -- -- FORMAL CONTROLLER SYNTHESIS -- -- -- 
+\section{Formal controller synthesis}
+Describe what is used in this field
+
+Why I have not chosen the fixpoint algorithm methods?
+
+What algorithm did I choosed?
+why?
+
+\subsection{LTL path finding}
+talk about how to find a path that verify the LTL formula
+
+product automaton for an undeterministic model
+
+Buchi automaton
+
+\subsection{Graph search - backward reachability}
+
+\subsection{Complexity of the graph search algorithm}
+
+\subsection{Online path planning}
+Begin with the typical size of the multi-agent problem
+How to integrate the escaping property to that?
+
+how to choose the path, cost function.
+
+Recover algorithm: what do we do if there is no successors? how do we introduce the escape property?
+
+% -- -- -- EXPERIMENTS -- -- -- 
+\section{Experimental results}
+
+\subsection{Single agent}
+Introduce the different experiments
+
+\subsubsection{Single integrator}
+Limitation of this approach (try to give numbers/analytical inequalities to show when it is ok and when it is not usable -I will probably have to talk about the transient time-).
+
+\subsubsection{Double integrator}
+Deduce complexity too high
+
+for 1 axe
+
+\subsubsection{Double integrator reduced}
+Compare the complexity to the one of the double integrator without reduction
+
+\subsubsection{Discussion over the complexity}
+Explain in which situation each of the abstraction are better
+
+\subsection{Multi-agent case}
+
+\subsubsection{LTL formula}
+Motivation for the multiagent case, which model did I chose... which algorithm
+
+What happen if the formula is not possible?
+
+\subsubsection{LTL + multi objectif maximization}
+
+Maximize a function while the quad is doing a run.
+Don t go really deep inside the theoretical stuff, as long as it verify the abstraction, choose one velocity that maximize an objective.
+This msut be more a proof of concept without any study of the impact on the optimization process.
+
+\subsection{Wind turbine case}
+The wind turbine mission.
+
+
+\section{Conclusion}
+What I did achieve?
+
+
+\section*{Bibliography}
+
+
+\end{document}

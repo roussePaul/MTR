@@ -1,0 +1,259 @@
+\documentclass{article}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{gauss} 
+
+\usepackage{nicefrac}
+\usepackage{stmaryrd}
+
+\usepackage{kbordermatrix} % include package @ document preamble
+\renewcommand{\kbldelim}{(} % change default array delimiters to parentheses
+\renewcommand{\kbrdelim}{)}
+
+\usepackage[all]{xy}
+\usepackage{amssymb}
+
+\usepackage{dsfont}
+
+\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
+\newcommand{\transition}{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
+  }
+\newcommand{\labelledtransition}[1]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
+  }
+  
+\begin{document}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{property}{Property}
+
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\newcommand\vone{\mathds{1}}
+
+
+\section*{Notations}
+
+Let $\llbracket a,b \rrbracket = \left \{n \in \mathbb{N} \mid a \leq n \leq b \right \}$, $\left [ a,b \right ]= \left \{x \in \mathbb{R} \mid a \leq n \leq b \right \}$, $\mathbb{R}_+$ the positive subset of $\mathbb{R}$, $\mathbb{R}_+^\star = \mathbb{R}_+ \setminus \{0\}$.
+Let $\left \| X \right \|$ the maximum distance of 2 points in the set $X$ ( $\left \| X \right \| = \sup_{a,b \in X} \left \| a-b\right \|$).
+For a set $X$, $X^\mathbb{N}$ is an infinite sequence in $X$, for $x$ in $X^\mathbb{N}$ and $k$ in $\mathbb{N}$, $x_k$ is the $k^\textrm{th}$ element of the sequence $x$.
+The Minkowski sum of $A,B \in X$ noted $A+B$ is the set $\left \{a+b \mid a \in A, b\in B \right \}$.
+For $r>0$, let $\mathcal{B}(r) = \left \{ x \in \mathbb{R}^n \mid \left \| x \right \| \leq r \right \}$ the closed ball of radius $r$.
+
+For $A$ a matrix $m \times n$ on $\mathbb{R}$, let $\left \| A \right \|$ the infinity norm of $A$, $A^\top$ is the transposed matrix,
+$Im(A) = \left \{ A \mathbf{x} \mid \mathbf{x}  \in \mathbb{R}^n \right \} \subset \mathbb{R}^m$, 
+$ker(A) = \left \{ \mathbf{x} \in \mathbb{R}^n \mid A \mathbf{x} = 0\ \right \} \subset \mathbb{R}^n$.
+Let $dim(K)$ the dimension of the vectorial space $K$.
+
+
+
+\section{Note for future modifications}
+I can use the Rayleigh quotient definition for the eigenvalues (note sure in fact, might be for functions).
+
+We write: $S$ rows are indexed  by the vectrices and $S$ columns are indexed by the edges.
+
+\section*{Introduction}
+In the previous section we have established some sufficient conditions for the escaping property, and an upper bound of the escaping time.
+However previous assumptions are based on random combinations of the controls. We can get further results by using the relations induced by the graph.
+This is done by finding relations between the different flow trough each graph.
+More over, by studying every subgraph in a certain order, it is possible to use constraints on the different flows, driving us to a more accurate results of the maximum escaping time.
+
+Most of the studies in graph theory are using probability approach, we need a deterministic result.
+Other results have been used for the stability in constant derivative piecewise systems.
+
+
+\section{Graph walks}
+Let $G = \left(V,E\right)$ a finite strongly connected directed graph with 
+$V = \left \{ v_1, \dots,v_n \right \}$
+the set of nodes, $E = \left \{ e_1,...,e_m\right \}$ the set of edges, where $n = \left | V \right |$ and $m = \left | E \right |$.
+
+\begin{nameddefinition}[Incidence matrix]
+Let $A^{in}$ the incidence matrix defined by:
+\begin{equation}
+A^{in}_{ij} = \left \{
+\begin{array}{ll}
+1 & \textit{if the vertex $v_i$ and the edge $e_j$ are incident}\\
+0 & \textit{otherwise}
+\end{array}
+\right .
+\end{equation} 
+\end{nameddefinition}
+
+\begin{nameddefinition}[Reflective matrix]
+Let $A^{out}$ the reflective matrix defined by:
+\begin{equation}
+A^{out}_{ij} = \left \{
+\begin{array}{ll}
+1 & \textit{if $e_j$ is an outgoing edge of the vertex $v_i$}\\
+0 & \textit{otherwise}
+\end{array}
+\right .
+\end{equation} 
+\end{nameddefinition}
+
+Let $\mathbf{w} = (s_i,t_i)_{i\in \mathbb{N}} \in \left(V,E\right)^\mathbb{N}$
+an infinite walk in the graph $G$ so that for all $i \in \mathbb{N}$, $s_i \xrightarrow[t_i]{} s_{i+1}$. We will use the following abuse of notation, if $s_i = v_j$ and $t_i = e_k$:
+
+\begin{equation*}
+s_i = \left(
+\begin{array}{c}
+0\\
+\vdots\\
+0\\
+1\\
+0\\
+\vdots\\
+0\\
+\end{array}
+\right)
+\leftarrow \textit{$j^{th}$ element}
+\textrm{, and }
+t_i = \left(
+\begin{array}{c}
+0\\
+\vdots\\
+0\\
+1\\
+0\\
+\vdots\\
+0\\
+\end{array}
+\right)
+\leftarrow \textit{$k^{th}$ element}
+\end{equation*}
+
+
+\begin{property} Let $G$ a strongly connected finite directed graph. Let $A^{in}$ and $A^{out}$ the incidence and the reflective matrices (respectively). Let $\mathbf{w} = (s_i,t_i)_{i\in \mathbb{N}}$ a path in $G$:
+\begin{equation} \label{eqn:node_eq}
+\forall i \in \mathbb{N}, A^{in} t_i = A^{out} t_{i+1}
+\end{equation}
+\end{property}
+
+\textit{Note: the strong connectivity is not needed, we just need to have an output node for every nodes: $\forall v \in V, D_v \geq 1$. The only requirement for the property is that all the walks are infinite.}
+
+\begin{proof}
+For every 2 consecutive transitions, the node of the incident edge and the node of the outgoing edge is the same.
+\end{proof}
+
+For $N \in \mathbb{N}$, let $k_i = \sum_{i=0}^N t_i$, by applying equation \ref{eqn:node_eq}, we get:
+
+\begin{align*}
+\sum_{i=0}^N A^{in} t_i &=\\
+&=  A^{in} \sum_{i=0}^N t_i\\
+&=  A^{in} k_N\\
+A^{in} k_N&=  \sum_{i=1}^{N+1} A^{out} t_i \tag{equation \ref{eqn:node_eq}}\\
+&=  A^{out} \sum_{i=0}^{N+1} t_i - A^{out} t_0\\
+&=  A^{out} k_{N+1} - A^{out} t_0\\
+\end{align*}
+
+Therefore,
+\begin{equation} \label{eqn:k_eq}
+\forall i \in \mathbb{N}, A^{in} k_i -  A^{out} k_{i+1} = - A^{out} t_0
+\end{equation}
+
+For $i \in \mathbb{N}_{\setminus \{0\}}$, let $l_i = \frac{k_i}{i}$.
+We would like to derive a relation from \ref{eqn:k_eq}, for $i \in \mathbb{N}_{\setminus \{0\}}$:
+
+\begin{align*}
+A^{in} \frac{k_i}{i} &= A^{out} \frac{k_{i+1}}{i}  - A^{out} \frac{t_0}{i}\\
+A^{in} l_i &= A^{out} \frac{i+1}{i} l_{i+1}  - A^{out} \frac{t_0}{i}\\
+A^{in} l_i - A^{out} l_{i+1}  &=  \frac{A^{out} ( l_{i+1} - t_0) }{i} \numberthis \label{eqn:l_eq}\\
+\end{align*}
+
+Let $C_{eq} = \left[ A^{in},-A^{out} \right]$.
+By assumption, the degree on each vertices is greater or equal to 1, so $C_{eq} \neq 0$. 
+Let $l^e_i = [l_i,l_{i+1}]^\top$, $l^{e \star}_i \in ker(C_{eq})$ and  $\Delta l^e_i \in \mathbb{R}^{2m} \backslash ker(C_{eq})$ such that  $l^e_i = l^{e \star}_i + \Delta l^e_i$. We have:
+\begin{align*}
+C_{eq} l^e_i &= C_{eq} \Delta l^e_i  \tag{$l^{e\star}_i \in ker(C_{eq})$}\\
+C_{eq} \Delta l^e_i &= \frac{A^{out} ( l_{i+1} - t_0) }{i}  \tag{equation \ref{eqn:l_eq}}\\
+\left \| C_{eq} \Delta l^e_i \right \| &\leq  \frac{ 2 \left \|A^{out}\right \| }{i}  \tag{as $\left \| l_{i+1} \right \| \leq 1$ and $\left \| t_0 \right \| \leq 1$}\\
+\left \| \Delta l^e_i  \right \| & \leq \frac{d_0}{i}
+\end{align*}
+where $d_0 = \frac{ 2 \left \| A^{out} \right \| } { \sigma_{eq}^{min}}$, with $\sigma_{eq}^{min}$ the smallest non null singular value of $C_{eq}$ (this singular value exist as $C_{eq}$ is not null).
+
+\begin{property}
+All walks in a strongly connected digraph verify:
+$l^e_i = l^{e \star}_i + \Delta l^e_i$
+with 
+$l^{e \star}_i \in ker(C_{eq})$
+and
+$\left \| \Delta l^e_i  \right \| \leq \frac{d_0}{i}$
+\end{property}
+
+\section{Inequality on subset of the graph}
+Let $V$ a finite set of nodes and $E \subset V \times V$ a finite set of edges,
+$\mathcal{G}$ the set of all the strongly connected directed subgraph of the graph defined by $(V,E)$.
+
+!! Define a finite run !!
+
+Let $G \in \mathcal{G}$ and $H \in \mathcal{G}$ a subgraph of $G$.
+Let $T_{max} : \mathcal{G} \rightarrow \mathbb{R}_+^\star$ a function that verify the following property: for a finite run $w$ of length $N_w$ in the graph $G$, $N_w < T_{max}(G)$.
+
+We would like to see how we can express the constraints on the global system using this function.
+
+Let say that $T_{max}(H)$ exist, then for every runs $\mathbf{w} \in \mathfrak{R}(H)$ with the associated $k_i$ and $l_i$ for $i \in \mathbb{N}$, we have:
+\begin{align*}
+k_i \, \vone_H & \leq T_{max}(H) \\
+l_i \, \vone_H & \leq \frac{T_{max}(H)}{i}
+\end{align*}
+
+For the graph $G$, each time the agent is entering in the subgraph $H$, we know that the state cannot stay more than $T_{max}(H)$ steps. Therefore:
+\begin{align*}
+\mathbf{k}_i^\top \, \vone_H & \leq \mathbf{k}_i^\top \vone_{G \rightarrow H} T_{max}(H)\\
+\mathbf{l}_i^\top \, \vone_H & \leq \mathbf{l}_i^\top \vone_{G \rightarrow H} T_{max}(H)\\
+\end{align*}
+
+\begin{proof}
+Lets consider a segment between time-step i and time-step j of a walk $\mathbf{w}$ in $G$ so that all the transition belong to the subgraph $H$. From the previous results we know that $(k_j -k_i) \vone_H \leq T_{max}(H)$. By summing this relation over all the segment of walks that belongs to the subgraph $H$, we have:
+\begin{equation}
+\sum_{\{i,j\} \in \mathcal{I}(H)} (\mathbf{k}_j^\top - \mathbf{k}_i^\top) \vone_H \leq T_{max} \vone_{G \rightarrow H}
+\end{equation}
+the complement of the walks is not evolving in $H$, we know that for every $\{i,j\},\{i',j'\} \in \mathcal{I}(H)$, $k_{j} = k_{i'}$. So we can simplify the equation:
+\begin{equation}
+(\mathbf{k}_{j_{max}}^\top - \mathbf{k}_{i_{min}}^\top ) \vone_H \leq T_{max} \mathbf{k}_{i_{max}}^\top \vone_{G \rightarrow H}
+\end{equation}
+where $(i_{max},j_{max})$ and $(i_{max},j_{max})$ are respectively the last and first time-step where we left and enter the subgraph $H$.
+Note that $t_0 \notin H$ then $\mathbf{k}_{i_{min}}^\top \vone_H = 0$, and if $t_0 \in H$ then $\mathbf{k}_{i_{min}}^\top \vone_H = 1$.
+For a finite walk, as we do not know if the state end up in H or not, we can find an upper bound (these details don't bother use, they are related to the transient state, but we need to compute the upper bound to be correct):
+\begin{equation}
+\mathbf{k}_{N}^\top \vone_H \leq T_{max} (1+\mathbf{k}_N^\top \vone_{G \rightarrow H}) + 1
+\end{equation}
+
+By dividing with $N$:
+\begin{align*}
+\mathbf{l}_{N}^\top \vone_H &\leq \mathbf{l}_N^\top \vone_{G \rightarrow H} T_{max} + \frac{1+T_{max}}{N} \\
+\mathbf{l}_{N}^\top \vone_H &- \mathbf{l}_N^\top \vone_{G \rightarrow H} T_{max} \leq \frac{1+T_{max}}{N} 
+\end{align*}
+
+\end{proof}
+
+
+How is it gone be extended for the minimization algorithm?
+
+\section{Algorithm}
+We would like to solve the following problem of optimization:
+\begin{equation}
+\begin{split}
+u_{min}(G,\mathcal{C}) = \argmin_{u \in \mathcal{U}(G,\mathcal{C})} & \left \| u \right \| \\
+\end{split}
+\end{equation}
+where $\mathcal{U}(G)$ is the set of all the possible controls so that for every sub sequence of a run $\mathbf{w}$ that evolve in the subgraph $H$, the state escape the subgraph $H$ in less than $T_{max}(H)$.
+
+Lets choose the function $T_{max}(H)$ in this way:
+\begin{equation}
+T_{max}(H,\mathcal{C}) = 
+\end{equation}
+
+\end{document}

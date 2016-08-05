@@ -1,0 +1,110 @@
+\documentclass[12pt]{article}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+
+\begin{document}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+
+\section*{Notations}
+
+Let $\llbracket a,b \rrbracket = \left \{n \in \mathbb{N} \mid a \leq n \leq b \right \}$, $\left [ a,b \right ]= \left \{x \in \mathbb{R} \mid a \leq n \leq b \right \}$, $\mathbb{R}_+$ the positive subset of $\mathbb{R}$, $\mathbb{R}_+^\star = \mathbb{R}_+ \setminus \{0\}$.
+
+Lets denote $\left \| X \right \|$ the maximum distance of 2 points in the set $X$ ( $\left \| X \right \| = \sup_{a,b \in X} \left \| a-b\right \|$).
+
+\section*{Escaping proof}
+
+Let the system $S$:
+\begin{equation}
+S:\left \{
+  \begin{tabular}{ll}
+  $x_{k+1}$ &$= x_k + u_k$\\
+  $x_k$ & $\in \mathbb{R}^N$\\
+  $x_0$ & $\in X_0$\\
+  $u_k$ & $\in \mathcal{U}$
+  \end{tabular}
+\right.
+\end{equation}
+with $k \in \mathbb{N}$ the timestep, $N \in \mathbb{N}$ the state space dimension, $X_0$ a bounded subset of $\mathbb{R}^N$, and $\mathcal{U} = \left \{v_1,...,v_n \right \}$ a finite set of controls inputs in $\mathbb{R}^N$, lets denote $n$ the cardinality of $\mathcal{U}$.
+
+\textbf{Property:}
+$$
+\exists \alpha \in \mathbb{R}^N, \forall v \in \mathcal{U}, v \cdot \alpha > 0
+\Rightarrow
+\lim_{k \rightarrow + \infty} \left \| x_k \right \| = +\infty
+$$
+
+\textbf{Proof:}
+Lets assume that it exists $\alpha$ in $\mathbb{R}^N$ so that $\forall v \in \mathcal{U}, v \cdot \alpha > 0$
+By deriving the scalar product of the sequence $\{x_i \}_{i \in \mathbb{N}}$, with $\alpha$ and thanks to the strict inequality of the scalar product, we will show that it diverges.
+
+Let $k \in \mathbb{N}$, we have $x_{k} = x_0 + \sum_{i=1}^{n} l_i v_i$ where $l_i$ is the number of times that we applied the control $v_i$ at timestep $k$, for  $i \in \llbracket 1,n \rrbracket$.
+By taking the scalar product of the previous expression and $\alpha$, we have $x_k \cdot \alpha = x_0 \cdot \alpha + \sum_{i=1}^{n} l_i v_i \cdot \alpha$. Let  $\epsilon \in \mathbb{R}_+^\star$ so that for every $v$ in $\mathcal{U}$, $v \cdot \alpha \geq \epsilon$, $x_k \cdot \alpha > x_0 \cdot \alpha + k \, \epsilon$, then $\lim_{k \rightarrow + \infty} x_k \cdot \alpha = +\infty$ this imply that $\lim_{k \rightarrow + \infty} \left \| x_k \right \| = +\infty$ (this implication can be proved by a \textit{reductio ad absurdum}). As $X_0$ is bounded, it exists a timestep $k_0$ for which $x_{k_0} \notin X_0$. $\square$
+
+Let:
+$$F(V) = \left \{ \alpha \in \mathbb{R}^N| \forall v \in V, v \cdot \alpha >0 \right \}$$
+
+The property can be expressed in this way:
+if $F(\mathcal{U}) \neq \emptyset$ then the state $x_k$ escape $X_0$ in a finite time.
+
+\subsection*{Extension to convex input sets}
+
+For $u,v$ in $\mathbb{R}^N$, if for $\alpha$ in $\mathbb{R}^N$, $u \cdot \alpha > 0$ and $v \cdot \alpha > 0$, then for all $t$ in $[0,1]$, $t \, u + (1-t) \, v > 0$.
+This property let us extend the previous results to convex control inputs.
+To make it easier, we will just use convex polytopes control inputs:
+lets consider the following system $S$ with $\mathcal{U} = \{U_1,...,U_n\}$, a finite set of convex polytopes of $\mathbb{R}^N$.
+
+
+Let $V$ the set of all the vertices of all the polytopes of $\mathcal{U}$, thanks to the definition of convex sets and from the fact that a convex polytopes can be expressed as a finite sum of its vertices, we have $F(\mathcal{U}) = F(V)$.
+Checking the non emptiness of $F(V)$ is sufficient to know if the state $x_k$ will escape $X_0$ in a finite time.
+
+\subsection*{Timing  information}
+From now we will consider $S$ with $\mathcal{U} = \{U_1,...,U_n\}$, a finite set of convex polytopes of $\mathbb{R}^N$ and $V = \left \{v_1,...,v_n \right \}$ the set of all the vertices of all the polytopes of $\mathcal{U}$.
+
+In this section, we will show how to derive the previous results to get an upper bound of the escaping time of $S$ trajectories starting in $X_0$.
+This can be used to generate controllers with time specifications (such as in MITL frameworks).
+
+Lets assume that $F(\mathcal{U}) \neq \emptyset$, and let:
+
+\begin{equation}
+C_\mathcal{U}=
+\left \{
+\sum_{i=1}^n k_i \, v_i
+\mid 
+\forall (k_1,...,k_n) \in [0,1]^n,
+\sum_{i=1}^n k_i = 1,
+\right \}
+\end{equation}
+
+Intuitively $C_\mathcal{U}$ represents the smallest mean controls that we can apply.
+
+
+We can note that $C_\mathcal{U}$ is bounded (by $\sum_{v \in V} \left \| v \right \|$), and closed as it can be expressed as an image of a bounded closed set by continuous application (the product of a bounded hyperplanes and a finite set of control input).
+
+Since $C_\mathcal{U}$ is a bounded and closed set, and $\left \| \cdot \right \|$ is continuous, the image of $C_\mathcal{U}$ by $\left \| \cdot \right \|$ is a bounded closed set as well.
+Therefore  $\min_{  u \in C_\mathcal{U}} \left \| u \right \|$ exists and is reached in $C_\mathcal{U}$. Lets call $u_m$ an element of $C_\mathcal{U}$ so that $\left \| u_m \right \| = \min_{  u \in C_\mathcal{U}} \left \| u \right \|$.
+
+As $F(\mathcal{U}) \neq \emptyset$, we can choose $\alpha$ in $F(\mathcal{U})$ which verify for all $u$ in $C_\mathcal{U}$, $u \cdot \alpha >0$, therefore $0 \notin C_\mathcal{U}$, then $u_m \neq 0$.
+
+We can then define the finite number:
+\begin{equation}
+T_{escape} = \frac{\left \| X_0 \right \|}{\left \| u_m \right \|}
+\end{equation}
+where $\left \| X_0 \right \|$ is the maximum distance of 2 points taken in $X_0$.
+
+Now, we need to proof that for any control sequence applied in $X_0$, the state will escape $X_0$ it $T \leq T_{escape}$.
+
+As $F(\mathcal{U}) \neq \emptyset$, for every control sequence, the state $x_k$ will escape the subset $X_0$, so there exist a $T$ in $\mathbb{N}$ where $x_{T} \in X_0$ and $x_{T+1} \notin X_0$, Let $s = \left \{u_0,...,u_{T-1} \right \}$ the sequence of controls inputs, lets define $u$ the mean of $s$:
+\begin{equation}
+u = \frac{1}{T} \sum_{i=0}^{T-1} u_i
+\end{equation}
+we have $x_T = x_0 + T \, u$ and $u$ is an element of $C_\mathcal{U}$ so $\left \| u \right \| \geq \left \| u_m \right \|$, and by definition $\left \| x_0 - x_T \right \| \leq \left \| X_0 \right \|$, therefore $T \leq T_ {escape}$.
+
+
+\textbf{Property:}
+All trajectories of system $S$ starting in $X_0$ escape $X_0$ in less than $T_{escape}$ timesteps.
+
+\end{document}

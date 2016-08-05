@@ -1,0 +1,37 @@
+\documentclass{standalone}
+
+\usepackage{pgfplots}
+\usepackage{pgfplotstable} % For \pgfplotstableread
+
+
+\begin{document}
+
+%\pgfplotstableread{lyapunov_trace.dat}{\Lyap}
+\pgfplotstableread{plots/lyapunov_trace.dat}{\Lyap}
+
+\begin{tikzpicture}
+\begin{axis}[
+ylabel=$x_2$,
+xlabel=$x_1$,
+axis equal]
+
+\addplot[black,no markers] table [x={X1}, y={X2}] {\Lyap};
+
+\draw[blue] (axis cs:0,0) circle [radius=67];
+\node[blue,anchor=west] at (axis cs:0.67,0) {$\mathcal{X}$};
+
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[
+ylabel=$V$,
+xlabel=time ($s$)]
+
+\addplot[black,no markers] table [x={T}, y={Vx}] {\Lyap};
+\addplot[blue,no markers] table [x={T}, y={Vsup}] {\Lyap};
+
+\end{axis}
+\end{tikzpicture}
+
+\end{document}

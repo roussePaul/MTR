@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{fit,calc}
+
+\begin{document}
+
+\begin{tikzpicture}[
+myrect/.style={
+  rectangle,
+  draw,
+  inner sep=0pt,
+  fit=#1}
+]
+\def\xd{0.5}
+
+\coordinate (xc) at (\xd/2,\xd/2);
+\coordinate (xr) at (\xd/2-0.1,\xd/2-0.1);
+
+\def\rect#1#2#3#4{\coordinate (xa) at ($(#1*\xd,#2*\xd)+(xc)-(xr)$);
+\coordinate (xb) at ($(#3*\xd,#4*\xd)+(xc)+(xr)$);
+\node[myrect={(xa) (xb)}] {};
+}
+
+\rect{0}{-1}{4}{-1};
+\rect{3}{4}{4}{-1};
+
+
+\end{tikzpicture}
+
+\end{document}

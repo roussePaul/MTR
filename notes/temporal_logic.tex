@@ -1,0 +1,68 @@
+\documentclass{report}
+\begin{document}
+
+\chapter{Temporal Logic}
+
+\section*{Introduction}
+
+fix point
+
+tree search
+
+reachability algorithm
+
+stutter behaviour
+
+\section*{Previous works}
+
+\section*{Deterministic system}
+
+simple with the quad
+
+\section*{Non deterministic system}
+
+\subsection*{Fairness property}
+
+\subsubsection*{Stuttering behaviour}
+
+travaux relatifs: 
+Jana, utilise au automate de Rabin, ne prend en compte que les self loops
+
+LTL without X
+
+Show when does the systems is stuttering.
+Stuttering graph
+Stuttering property for discrete set of controls, for convex sets, add the noise, add the state for a different system than what we had
+
+$$\dot{x} = A \cdot x + B \cdot u$$
+
+presenter une application ou on peut prendre en compte le temps, MITL.
+Pour prendre en compte le temps, il faut s'interesser a un autre probleme que celui precedement traite
+
+Forbiden graph configuration, remove the graphs bring the system in stuttering states.
+Projection of the graph.
+
+\subsubsection*{Backward reachability algorithm for stutter systems}
+
+Description de l'algo, complexitee
+lien avec Zeno, mais pas que: montrer le jeu bride escape
+
+application pour un system complexe ou le controller n'est pas aligne avec l'abstraction.
+
+
+\section*{Application}
+
+Pour un systeme de 1 quad
+
+Pour un systeme de 2 quads
+
+avec differents modeles de quads, differentes frequences...
+
+Pour un systeme avec beaucoup de degrés de libertés (grue, voiture...)
+Dynamique non lineaire (pas possible avec les systeme monotones, penser a un autre systeme, ou bien, il serait envisageable de lineariser le systeme avant de l'utiliser).
+
+Comparatif des temps d'execution du code
+
+en fonction du nombre d'etats dans le modele, du nombre de labels.
+
+\end{document}

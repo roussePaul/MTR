@@ -1,0 +1,259 @@
+\documentclass{article}
+\usepackage{amsfonts, amsmath, amsthm, amssymb,latexsym}
+\usepackage{stmaryrd}
+
+\usepackage{graphicx}
+\graphicspath{ {plots/},{env/} }
+\usepackage[mode=buildnew]{standalone}
+
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
+\usepackage{pgfplots}
+\usepackage{siunitx}
+
+\usepackage{enumitem}
+
+%\usepackage{showframe}
+% use to create colored comments
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{varwidth}
+% guillemet are there because jstification wrong without them
+\newcommand\comment[1]{\textcolor{red}{"\textit{#1}"}}
+
+
+\begin{document}
+
+
+\title{Comparison of loop planning}
+\maketitle
+
+
+\section{Investigation over discretization of the state space}
+What are the constraints that does exists on the discretization of the state space?
+Many parts of my maser thesis will be justified by this.
+Therefore I need to have a clear approach about it.
+
+This part will justify all the other parts about the different models that I used.
+Try to be as theoretical as possible.
+ 
+
+In this section we will try to understand what are the constraints that apply on the discretization of the state space.
+Our main goal i to verify an LTL formula over the state space. For a given discrete model of the robot, we will say that the discretization of the state space is valid if we are able to find a controller that verify the formula.
+The main problem about the discretization is that it will depend on the LTL formula that we would like to verify. For example if we need to verify the formula $\Diamond \square a$, then the region $a$ must be discretized enough in order that it exist a controller (a finite state controller) that make this region attractive.
+Here I am questioning the feasibility of the LTL formula in the discretization.
+
+In the following paragraph we will try to see what are the impact of it for a monotone linear model and a regular uniform.
+This part just aim to give some inside about the discretization problem:
+We will start
+
+Constraints on the state space discretization:
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+\item the goals regions needs to be reachable and eventual
+\item size of $V_\mathbf{w}$
+\end{itemize}
+
+\section{Advantages of fairness property}
+% file: strong_cyclic_advantages.py
+
+In this part we will try to see what is the influence of the noise level to avoid any fairness property utilisation.
+
+We will have 2 cases:
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+\item one case where the discretization $x_d<u-w$, which basically mean that there is no self loops and fairness property do not need to be used.
+\item one case  with the same parameters, but we use self loops., in this way we can keep the discretization at a rough level.
+\end{itemize}
+
+Maybe just a graph showing the algorithm working in the first case is enough. 
+
+This part will be one of the justification of my model in order to handle determinism with fixed point algorithm
+
+Talk about the constraint on the time step and on the discretization step.
+
+\subsection{Self loops less model}
+
+In this case the discretization needs to verify $x_d<u-w$.
+This means that for all the perturbation, the state will move to a different cell.
+
+Contrary to the simple integrator without self-loops, for the single integrator model with self-loops, we do not need to decrease the discretization step when the noise increase.
+
+What I need to do is just to compare when it is relevant to use the strongly connected model instead of decreasing the discretization step.
+
+The idea is to show that for a fixed magnitude of the noise and a varying noise level (choose the right discretization), the model with self loops become more interesting when $w \rightarrow u$.
+
+
+In this section we will test the benefit of the strong cyclic planning algorithm with uniform discretization (see figure \ref{fig:environment}).
+The discratization step $x_d$ divide a planar environment in $N \times N$ cells. The system used is a first integrator.
+The formula used to generate the controller is a the following:
+$$\varphi = (\square \Diamond a) \wedge (\square \Diamond b)$$
+
+\begin{figure}
+	\includestandalone[width=0.5\textwidth]{grid_environment}
+	\caption{Testing environment}
+	\label{fig:environment}
+\end{figure}
+
+\subsubsection{Comparaison}
+We will see what is the influence of the noise on the complexity of the model.
+For $\mathbf{w},\mathbf{u} \in \mathbb{R}^2$, let $S_\mathbf{w}$ the single integrator model defined by:
+
+\begin{equation}\label{eqn:sing_int}
+S_\mathbf{w}:
+\left \{
+\begin{array}{ll}
+\mathbf{x}_{n+1} &= \mathbf{x}_n + \mathbf{u}_n + \mathbf{w}_n\\
+\mathbf{y}_n &= \mathbf{x}_n
+\end{array}
+\right.
+\end{equation}
+
+with $\mathbf{w}_n \in [-\mathbf{w},\mathbf{w}]$ and $\mathbf{u}_n \in \mathcal{U} \subset [-\mathbf{u},\mathbf{u}]$ where $\mathcal{U}$ is a finite set of control inputs.
+
+If we would like to find the abstraction without any self loops, we need to choose a discretization step $\mathbf{x_d}$ that is smaller than $\mathbf{u}-\mathbf{w}$.
+
+In the case where we don't have such constraints, we will choose the biggest discretization step so that there exist a solution to the problem. 
+
+The loop less model needs to increase the accuracy of the model in order to solve the path planning problem.
+The discretization step of the model with loops does not depend on the noise level in this way for every noise level the complexity of the path planning algorithm remain the same.
+See figure \ref{fig:comp_loops}.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includestandalone[width=\textwidth]{single_int_self_loops_less}
+        \caption{Computation time}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+		\includestandalone[width=\textwidth]{single_int_self_loops_less_node}        		\caption{Number of nodes}
+    \end{subfigure}
+    \caption{Comparaison of anstraction with self loops and abstraction without self loops. For the same model, when the noise increase, the model with loops does not need a finer discretization.}
+    \label{fig:comp_loops}
+\end{figure}
+
+\paragraph{Comparaison of the complexity for the same number of nodes and the same number of successors:}
+In this case we voluntary choose a suboptimal discretization so that the number of nodes for the 2 models are the same.
+The models are the same except for the control input that is chosen to get a loop less model or a model with loops.
+
+We can see that the computation time is not significantly different.
+This come from the fact that most of the fixed point that the algorithm will search for have a size of 2.
+This does not increase the complexity of the algorithm significantly.
+
+Between the two models, the number of nodes is not exactly the same mainly because in the no loop model the control action is higher than the one in the other model (which means these might bring the state outside of the boundaries, for matter of simplification, and because these nodes will not be used by the algorithm anyway, we have suppressed them).
+
+See figure \ref{fig:same_nbre_nodes}.
+
+\pgfplotstableread{
+noise	cpu_time_wo_loops	cpu_time_w_loops	nodes	nodes_loops
+0.250	1.749	2.054	64	64
+0.200	5.125	6.552	100	100
+0.167	13.468	12.752	144	144
+0.143	31.633	28.445	196	196
+0.125	71.063	54.568	256	256
+0.111	135.655	100.069	324	324
+}\datasamenode
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+minor tick num=0,
+ylabel near ticks,
+xlabel=Number of nodes,
+ylabel=CPU Time ($s$),
+ymode=log,
+legend pos=north west]
+\addplot [black,mark=triangle*] table [x={nodes}, y={cpu_time_wo_loops}] {\datasamenode};
+\addplot [black,mark=*] table [x={nodes_loops}, y={cpu_time_w_loops}] {\datasamenode};
+\legend{without loops,with loops}
+\end{axis}
+\end{tikzpicture}
+\caption{Comparison of the complexity for the same number of nodes and the same number of edges but with or without self loops (note: the maximum size of the cycles is 2).}
+\label{fig:same_nbre_nodes}
+\end{figure}
+
+\paragraph{Influence of the fixed point size:}
+The real drawback of strong cyclic planning method lie in the search of a fair control combination. Lets try to see what are the limitation of the algorithm.
+In the previous experiments, we have been investigating cases where the maximal fixed point case is equal to 2. However, this complexity is increasing really rapidly (the number of combinations of controls for a set of $n$ nodes is equal to $|U|^n$).
+
+The current implementation of our algorithm is not able to deal with computation of fixed point bigger that 9 (which corresponds in our model where $|U|= 9$ to $|U|^9 \approx \num{3.8e8}$ possible fixed points configurations).See figure \ref{fig:cycle_sizes}.
+
+On possible upgrade would be to divide the system in independent systems (in our case, there is no coupling between the 2 dimensions of the system, we can build the 2 dimensional single integrator with 2 first integrator systems).
+In this situation we can separate the strong cycles detection one for each systems.
+This has been tested yet.
+
+\pgfplotstableread{
+
+n_succ	noise	cpu_time_wo_loops	cpu_time_w_loops	nodes	nodes_loops
+4	-0.000	0.397	5.180	36	36
+9	0.250	3.084	47.384	64	64
+16	0.400	13.785	154.962	100	100
+}\datacyclesize
+
+\pgfplotstableread{
+noise	cpu_time_wo_loops	cpu_time_w_loops	nodes	nodes_loops
+0.250	2.863	10.323	64	64
+0.200	9.404	33.502	100	100
+0.166	24.758	122.959	144	144
+0.143	58.246	193.966	196	196
+0.125	139.124	927.259	256	256
+}\datacyclesizetree
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+minor tick num=0,
+ylabel near ticks,
+xlabel=Number of successors,
+ylabel=CPU Time ($s$),
+ymode=log,
+legend pos=north west]
+\addplot [black,mark=triangle*] table [x={n_succ}, y={cpu_time_wo_loops}] {\datacyclesize};
+\addplot [black,mark=*] table [x={n_succ}, y={cpu_time_w_loops}] {\datacyclesize};
+\legend{without loops,with loops}
+\end{axis}
+\end{tikzpicture}
+\caption{Influence of the strong cycles sizes.}
+\label{fig:cycle_sizes}
+\end{figure}
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+minor tick num=0,
+ylabel near ticks,
+xlabel=Number of successors,
+ylabel=CPU Time ($s$),
+ymode=log,
+legend pos=north west]
+\addplot [black,mark=triangle*,dashed] table [x={nodes}, y={cpu_time_wo_loops}] {\datacyclesizetree}
+node[anchor=south] {wol9};
+\addplot [black,mark=triangle*,dashed] table [x={nodes}, y={cpu_time_wo_loops}] {\datasamenode}
+node[anchor=south] {wol4};
+\addplot [black,mark=*] table [x={nodes}, y={cpu_time_w_loops}] {\datacyclesizetree}
+node[anchor=west] {wl9};
+\addplot [black,mark=*] table [x={nodes}, y={cpu_time_w_loops}] {\datasamenode}
+node[anchor=north] {wl4};
+\end{axis}
+\end{tikzpicture}
+\caption{Same graph but with 9 successors instead of 4. wol and wl respectively stands for without loops and with loops.}
+\label{fig:max_cycle_tree}
+\end{figure}
+
+Be careful, your conclusion are inconsistent, in one way you show that it has some benefit on the complexity of the model to take the self loops in account, in figure \ref{fig:cycle_sizes}, these results does not appears. Not sure in fact that I am contradicting, the discretization that I am taking are voluntary sub optimal. Here I am just trying to compare the algorithm for some parameters that does not vary. However, the benefit of my method is to consider the self loops outside of the goal states. In fact no self loops are a fairness guaranty, so in any regular algorithm, we will just remove it. In my algorithm, I have to consider so that the quad might run.
+
+The gain of my algorithm cannot be measured with the same discretization. The challenge is to reduce the complexity of a model by having a rougher discretization (complexity $\searrow$) and having self loops even during fair parts (complexity $\nearrow$). So the important information is to compute when it is better to consider self loops (at which level of noise if we are talking about noise, at which level of jacobian norm otherwise).
+
+\section{Conclusion}
+The strong cyclic planning method can be really effective in some case where the noise.
+
+Conclude about when to use the strongly connected cyclic model.
+How to choose the discretization.
+Just accept the fact that there is no strong theoretical justifications?
+Can I sort of generalize this method to a bigger class of model (not just the first integrator model)?
+
+\comment{I must notice that the we are not using any optimal algorithm (DFS). This imply that the computing time are less relevant.}
+
+\end{document}

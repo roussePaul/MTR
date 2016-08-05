@@ -1,0 +1,26 @@
+\documentclass{article}
+
+\usepackage{verse}
+
+\newcommand{\attrib}[1]{%
+\nopagebreak{\raggedleft\footnotesize #1\par}}
+\renewcommand{\poemtitlefont}{\normalfont\large\itshape\centering}
+
+\begin{document}
+
+\poemtitle{The lady farmer}
+\settowidth{\versewidth}{elle portait sur sa t\^ete, trois pommes dans un panier}
+\begin{verse}[\versewidth]
+Il \'etait une fermi\`ere, qui allait au march\'e \\
+elle portait sur sa t\^ete, trois pommes dans un panier \\
+les pommes faisaient : rouli-roula \\
+les pommes faisaient : rouli-roula \\
+stop !\\
+Trois pas en avant \\
+trois pas en arri\`ere \\
+trois pas sur le c\^ot\'e \\
+trois pas de l'autre c\^ot\'e !\\
+\end{verse}
+\attrib{French nursery rhyme}
+
+\end{document}

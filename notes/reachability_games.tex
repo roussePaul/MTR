@@ -1,0 +1,691 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+%\usepackage{showframe}
+% use to create colored comments
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{varwidth}
+% guillemet are there because jstification wrong without them
+\newcommand\comment[1]{\textcolor{red}{"\textit{#1}"}}
+\newcommand\todo[1]{\textcolor{red}{\textbf{#1}}}
+
+% Math packages
+\usepackage{amsfonts, amsmath, amsthm, amssymb}
+
+\usepackage{nicefrac}
+\DeclareFontFamily{U}{matha}{\hyphenchar\font45}
+\DeclareFontShape{U}{matha}{m}{n}{
+      <5> <6> <7> <8> <9> <10> gen * matha
+      <10.95> matha10 <12> <14.4> <17.28> <20.74> <24.88> matha12
+      }{}
+\DeclareSymbolFont{matha}{U}{matha}{m}{n}
+\DeclareMathSymbol{\vDash}{3}{matha}{'52}
+\DeclareMathSymbol{\nvDash}{3}{matha}{'50}
+
+\usepackage[all]{xy}
+\usepackage{enumitem}
+
+\usepackage[ruled]{algorithm2e}
+
+% DEFINITION/THEOREM ENVIRONMENTS
+\newtheorem{theorem}{Theorem}
+\newtheorem{olddefinition}{Definition}
+\newtheorem{property}{Property}
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+\newtheorem*{namedproperty}{Property}
+
+\newcommand{\thmsymbol}{\( \blacktriangle \)}
+\newcommand{\propsymbol}{\( \blacklozenge \)}
+
+\newenvironment{nameddef}[1]
+    {\begin{samepage}
+    \begin{nameddefinition}[#1]
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{nameddefinition} 
+    \end{samepage}
+    }
+\newenvironment{namedprop}[1]
+    {\begin{samepage}
+    \begin{namedproperty}[#1]
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{namedproperty} 
+    \end{samepage}
+    }
+\newenvironment{namedtheo}[1]
+    {\begin{samepage}
+    \begin{namedtheorem}[#1]
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{namedtheorem} 
+    \end{samepage}
+    }
+\newenvironment{prop}[0]
+    {\begin{samepage}
+    \begin{property}
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{property} 
+    \end{samepage}
+    }
+\newenvironment{definition}[0]
+    {\begin{samepage}
+    \begin{olddefinition}
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{olddefinition} 
+    \end{samepage}
+    }
+    
+    
+%% inline definition
+\newcommand{\inlinedef}[1]{\textit{#1}}
+% TRANSITIONS
+\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
+\newcommand{\transition}{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
+  }
+\newcommand{\labelledtransition}[1]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
+  }
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\splitatcommas}[1]{%
+  \begingroup
+  \begingroup\lccode`~=`, \lowercase{\endgroup
+    \edef~{\mathchar\the\mathcode`, \penalty0 \noexpand\hspace{0pt plus 1em}}%
+  }\mathcode`,="8000 #1%
+  \endgroup
+}
+
+
+\usepackage{cite}
+
+\newcommand{\buchi}[0]{B\"uchi}
+
+\newcommand{\commentold}[1]{\colorbox{blue!30}{\parbox{0.9\textwidth}{\textit{#1}}}\\}
+\definecolor{light-gray}{gray}{0.89}
+\newcommand{\commentoldd}[1]{%
+  \mbox{\vphantom{#1}\smash{\colorbox{blue!30}{#1}}}%
+}
+
+%% LTL symbols defintion
+\usepackage{latexsym} % get the right \Diamond symbol
+\newcommand{\LTLalways}		{\ensuremath{\square}}
+\newcommand{\LTLeventually}	{\ensuremath{\Diamond}}
+\newcommand{\LTLuntil}		{\ensuremath{\mathsf{U}}}
+\newcommand{\LTLnext}		{\ensuremath{\bigcirc}}
+\newcommand{\LTLimply}			{\ensuremath{\rightarrow}}
+\newcommand{\true}			{\ensuremath{\top}}
+
+%% int segment def
+\usepackage{stmaryrd}
+\newcommand{\intleft}{ \ensuremath{\left \llbracket} }
+\newcommand{\intright}{ \ensuremath{\right \rrbracket} }
+
+\newcommand{\outpost}{ \ensuremath{\overline{Post} } }
+\newcommand{\inpre}{ \ensuremath{\overline{Pre} } }
+
+% Graphics
+\usepackage{graphicx}
+\graphicspath{ {plots/},{env/} }
+\usepackage[mode=buildnew]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
+
+\begin{document}
+
+\title{Reachability algorithm}
+\author{Paul Rousse}
+\maketitle
+
+
+\section*{Notation}
+\begin{tabular}{ll}
+FTS:& Finite Transition System\\
+LTL:& Linear Temporal Logic\\
+DBA:& Deterministic B\"uchi Automaton\\
+NBA:& Nondeterministic B\"uchi Automaton\\
+BFS:& Breadth First Search\\
+DFS:& Depth First Search\\
+\end{tabular}
+
+For $X,Y$ two sets, $X|_Y = \{x \in X \mid x \notin  Y \}$, $2^X$ is the power set of $X$.
+
+Let a graph $G = (V,E)$.
+For a node $x \in V$, $Post(x)$ and $Pre(x)$ correspond respectively to the set of successors and predecessors of $x$. 
+For a set of nodes, we define $X \subseteq V$, $Post(X) = \bigcup_{x \in X} Post(x)$, $\outpost(X) = Post(X) \setminus X$, $Pre(X) = \bigcup_{x \in X} Pre(x)$ and $\inpre(X) = Pre(X) \setminus X$.
+
+For $X_1,\dots,X_n$ n sets and $Y \subset X_1 \times \dots \times X_n$, lets define the projection of $Y$ on $X_i$ with $Y|_{X_i} = \{x_i \mid (x_1,\dots,x_n) \in Y\}$.
+
+\section{Introduction}
+
+This part is presenting the planning under strong fairness constraints.
+
+\cite{de2010generalized}
+\cite{patrizi2013fair}
+
+
+By modelling the system in this way we are losing a lot of expressiveness power of the LTL. However, the complexity remain more or less the same than before 2EXPTIME-complete ($\mathcal{O}(2^{2^{n^k}})$) (\comment{not so sure about it, double check information}).
+
+\section{Linear Temporal Logic}
+Linear Temporal Logic (LTL) is specification language first introduced in \cite{pnueli1977temporal}. Since then it has been widely used in robotic motion and action planning thanks to its expressiveness.
+
+LTL property are defined inductively:
+
+$$ \varphi ::= 
+\true \mid 
+a \mid 
+\varphi_1 \land \varphi_1 \mid
+\lnot \varphi \mid
+\LTLnext \varphi \mid
+\varphi_1 \LTLuntil \varphi_2$$
+
+\comment{define each symbol inside it.}
+
+\begin{nameddef}{LTL property}
+\begin{tabular}[b]{rcl}
+$(\sigma,k) \vDash a$ & $\leftrightarrow$ & $a \in S_k$\\
+$(\sigma,k) \vDash \lnot \varphi$ & $\leftrightarrow$ &  $(\sigma,k) \nvDash  \varphi$ \\
+$(\sigma,k) \vDash \LTLnext \varphi$ & $\leftrightarrow$ &  $(\sigma,k+1) \vDash  \varphi$ \\
+$(\sigma,k) \vDash \varphi_1 \lor \varphi_2$ & $\leftrightarrow$ &  $(\sigma,k) \vDash  \varphi_1$ or $(\sigma,k) \vDash  \varphi_2$ \\
+$(\sigma,k) \vDash \varphi_1 \LTLuntil \varphi_2$ & $\leftrightarrow$ &  $\exists k' \in \left [k, +\infty \right ] , (\sigma,k') \vDash \varphi_2$ and \\
+& & $\forall k'' \in (k,k'), (\sigma,k'') \vDash \varphi_1$ \\
+\end{tabular}
+\end{nameddef}
+
+We also define some useful operators: \textit{eventually} $\LTLeventually \varphi = \true \LTLuntil \varphi$, \textit{always} $\LTLalways \varphi = \lnot \LTLeventually \lnot \varphi$, \textit{implication} $\varphi_1 \LTLimply \varphi_2 = \lnot \varphi_1 \lor \varphi_2$.
+More details can be found in chapter 5 of \cite{principlemodelchecking}.
+
+All the power of such a language lie in the ability to transform a human writeable formula in a machine manipulable data. LTL formula can be translated to an automaton structure that can be easily manipulated with discrete models. The problem of path planning is then reduced to finding a path in graph.
+
+\subsection{Translation to \buchi{} automaton}
+
+Give theorem that show that every LTL formula can be translated in a \buchi{} automaton.
+
+Talk about what kind of LTL fragment can be translated in a deterministic \buchi{} automaton.
+Cite the complexity of such algorithms.
+
+Talk about other structure that might have been more relevant for your work (more deterministic), ex: Rabin automaton.
+
+\section{Reachability algorithm}
+
+\subsection{Previous works}
+
+Modelled as a global reactive game. Generalized Reactive.
+However these methods are adapted for action non determinism, movement non determinism can be more complex.
+
+Talk about why they have been doing this? Deal with uncertainty about the environment.
+
+Why did you chose LTL?
+Why did you chose B\"uchi Automaton?
+Talk about other solutions that might have been smarter.
+
+\subsection{Product automaton for nondeterministic system}
+
+The product automaton for an nondeterministic FTS is defined as follow:
+
+\begin{nameddef}{Finite Transition System}
+$\mathcal{T}_c = (X,X_0,U, \transition, Y,H)$
+where:
+\begin{itemize}[noitemsep,nolistsep]
+\item $X$ is a set of states;
+\item $X_0 \subset X$ a set of initial states;
+\item $U$ a set of inputs;
+\item $\transition \subseteq X \times U \times X$ a transition relation ;
+\item $Y$ a set of outputs;
+\item $H:X \rightarrow Y$ an output map.\popQED
+\end{itemize}
+\end{nameddef}
+
+Let $H^{-1}$ defined by $H^{-1}(\mathcal{O}) = {x \in X \mid H(x)=\mathcal{O}}$ for $\mathcal{O} \in Y$.
+
+\begin{nameddef}{Nondeterministic B\"{u}chi Automaton}
+$\mathcal{A}_{\varphi} = (Q, Q_0, 2^{AP}, \delta, \mathcal{F})$
+where:
+\begin{itemize}[noitemsep,nolistsep,topsep=0pt,after=\relax]
+\item $Q$ finite set of states;
+\item $Q_0 \subset Q$ a set of initial states;
+\item $2^{AP}$ the alphabet;
+\item $\delta: Q \times 2^{AP} \times Q$ a transition relation ;
+\item $\mathcal{F}$ set of accepting states.\popQED
+\end{itemize}
+\end{nameddef}
+
+Nota: if $\forall q \in Q, \forall a \in 2^{AP}, | \delta(a,q) | \leq 1$, then $\mathcal{A}_{\varphi} = (Q, Q_0, 2^{AP}, \delta, \mathcal{F})$ is a \textit{Deterministic B\"uchi Automaton} (DBA).
+
+\begin{nameddef}{Product of a NBA and a FTS}
+The product automaton $\mathcal{A}_p$ of the NBA $\mathcal{A}_\varphi$ and the non deterministic FTS $\mathcal{F}_c$ is defined by
+$\mathcal{A}_p = \mathcal{T}_c \otimes \mathcal{A}_\varphi
+= (Q',Q_0',\delta',\mathcal{F}')$
+where
+$Q' = X \times Q$ is the set of states,
+$Q_0' = X_0 \times Q_0$ is the set of initial states,
+$\mathcal{F}' = X \times \mathcal{F}$ the acceptance set,
+$\delta' \subseteq Q' \times U \times Q'$
+is the transition relation defined by
+$\left \langle x',q' \right \rangle \in \delta'(\left \langle x,q \right \rangle ,u)$
+iff $x' \in Post_u(x)$, $q' \in \delta(q,L_c(x'))$ and 
+$$\forall h \in H(Post_u(x)),\exists y \in H^{-1}(h) \cap Post_u(x), \delta(q,L_c(y)) \neq \emptyset$$
+\end{nameddef}
+
+Roughly speaking, a $u$-transition in the product automaton is valid iff for every observation of the successors of a $u$-transition of the FTS, there exists a valid transition in the B\"uchi Automaton.
+
+\begin{nameddef}{Product of 2 FTS}
+The product automaton $\mathcal{F}_p$ of 2 non deterministic FTS $\mathcal{F}_1$ and $\mathcal{F}_2$ is defined by
+$\mathcal{F}_p = \mathcal{F}_1 \otimes \mathcal{F}_2
+= (X',X_0',U',\delta',Y',H')$
+where
+$X' = X_1 \times X_2$ is the set of states,
+$X_0' = X_{10} \times X_{20}$ is the set of initial states,
+$U' = U_1 \times U_2$ the input set,
+$Y' = Y_1 \times Y_2$ the output set,
+$H': X_1,X_2 \rightarrow (H_1(X_1),H_2(X_2))$ the output map,
+$\delta' \subseteq X' \times U \times X'$
+is the transition relation defined by
+$\left \langle x_1,x_2 \right \rangle \in \delta'(\left \langle x_1',x_2' \right \rangle,\langle u_1,u_2 \rangle)$ iff $x_1 \labelledtransition{u_1} x_1'$ and $x_2 \labelledtransition{u_2} x_2'$.
+\end{nameddef}
+
+
+\subsection{LTL Planning under Strong Cyclic \\Fairness Constraints}
+
+\cite{de2010generalized}
+\cite{patrizi2013fair}
+
+Fully Observable Non-Deterministic Planning:  FOND
+
+The guaranties that an nondeterministic planner must fulfil are:
+\begin{itemize}[noitemsep,nolistsep]
+\item \textbf{Completness.}
+\item \textbf{Soundness.} Every given solutions are correct
+\item \textbf{Correctness.} 
+\item \textbf{Fairness.}
+\end{itemize}
+
+For which LTL formula we will be able to find a solution if the solution exists?
+
+Unlike most of algorithms, the strong fairness property over inner loops of the product automaton are not fair for every combinations of controls.
+Finding a closed and proper solution for that plan is not a sufficient condition in our case. 
+We need to insure that every cycles in the final system (system composed of the plan and of the product automaton) does not deadlock the system.
+
+\subsection{Related work}
+How to deal with nondeterminism?
+Different approaches:
+\begin{itemize}
+\item general game formulation: GR(1) (however, the formulation does not fit to our needs): in \cite{de2010generalized} and \cite{Kissmann2009}, the strong fairness property is expressed thanks in a LTL formulation, however it presuppose a knowledge about cyclic actions fairness property, this is adapted to action planning where we know that if the action is infinitely repeated, then the action will success infinitely often. This does not really fit any motion planning non determinism where the fairness property depend on a control configuration over the cells. Using this kind of framework will force us to go through all the possible action combinations and determine which one is fair.
+\item Fixed point ($\mu$-calculus that is related to the GR formulation as well).
+\item \cite{fu2011simple} is solving the FOND problem in the case of strong fairness assumption. This assumption is global, this is not the case for us as some of some control configurations might be unfair. The fairness property is local in our case.
+\end{itemize}
+
+What I did is an adaptation of the \cite{fu2011simple} with a backward reachability algorithm.
+
+\subsection{Premilinaries}
+
+\subsubsection{Graph theory}
+Fully observed non deterministic: thats means that the B\"uchi automaton should be deterministic.
+
+\begin{nameddef}{Strong connectivity}
+The directed graph $G = (V,E)$ is strongly connected iff for every nodes $u,v \in V$ there exists a path from $u$ to $v$.
+\end{nameddef}
+
+
+%% FAIRNESS PROPERTY
+\begin{nameddef}{Fairness property}
+
+\end{nameddef}
+
+\subsection{Fix point algorithm}
+%% introduce the fixed point property, make a link between mu calculus
+%% I just need a property that establish the working conditions for the fixed point property and the finitness of the algorithm.
+
+% definition of a fixed point
+% definition of the least fixed point
+% definition of a monotonic fonction t: 2^S -> 2^S
+% theorem tarski-knaster for the fixed point of a monotonic function -> existence of the least fixed point
+% include the finitness directely inside the theorem, or as a note
+In the next parts we will use operations over sets of nodes in the graph. In order to find subset of nodes where property are verified, we will use fixed point computation.
+
+We say that $b$ is a \inlinedef{fixed point} of the functional $\tau$ if $\tau(b) = b$.
+For a set $S$, the functional $\tau: 2^S \rightarrow 2^S$ is  \inlinedef{monotonic} iff $\forall a,b \in 2^S, a \subseteq b, \tau(a) \subseteq \tau(b)$.
+In \cite{tarski}, it is shown that for a monotonic functional $\tau$,
+the set of fixed points has a least and greatest element denoted by $\mu \tau$ and $\nu \tau$ respectively:
+
+\begin{namedtheo}{Tarski-Knaster}\label{th:tarski}
+Let $\tau:2^S \rightarrow 2^S$ a monotonic functional:
+\begin{itemize}
+\item $\mu \tau = \bigcap \{b \subseteq S \mid \tau(b) \subseteq b\} = \bigcup_{\alpha \in On} \tau^{\alpha}(\emptyset)$
+\item $\nu \tau = \bigcup \{b \subseteq S \mid b \subseteq \tau(b) \} = \bigcap_{\alpha \in On} \tau^{\alpha}(S)$
+\end{itemize}
+where $\tau^{\alpha}$ is the $\alpha^{th}$ composition of $\tau$ and $On$ the class of ordinals.
+\end{namedtheo}
+In our case, $S$ is the finite set and $On = \intleft 1,|S|\intright$. 
+In this case, the theorem ensure the existence and the finiteness of the least fixed point computation.
+Please note that if $a$ and $b$ are least fixed points of the monotonic functional $\tau$, then $a \subseteq b$ and $b \subseteq a$, which means that $a=b$, which means that the least fixed point is unique.
+
+\subsection{All non deterministic plans can be decomposed in strongly connected cycles}
+
+\newcommand{\planningdomain}{\ensuremath{ \splitatcommas{\langle S, S_0, \mathcal{A}, \gamma \rangle} }}
+
+\newcommand{\controller}{\ensuremath{\splitatcommas{ \langle C, c_0, \Gamma, \Lambda, \delta, \Omega \rangle}}}
+
+\newcommand{\planningproblem}{\ensuremath{\splitatcommas{ \langle \mathcal{D}, G \rangle}}}
+I need to define a plan, the model.
+
+\begin{nameddef}{Nondeterministic Planning Domain}
+A nondeterministic planning domains is a tuple 
+$\mathcal{D} = \planningdomain$
+with
+$S$ the set of states,
+$S_0$ the set of initial states,
+$\mathcal{A}$ the set of actions and
+$\gamma : S \times \mathcal{A} \rightarrow 2^S$ the transition function.
+\end{nameddef}
+
+Note that as the model is nondeterministic, for $(s,a) \in S \times \mathcal{A}$ we might have $|\gamma(s,a)|>1$.
+
+\begin{nameddef}{Finite-State Controller (FSC)}
+For a nondeterministic planning domain
+$\mathcal{D} = \planningdomain$,
+$\Pi = \controller$ is a finite-state controller where
+$C$ is the set of states,
+$c_0$ is the initial state,
+$\Gamma = S$ is the controller input alphabet,
+$\Lambda = Act$ is the output alphabet,
+$\delta: C \times \Gamma \rightarrow C$ is the transition function and 
+$\Omega: C \rightarrow \Lambda$ is the output function.
+\end{nameddef}
+
+\begin{nameddef}{Non terminating nondeterministic Problem}
+A nonterminating nondeterministic problem $P = \planningproblem$ where $\mathcal{D}$ is a nondeterministic planning problem and $G \subseteq S$ is the goal subset. A finite-state controller $\Pi$ is a solution of $P$ if every $\Pi$-runs goes infinitely to the subset $G$ ($\forall \pi \in \Pi-runs, Inf(\pi) \cap G \neq \emptyset$).
+\end{nameddef}
+
+\begin{nameddef}{Terminating nondeterministic Problem}
+A nondeterministic problem $P = \planningproblem$ where $\mathcal{D}$ is a nondeterministic planning problem and $G \subseteq S$ is the goal subset. A finite-state controller $\Pi$ is a solution of $P$ if every $\Pi$-runs goes to $G$ in a finite time.
+\end{nameddef}
+
+FTC $\Pi$ is said to be \textit{closed} if every reachable state is associated with a control  action, $\Pi$ is \textit{proper} if the the goal set is reachable from every state and $\Pi$ is said \textit{fair} if the goal is reachable in finite time from every nodes.
+We will say that the FSC $\Pi$ is a valid solution of the nondeterministic problem $\mathcal{D}$ if $\Pi$ is \textit{closed}, \textit{proper} and \textit{fair}.
+
+It is shown in \cite{patrizi2013fair} that every non-terminating nondeterministic planning problem $P$ can be solved like a nondeterministic planning problem $P'$ where the the initial set of $P'$ correspond to the union of the initial set and the goal set.
+
+In this next sections we will proof that every plans can be decomposed in strong cyclic components.
+Then we will investigate the necessity of the fairness property.
+Finally, we will use all these properties in order to justify the planning algorithm that we used.
+
+\subsubsection{Strong cycle decomposition}
+\comment{Try to specify a bit more the language of the graph decomposition.
+Modules/components/subcomponents.}
+
+In this section we will use a constructive argument to show that every plan can be decomposed in strong cyclic components.
+
+Let a $\mathcal{D} = \planningdomain$ a nondeterministic planning domain, $\Pi = \controller$ a finite-state controller that is a valid solution of the terminating nondeterministic planning problem $P = \planningproblem$.
+
+The main idea of the decomposition is to find every strong cyclic components of $\mathcal{D}$ that deterministically bring us to the goal set of nodes.
+To do this we will recursively find all the smallest strongly connected cycles that deterministically bring the state closer to the goal set.
+The description of the construction will be followed by a proof that for a valid plan  all the nodes of the plan belong to the decomposition.
+
+\paragraph{Strongly connected components,} they will be found using fixed point algorithm.
+Let $F_{t \rightarrow g}$ defined for $g,t \subseteq S$ by:
+\begin{equation}
+\begin{array}{llll}
+F_{t \rightarrow g} :& 2^S & \rightarrow & 2^S\\
+ & x &  & (Post(x) \cap S \setminus_g) \cup t
+\end{array}
+\end{equation}
+
+
+For $x \subseteq y$ we have $F_{t \rightarrow g} (x) \subseteq F_{t \rightarrow g}(y)$, so $F_{t \rightarrow g}$ is a monotonic functional and theorem \ref{th:tarski} ensure that $F_{t \rightarrow g}$ have a unique least fixed point.
+As the cardinality of $S$ is finite, we can compute the fixed point of $F_{t \rightarrow g}$ in a finite time
+(\comment{Can I talk about computability instead of computable in finite time?}).
+
+\comment{Do I really need to prove the strong connectivity ?}
+\begin{prop}
+For $t,g \subseteq S$, if $t$ is a strongly component of a graph $G$, the least fixed point of $F_{t \rightarrow g}$ is strongly connected.
+\end{prop}
+
+\begin{proof} 
+Let $x \subseteq S$ the least fixed point of $F_{t \rightarrow g}$.
+By definition of $F_{t \rightarrow g}$, there exist a path from all the nodes in $t$ to all the nodes.
+We need now to show that there always exists a path from every nodes in $x$ to $t$ or $g$.
+As the 
+\end{proof}
+
+Let $\mathcal{F}_g(t) = F_{t \rightarrow g}$ the least fixed point of $F_{t \rightarrow g}$.
+$\mathcal{F}_g(t)$ correspond to the smallest strongly connected cycle containing the subset $t$ that can reach the subset $g$.
+
+Lets now define the decomposition of the plan in strongly connected components.
+
+For $g \subseteq S$, let $\mathfrak{F}_g = \{ \mathcal{F}_g(\{n\}) \mid n \in \inpre(g) \}$.
+$\mathfrak{F}_g$ correspond to the set of all the smallest strongly connected components that deterministically go to the subset $g$.
+\comment{Do I really need the uniqueness property.}
+The uniqueness of  $F_{t \rightarrow g}$ least fixed point ensure the uniqueness of $\mathfrak{F}_g$.
+
+For a set of set $X \subset 2^{2^S}$, let $\tilde{X} = \bigcup_{x \in X} x$.
+
+Let the sequence $\{\mathcal{K}_i\}_{i \in \mathbb{N}}$ define by:
+\begin{equation*}
+\mathcal{K}_{i+1}  = \mathfrak{F}_{\tilde{\mathcal{K}}_i} \cup \mathcal{K}_i
+\textrm{, }
+\mathcal{K}_0 = G
+\end{equation*}
+for $i \in \mathbb{N}$. 
+
+By observing that,
+\begin{equation}
+\begin{array}{llll}
+H : &2^{2^S} &\rightarrow &2^{2^S}\\
+&X & & \mathfrak{F}_{\tilde{X}} \cup X \cup \{ g \}
+\end{array}
+\end{equation}
+is a monotonic functional on a finite set $2^{2^S}$ and by using theorem \ref{th:tarski}, we know that the least fixed point of $H$ exist and is computable in finite time.
+As $\mathcal{K}_i = H^i(\emptyset)$, we can deduce that the sequence $\{\mathcal{K}_i\}_{i \in \mathbb{N}}$ is converging to an element $\mathcal{K}^\star \in 2^{2^S}$ in a finite number of steps.
+
+$\mathcal{K}^\star$ corresponds to the decomposition of the plan in strongly connected cycles.
+\comment{I don't know if each of the fixed point are strong cycles, also I don't use this property.}
+
+We need now to be sure that the decomposition of the plan is complete \comment{Are you sure of this word?}, ie all the nodes of the plan belong to the decomposition:
+\begin{prop}
+For a valid plan, $\tilde{\mathcal{K}}^\star = S$.
+\end{prop}
+\begin{proof}
+
+By definition of $\mathcal{F}_g$, we have:
+\begin{equation}
+n \in S \setminus g \Leftrightarrow \mathcal{F}_g(\{n\}) \neq \emptyset
+\end{equation}
+This imply that:
+\begin{equation} \label{eqn:equiv_f_empty}
+\mathfrak{F}_g = \emptyset \Leftrightarrow Pre(g) = \emptyset
+\end{equation}
+
+Moreover, by definition of $\mathfrak{F}_g$:
+\begin{equation} \label{eqn:f_empty}
+\tilde{\mathfrak{F}}_g \cap g = \emptyset
+\end{equation}
+For $\mathcal{K}^\star$, as $\mathcal{K}^\star = \mathfrak{F}_{\tilde{\mathcal{K}}^\star} \cup \mathcal{K}^\star$ and thanks to equality \ref{eqn:f_empty}, we have $\mathfrak{F}_{\tilde{\mathcal{K}}^\star} = \emptyset$.  
+By using equivalence \ref{eqn:equiv_f_empty}, we prove that $Pre(\tilde{\mathcal{K}}^\star) = \emptyset$.
+
+By using the definition of $\mathcal{F}_g$,
+we can show that for all $F \in \mathcal{K}^\star \setminus \{G\}$, $\outpost(F) \subset \tilde{\mathcal{K}}^\star$.
+This imply that $\outpost(\tilde{\mathcal{K}}^\star) = \outpost(G)$.
+As the problem is a terminating problem, $\outpost(G) = \emptyset$, this imply that 
+$\outpost(\tilde{\mathcal{K}}^\star)  = \emptyset$.
+
+As $\inpre(\tilde{\mathcal{K}}^\star)  = \emptyset$ and $\outpost(\tilde{\mathcal{K}}^\star)  = \emptyset$, all the nodes outside $\tilde{\mathcal{K}}^\star$ are not connected to $G$.
+Then the validity of the plan prove that all the nodes outside   $\tilde{\mathcal{K}}^\star$ cannot belong to the plan.
+\end{proof}
+
+
+\begin{figure}
+	\center
+	\includestandalone[width=0.7\textwidth]{plan_decomposition}
+	\caption{Decomposition of the plan in strong cycles components (red boxes) and transitions between them (blue arrows). The agent goes from area \textit{init} to stay in the set \textit{G} (in the green box) following the controls actions (in black arrows).}
+	\label{fig:environment}
+\end{figure}
+
+\subsubsection{Fairness property}
+In the previous section we have settled the decomposition of the graph in strong cyclic components.
+We will now investigate when these strong cyclic components need to verify fairness property.
+
+If the plan $P$ is a solution of the nondeterministic planning problem, then every run reach the set $G$ in a finite time.
+Lets $\mathcal{K}^\star$ be the previously defined decomposition of the plan $P$.
+In the following paragraph, we will establish when the fairness property must be verified for each element of $\mathcal{K}^\star$.
+
+Let define the following subsets of $\mathcal{K}^\star$:
+\begin{align}
+\mathcal{K}_{unfair} &= \{ F \in \mathcal{K} \mid F \subseteq G \}\\
+\mathcal{K}_{fair} &= \mathcal{K}^\star \setminus \mathcal{K}_{unfair}
+\end{align}
+
+\begin{prop}
+All the elements of $\mathcal{K}^\star \setminus {G}$ verify fairness property.
+\end{prop}
+
+\begin{proof}
+Let $\Pi$ a finite-state controller that is a solution of the problem $P$ and $\mathcal{F} \in \mathcal{K}^\star \setminus \{G\}$ a $\Pi$-reachable set of nodes.
+If $\mathcal{F}$ does not verify the fairness property we can choose a $\Pi$-run $\pi = \{s_i\}_{i\in\mathbb{N}}$ so that it exists $k\in\mathbb{N}$ where $\forall k'>k, s_{k'} \in \mathcal{F}$, this means that $Inf(\pi) \subset \mathcal{F}$
+
+As $G \cap \mathcal{F} = \emptyset$, we have $Inf(\pi) \cap G =\emptyset$, so this run is not accepted, which contradict the fact that $\Pi$ is a solution of $P$.
+\end{proof}
+
+
+\subsubsection{Fairness property of product systems}
+In our case the systems that that we will use are products of FTS and BA. We will have the information about the fairness property for each of the system, so we need to investigate the link between the fairness property of the product system and all the systems.
+
+\begin{prop}
+Let $S = S_1 \otimes \dots \otimes S_n$ the product automaton of $n$ finite transition systems (FTS or BA) $(S_1,\dots,S_n)$.
+Let $\mathcal{F}$ a strong cyclic component of $S$ obtained with the strong cyclic decomposition.
+If $\mathcal{F}$ is unfair then $\mathcal{F}|_{S_i}$ is unfair for $i = 1,\dots,n$.
+\end{prop}
+
+\begin{proof}
+If the subsystem $S_j$ is fair for $j \in \llbracket 1,n \rrbracket$ on $\mathcal{F}|_{S_j}$, then all the paths exit $\mathcal{F}|_{S_j}$ in a finite time, this imply that all the runs on the product automaton $S$ exits $\mathcal{F}$ in finite time as well.
+\end{proof}
+
+Ones should note that this property is valid for products of systems such as finite transition system or \buchi{} automaton (or any combination of them).
+
+For a \buchi{} automaton, all the cycles are unfair.
+For a FTS, we will specify the fairness property with a function that return the maximal time that the system can spend in a subset of nodes
+(for an unfair strong cycle of the FTS, this time will be equal to $+\infty$).
+
+We can formally define the escape function for the product automaton:
+\begin{property}
+The escape function of the product automaton $S$ is:
+$$T_{escape}^S = \min{T_{escape}^{S_i}}$$
+where $T_{escape}^{S_i}$ is the escape function of the system $S_i$.
+\end{property}
+
+\begin{proof}
+\comment{I need to provide something more rigorous.}
+If the faster system $S_i$ escape the set of nodes $\mathcal{F}|_{S_i}$ in $T^{S_i}_{escape}(\mathcal{F})$, then the product system escape the set of nodes $\mathcal{F}$ in $T^{S_i}_{escape}(\mathcal{F})$.
+\end{proof}
+
+\subsection{Backward reachability algorithm}
+In the previous section we have seen that every plan can be decomposed in a strongly connected cyclic components.
+We also have established when modules of a valid plan needs to verify fairness property.
+In this section we will present the algorithm that use the previous observations in order to find a plan.
+
+The main idea of our algorithm is to visit the strong cyclic components from the smallest (in term of number of nodes) to the biggest using a Breadth First Search (BFS). The rest of the plan is done with a Depth First Search (DFS) algorithm .
+Our goal is to find the decomposition of the plan so that the decomposition verify the previous property (fairness and reachability to the goal set).
+
+As we have seen in the previous section, all the plan can be decomposed in this structure, this means that this algorithm is complete.
+
+We will associate the escaping function to the planning domain:
+\begin{equation}
+T_{escape} : G,U \rightarrow \mathbb{R}^\star \cup \{+\infty\}
+\end{equation}
+
+Lets use the following notation $F_p \hookrightarrow Plan$ for the truth value of the following assertion:
+$$\forall n \in \mathcal{F}_p \mid \forall v \in Post_{u_n}(n), \exists w \in Post_{u_n}(n) \cap Plan, H(v)=H(w)$$
+
+The function $Expand(Plan)$ is performing the BFS to find sets of nodes in $Q \setminus Plan$ and controls that verify $Post(F_p) \rightarrow Plan$.
+
+\comment{Here I must describe a bit more the construction of the plan:
+How do I add the $F_p$ sets, what transitions do I keep, which on do I get ride of...
+\begin{itemize}
+\item Escape function
+\item define the escape function
+\item 
+\end{itemize}}
+
+
+
+\begin{algorithm}
+\SetAlgoNoLine
+\KwData{$\mathcal{A}_p, T_{escape},cost$}
+\KwResult{$\mathcal{P}$} 
+
+ $Q = \{ Expand(\mathcal{F}) \}$\;
+
+ $Q^\star$: set of valid plan for the system\; 
+ \While{$Q\neq\emptyset$}{
+ 	$Q = Sort_{cost}(Q)$\;
+ 	$Plan,F_p = Pop(Q)$\;
+ 	
+  \uIf{
+  $T_{escape}(F_p) < \infty$
+  or
+  $F_p \hookrightarrow Plan$}{
+  
+    Add $F_p$ to $Plan$\;
+	Update visited set\;
+	
+	\uIf{$init \subseteq Plan$ and $\mathcal{F} \subseteq Reach_{Plan}(init)$}{
+       Add path to $Q^\star$\;
+     }
+     \uElse
+     {
+       Generate the set of predecessors of $Plan$\;
+       Add $Expand(Plan)$ to $Q$\;
+     }
+   }
+ }
+ 
+ $\mathcal{P} = \argmin_{cost}{Q^\star}$\;
+ 
+ \caption{Backward reachability algorithm}
+\end{algorithm}
+
+Talk about the complexity of the algorithm.
+
+I need to do a tikz picture to show how the algorithm is working.
+
+\section{Discussion}
+In this part we will discuss when does this algorithm is efficient.
+
+\comment{Not so sure about it:}
+From our observations, it is possible to determine what is the biggest fixed point size for a specific systems.
+In the case of the single integrator model the maximum fixed point is equal to the maximum number of cells of the abstraction that can cover the set of successors for a chosen control.
+This constraint reduce the size of possible solutions.
+However this parameter is not easy to determine, it depends on the formula and on abstraction.
+We will see in the \todo{results section} that most of the cases that we have been evaluating, the size of the fixed point can be quite small for a single system. however, there size blow up in case of multi agent control.
+
+Until then, we have used a system that is fully observable, this imply that the \buchi{} automaton used is deterministic.
+This restrict the set of LTL formula usable. 
+
+The previously defined algorithm can be extended to be used with nondeterministic BA, this increase the complexity of the algorithm. 
+Instead of finding the fixed points for a set of controls, we can also choose a the set of observations.
+
+\section{Conclusion}
+In this chapter we have been presenting an algorithm that is using strong fairness property in order to find a plan for the quadricopter.
+
+\bibliography{bibliography}{}
+\bibliographystyle{plain}
+
+\end{document}

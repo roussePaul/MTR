@@ -1,0 +1,72 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{nicefrac}
+\usepackage{graphicx}
+\usepackage{breqn}
+\usepackage{tabularx}
+
+\graphicspath{{./plots/}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{property}{Property}
+\newtheorem{problem}{Problem}
+
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+
+\usepackage[all]{xy}
+\usepackage{amssymb}
+
+\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
+\newcommand{\transition}{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
+  }
+\newcommand{\labelledtransition}[1]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
+  }
+  
+
+\usepackage{cite}
+ 
+\begin{document}
+
+
+\title{Hierarchical control architecture}
+\author{Paul Rousse}
+
+\maketitle
+
+\section{Introduction}
+
+The model used in this master is compliant with a hierarchical control strategy: the model of the noise $\mathbf{w} \in \mathcal{W}$ is free (ie any perturbation will not create a direct feedback from the controller unlike piecewise affine feedback strategy).
+This can be good benefit for complex task such as multiple-agent load lifting.
+This come from the monotonic model.
+
+The controller is not too constraining, other controllers can be modelled as noise on the model.
+
+Most of the other approaches would have modelled this as markov chains, but here we can assert that if the controller is within the range $\mathcal{W}$, the LTL formula will be satisfied.
+
+\textit{Try to think about an example that is simple, minimize the time, clean the room, sweep, load lifting algorithm damping swinging.}
+
+\textit{Cite an article about hierarchical control, find right terms (inner/low level controller).}
+
+I believe that there is a way of doing it with some other controllers, that it depends more on the low level controller that the quadricopter is using than on other  the fact that I am using the non determinism.
+
+\cite{liu2014abstraction} really good intro for hierarchical control approaches.
+
+\section{Swing damping}
+
+We will just perform an experiment to show how such a hierarchical controller can work.
+
+
+
+\bibliography{bibliography}{}
+\bibliographystyle{plain}
+
+\end{document}

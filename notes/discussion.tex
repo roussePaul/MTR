@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+%\usepackage{showframe}
+\usepackage{tabularx}
+
+% Math packages
+\usepackage{amsfonts, amsmath, amsthm, amssymb}
+\usepackage{stmaryrd}
+
+\usepackage{enumitem}
+
+
+\begin{document}
+
+\title{Discussion}
+\author{Paul Rousse}
+\maketitle
+
+\section{Nondeterminism in motion planning}
+Show why it does not make sens to always take non determinism in account.
+
+The controller is supposed to damp the effect of the noise, and the abstraction is supposed to hide all the unwanted effect of it.
+
+Does it make sense to take the noise into account?
+Can i find a situation where the noise needs to be taken in account?
+
+Try to investiguate in the affine feedback, there might be a situation where we cannot damp the noise.
+Maybe go for some computation of the affine feedback.
+
+
+Advantages:
+\begin{itemize}[noitemsep,topsep=0pt]
+\item take the noise in account,
+\item free some variable (but it is possible as well in Calin Belta method by changing the controller),
+\item investigate the self loops/spurious loop suppression,
+\item take in account the nondeterminism,
+\item keep the timing information in the model,
+\item maybe less assumption on the model,
+\item not always possible to use fixed point technique, cannot handle any self loops, 
+\item take in account the time drift problems that can occurs.
+\end{itemize}
+
+Inconvenients:
+\begin{itemize}[noitemsep,topsep=0pt]
+\item increase the complexity,
+\item can be done with a deterministic model, where the lowlevel controller, take the noise in account,
+\item need to consider just a fragment of LTL.
+\end{itemize}
+
+\end{document}
