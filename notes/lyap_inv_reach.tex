@@ -1,0 +1,285 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{nicefrac}
+\usepackage{graphicx}
+\usepackage{breqn}
+\usepackage{tabularx}
+
+\graphicspath{{./plots/}{./env/}}
+\usepackage[mode=buildnew]{standalone}
+
+
+% DEFINITION/THEOREM ENVIRONMENTS
+\newtheorem{theorem}{Theorem}
+\newtheorem{problem}{Problem}
+\newtheorem{olddefinition}{Definition}
+\newtheorem{property}{Property}
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+\newtheorem*{namedproperty}{Property}
+
+\newcommand{\thmsymbol}{\( \blacktriangle \)}
+\newcommand{\propsymbol}{\( \blacklozenge \)}
+
+\newenvironment{nameddef}[1]
+    {\begin{samepage}
+    \begin{nameddefinition}[#1]
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{nameddefinition} 
+    \end{samepage}
+    }
+\newenvironment{namedprop}[1]
+    {\begin{samepage}
+    \begin{namedproperty}[#1]
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{namedproperty} 
+    \end{samepage}
+    }
+\newenvironment{namedtheo}[1]
+    {\begin{samepage}
+    \begin{namedtheorem}[#1]
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{namedtheorem} 
+    \end{samepage}
+    }
+\newenvironment{prop}[0]
+    {\begin{samepage}
+    \begin{property}
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{property} 
+    \end{samepage}
+    }
+\newenvironment{definition}[0]
+    {\begin{samepage}
+    \begin{olddefinition}
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{olddefinition} 
+    \end{samepage}
+    }
+    
+    
+    
+\usepackage[all]{xy}
+\usepackage{amssymb}
+
+\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
+\newcommand{\transition}{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
+  }
+\newcommand{\labelledtransition}[1]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
+  }
+
+\usepackage{nicefrac}
+\newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
+  
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
+\usepackage{pgfplots}
+\usepackage{subcaption}
+
+
+\usepackage{cite}
+
+%\usepackage{showframe}
+% use to create colored comments
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{varwidth}
+% guillemet are there because jstification wrong without them
+\newcommand\comment[1]{\textcolor{red}{"\textit{#1}"}}
+
+\newcommand{\Sproc}{$\mathcal{S}$-procedure}
+
+\begin{document}
+
+
+\title{Lyapunov abstraction reduction}
+\author{Paul Rousse}
+
+\maketitle
+
+In this part we will treat a larger class of systems which does not require the monotonicity property.
+In order to find the smallest reachable sets we need to find the smallest invariant of the system and then compute the set after applying a sequence of inputs.
+Reachability analysis can be done by direct computation of over approximation of the sets (\cite{reissig2011computing}). For linear systems, other approaches needs less computing resources: sets can be over approximated by ellipsoidal sets. These approaches have the disadvantage to have an inreductible error contrary to the numerical approach where it was possible to reduce the error as much as possible.
+
+We will present here the ellipsoidal approach adapted to the form of the systems.
+Such approach have already been presented in several article (\comment{Find articles about it}).
+The problem of finding the reachable set of minimal volume can be expressed in term of a minimization problem with linear matrix inequality.
+
+In this part we will formalize the problem with LMI constraints.
+In other works, the noise is expressed in this way:
+$$
+\vect{w}' R_w \vect{w} < \vect{x}' R_x \vect{x}
+$$
+however this is not adapted to the systems that we are studying in this work.
+The noise constraints can be expressed in this way:
+$$
+\vect{w}' R_w \vect{w} < 1
+$$
+The main difference is that the system might not have an attracting equilibrium point but an attracting set.
+
+\section{Linear Matrix Inequalities}
+Intro to the basic concepts
+
+Describe the \Sproc{} 
+
+Convexity of the solutions
+
+Describe the Schur complement.
+
+\section{Formalization as an LMI problem}
+We will divide the problem in 2 steps:
+\begin{itemize}
+\item finding the smallest invariant set
+\item reachables set computation.
+\end{itemize}
+
+All the proofs are based on the ability to find a quadratic lyapunov function:
+$$
+V(\vect{x}) = \vect{x}^T P \vect{x}
+$$
+where $P$ is a positive definite matrix.
+
+\subsection{Invariant set LMI constraints}
+\newcommand{\xk}{\vect{x}_k}
+\newcommand{\uk}{\vect{u}_k}
+\newcommand{\wk}{\vect{w}_k}
+\newcommand{\sk}{\vect{s}_k}
+\newcommand{\xkn}{\vect{x}_{k+1}}
+
+Let the Lyapunov function defined by:
+$$
+V(\xk) = \xk^T P \xk
+$$
+where $P>0$.
+
+The LMI constraints will be derived from implications over $V(\xkn)$:
+\begin{align*}
+V(\xkn) &= \xkn^T P \xkn\\
+  &= (A \xk + B \uk + E \wk)^T P (A \xk + B \uk + E \wk)\\
+\end{align*}
+Let $\sk = \left[ \xk^T, \uk^T, \wk^T, 1 \right]$.
+
+Then we have:
+$$
+V(\xkn) = \sk^T M_v \sk
+$$
+with
+$$
+M_v =
+\begin{bmatrix}
+A^T P A & A^T P B & A^T P E & 0 \\
+B^T P A & B^T P B & B^T P E & 0 \\
+E^T P A & E^T P B & E^T P E & 0 \\
+0       & 0       & 0       & 0 \\
+\end{bmatrix}
+$$
+
+Let,
+$$
+M_p = \begin{bmatrix}
+-P&0&00\\
+0&0&0&0\\
+0&0&0&0\\
+0&0&0&1\\
+\end{bmatrix}
+$$
+
+By using the Schur complement, we can expresse the noise and inputs constraints in this way:
+$$
+\wk^T R_w \wk \leq 1
+\Leftrightarrow
+\sk^T M_w \sk \leq 0
+$$
+and,
+$$
+\uk^T R_u \uk \leq 1
+\Leftrightarrow
+\sk^T M_u \sk \leq 0
+$$
+with
+$$
+M_w = \begin{bmatrix}
+0&0&0&0\\
+0&0&0&0\\
+0&0&R_w&0\\
+0&0&0&-1\\
+\end{bmatrix},
+M_u = \begin{bmatrix}
+0&0&0&0\\
+0&R_u&0&0\\
+0&0&0&0\\
+0&0&0&-1\\
+\end{bmatrix}
+$$
+where the $0$s stands for the zero matrices with appropriate sizes.
+Let $f_u = \sk^T M_u \sk$ and $f_w = \sk^T M_w \sk$.
+
+The invariance property can be expressed in this way:
+\begin{equation}\label{eq:lyap_inv}
+\left\{
+\begin{array}{l}
+f_p \leq 0\\
+f_w \leq 0\\
+f_u \leq 0\\
+\end{array}
+\right.
+\Rightarrow
+f_v \leq f_p
+\end{equation}
+
+Using the \Sproc{}, if it exists $\alpha,\beta,\gamma \geq 0$ so that:
+$$
+f_v-f_p \leq \alpha f_v + \beta f_w + \gamma f_u \leq 0
+$$
+then the implication \ref{eq:lyap_inv} holds.
+
+As the constraints on the noise and on the inputs are quadratics, the \Sproc{} is provide just a sufficient condition. More over the convexity of the minimization problem is kept.
+
+This problem can be then translated in the following matrix inequality:
+$$
+M_v-M_p \leq \alpha M_v + \beta M_w + \gamma M_u
+$$
+
+As the matrix $M_u$ and $M_w$ does not depend on the matrix $P$, we will consider tham as variables of the minimization problem.
+
+\section{Reachability LMI problem}
+\newcommand{\Vu}{V_{\vect{u}}}
+We would like to find the smallest reachable set after applying the control $\vect{u}$.
+
+This problem can be reduced to finding a lyapunov function $\Vu$ so that for every points $\vect{x}$ in the invariant set, $\Vu(\xk) \leq 1$ and that $\Vu(\xkn)< \delta$ where $\delta \in [0,1]$ while trying to minimize the volume of the successors.
+
+The volume of an ellipsoid described by the equation 
+$$
+\mathcal{E} = \left\{ \vect{x} \mid \vect{x}^T R \vect{x} < 1 \right\}
+$$
+is proportional to $\frac{1}{2 \sqrt{det( R )}}$.
+
+Lets define:
+
+
+
+\end{document}
