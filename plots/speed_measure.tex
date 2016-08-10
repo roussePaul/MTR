@@ -1,0 +1,17 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+
+\begin{document}
+
+\pgfplotstableread{plots/speedMeasures.dat}{\speedMeasure}
+\begin{tikzpicture}[scale=1]
+\begin{axis}[minor tick num=3,ylabel near ticks,xlabel=Time (s),ylabel=Magnitude ($m.s^{-1}$)]
+\addplot [red] table [x={time}, y={noise_x}] {\speedMeasure};
+\addplot [blue] table [x={time}, y={noise_y}] {\speedMeasure};
+\addplot [red] table [x={time}, y={vxd}] {\speedMeasure};
+\addplot [blue] table [x={time},  y={vyd}] {\speedMeasure};
+\legend{$w_x$,$w_y$,$u_x$,$u_y$}
+\end{axis}
+\end{tikzpicture}
+
+\end{document}

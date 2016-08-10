@@ -1,0 +1,26 @@
+\documentclass{standalone}
+
+\usepackage{pgfplots}
+\usepackage{pgfplotstable} % For \pgfplotstableread
+
+
+\begin{document}
+
+%\pgfplotstableread{single_int_self_loops_less.dat}{\CPUTime}
+\pgfplotstableread{plots/single_int_self_loops_less.dat}{\CPUTime}
+
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+minor tick num=0,
+ylabel near ticks,
+xlabel=Noise level ( $m.s^{-1}$),
+ylabel=Number of nodes,
+ymode=log]
+\addplot [black,mark=triangle*] table [x={noise}, y={nodes}] {\CPUTime};
+\addplot [black,mark=*] table [x={noise}, y={nodes_loops}] {\CPUTime};
+\legend{without loops,with loops}
+
+\end{axis}
+\end{tikzpicture}
+
+\end{document}
