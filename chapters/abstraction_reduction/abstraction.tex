@@ -1,19 +1,4 @@
-\newcommand{\Ninputs}{\Delta n_u}%
-\newcommand{\x}{\vect{x}}%
-\newcommand{\xa}{\vect{x}^a}%
-\newcommand{\xobs}{\vect{x}^o}%
-\newcommand{\Xobs}{X^o}%
-\newcommand{\Xobsinit}{X^o_0}%
-\newcommand{\xunobs}{\vect{x}^i}%
-\newcommand{\Xunobs}{X^i}%
-\newcommand{\Xuinv}{{\mathcal{X}^i}}%
-\newcommand{\pastuseq}{\vect{u}_{n-\Ninputs},\dots,\vect{u}_{n-1}}%
-\newcommand{\Pastuseq}{U_n}%
-\newcommand{\sys}{\mathcal{S}}%
-\newcommand{\sysa}{\mathcal{S}_a}%
-\newcommand{\sysaU}{\mathcal{U}}%
-\newcommand{\sysA}{\mathcal{S}_A}%
-\newcommand{\sysB}{\mathcal{S}_B}%
+\newcommand{\Cont}{\mathcal{C}}%
 %
 % Introduction of the necessity of reduction of an abstraction
 Graph search algorithm complexities are dependant on the size of the abstraction.
@@ -24,6 +9,41 @@ Therefore it is of a great interest to design small abstractions for the control
 The new abstraction needs to verify alternating similarity relationship with the original abstraction.
 
 \section{Related work}
+Talk about formal verifications methods.
+
+The needs of discrete abstraction.
+
+%% MOVE THIS PART
+In \cite{tabuada2009verification}, the link between in hybrid systems is investigated. 
+\begin{nameddef}{System}
+$\mathcal{T}_c = (X,X_0,U, \transition, Y,H)$
+where:
+\begin{itemize}[noitemsep,nolistsep]
+\item $X$ is a set of states;
+\item $X_0 \subset X$ a set of initial states;
+\item $U$ a set of inputs;
+\item $\transition \subseteq X \times U \times X$ a transition relation ;
+\item $Y$ a set of outputs;
+\item $H:X \rightarrow Y$ an output map.\popQED
+\end{itemize}
+\end{nameddef}
+
+The alternating simulation relation between 2 systems is the link between discrete abstraction and the continuous representation of this system.
+For comoditiy, the definition of alternative simulation is rewritten here (\cite{tabuada2009verification}):
+\begin{nameddef}{Alternating simulation} \label{def_alt_sim}
+Let $\sysA$ and $\sysB$ 2 systems with $Y_a=Y_b$, $\sysA$ is alternatingly simulated by $\sysB$ if there exists a relation $R \subseteq X_a \times X_b$ that verify:
+\begin{enumerate}[noitemsep,nolistsep]
+\item $\forall x_{a0} \in X_{a0}, \exists x_{b0} \in X_{b0}, (x_{a0},x_{b0}) \in R$
+\item $\forall (x_a,x_b) \in R, H_a(x_a) = H_b(x_b)$
+\item $\forall (x_a,x_b) \in R, \forall u_{a} \in U_{a}, \exists u_{b} \in U_{b}$\\
+$\forall x_b' \in Post_{u_b}(x_b),\exists x_a' \in Post_{u_a}(x_a), (x_a',x_b') \in R$
+\popQED
+\end{enumerate}
+\end{nameddef}
+The alternating simulation relation between $\sysA$ and $\sysB$ is weaker than the bisimulation relation (that require the alternating simulation relation between $\sysA$ and $\sysB$ and between $\sysB$ and $\sysA$).
+
+Lets denote the composition of systems by the operator $\times$.
+If $sysA$ alternatingly simulate by $\sysB$ for a controller $\Cont$ composable with $\sysA$ or $\sysB$, then $\sysA \times \Cont$ verify the same reachability properties than $\sysB \times \Cont$, and $\sysB \times \Cont$ verify the same safety properties than $\sysA \times \Cont$.
 
 \section{Abstraction reduction}
 Our approach in order to reduce the size of an abstraction $\sys$ is create an abstraction $\sysa$ with a smaller state space than $\sys$ and to add the knowledge of the last $\Ninputs$ inputs of the system.
@@ -40,7 +60,7 @@ Then the states of $\sysa$ will be expressed by $\xa_n = [\xobs_n,\Pastuseq]$ wh
 %% TODO: I REALLY NEED TO IMPROVE THE EXPLAINATION AT THE BEGGINNING
 In order to compute the successors of the the state $\xa_n$, we need to find the set $\Xunobs(\Pastuseq)$ of all the possible states $\xunobs_n$ of system $\sys$ after applying the control sequence $\Pastuseq$.
 This problem is a reachability problem.
-It can be solved in 2 steps: find the smallest invariant $\Xuinv$ of $\sys$ dynamics on $\xunobs$; compute the image of $\Xuinv$ after applying the sequence $\Pastuseq$.
+It can be solved in 2 steps: find the smallest invariant $\Xuinv$ of $\sys$ dynamics on $\xunobs$; compute $\Xunobs(\Pastuseq)$ the image of $\Xuinv$ after applying the sequence $\Pastuseq$.
 
 % Definition of the reduced system
 Let the system
@@ -61,7 +81,27 @@ The transition relation is defined by:
 \end{split}
 \end{equation}
 
-%% MISSING PROOF THAT IT IS AN ALTERNATING SIMULATION RELATION\textsl{•}
+\begin{figure}
+\centering
+\includegraphics[width=0.5\linewidth]{invariant_set}
+\caption{The image of the invariant set $\Xuinv$ after applying the control sequence $\Pastuseq$ is $\Xunobs(\Pastuseq)$}
+\end{figure}
+
+%% MISSING PROOF THAT IT IS AN ALTERNATING SIMULATION RELATION
+\begin{prop}
+$\sys$ is alternately simulated by $\sysa$.
+\end{prop}
+
+\begin{proof}
+Lets take the relation $R$ defined by:
+\begin{equation}
+R = \{ (\x,\xa) \in X \times X_a \mid H(\x) = H_a(\xa) \}
+\end{equation}
+By definition of the systems $\sys$ and $\sysa$ and of the relation $R$, conditions \ref{def_alt_sim}.1 and \ref{def_alt_sim}.2 are verified.
+
+In order to prove that condition \ref{def_alt_sim}.3 lie, it is sufficient to show that the unobserved part of $\x$ is contained in the set $\Xunobs(\Pastuseq)$.
+\end{proof}
+
 By construction, $S_a$ is an alternating simulation relation of the the system $S$.
 \textit{PS: I need to prove that the state of $S$ are staying in $X^z \times X^\infty_r$.}
 

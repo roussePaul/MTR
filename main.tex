@@ -13,6 +13,7 @@
 
 \graphicspath{{./plots/}{./env/}}
 \usepackage[mode=buildnew]{standalone}
+\usepackage{epstopdf}
 
 
 % DEFINITION/THEOREM ENVIRONMENTS
@@ -112,6 +113,7 @@
 \usepackage{color}
 \usepackage{varwidth}
 
+\usepackage{enumitem}
 
 \begin{document}
 
@@ -133,6 +135,24 @@
 \mainmatter 
 
 \chapter{Abstraction reduction}
+\newcommand{\Ninputs}{\Delta n_u}%
+\newcommand{\x}{\vect{x}}%
+\newcommand{\xa}{\vect{x}^a}%
+\newcommand{\xobs}{\vect{x}^o}%
+\newcommand{\Xobs}{X^o}%
+\newcommand{\Xobsinit}{X^o_0}%
+\newcommand{\xunobs}{\vect{x}^i}%
+\newcommand{\Xunobs}{X^i}%
+\newcommand{\Xuinv}{{\mathcal{X}^i}}%
+\newcommand{\pastuseq}{\vect{u}_{n-\Ninputs},\dots,\vect{u}_{n-1}}%
+\newcommand{\Pastuseq}{U_n}%
+\newcommand{\sys}{\mathcal{S}}%
+\newcommand{\sysa}{\mathcal{S}_a}%
+\newcommand{\sysaU}{\mathcal{U}}%
+\newcommand{\sysA}{\mathcal{S}_A}%
+\newcommand{\sysB}{\mathcal{S}_B}%
 \input{chapters/abstraction_reduction/abstraction.tex}
+%\input{chapters/abstraction_reduction/reach_monotone.tex}
+%\input{chapters/abstraction_reduction/discussion.tex}
 
 \end{document}
