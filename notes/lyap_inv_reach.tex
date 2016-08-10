@@ -121,8 +121,18 @@
 
 \maketitle
 
+\section*{Keywords}
+
+Ellipsoidal bounds on state trajectories
+
+"Exact computation of reach sets is not generally possible, and approximation techniques are needed."
+
+Overestimation
+Over approximation
+
+\section{Introduction}
 In this part we will treat a larger class of systems which does not require the monotonicity property.
-In order to find the smallest reachable sets we need to find the smallest invariant of the system and then compute the set after applying a sequence of inputs.
+In order to find the smallest reached sets we need to find the smallest invariant of the system and then compute the set after applying a sequence of inputs.
 Reachability analysis can be done by direct computation of over approximation of the sets (\cite{reissig2011computing}). For linear systems, other approaches needs less computing resources: sets can be over approximated by ellipsoidal sets. These approaches have the disadvantage to have an inreductible error contrary to the numerical approach where it was possible to reduce the error as much as possible.
 
 We will present here the ellipsoidal approach adapted to the form of the systems.
@@ -185,7 +195,7 @@ Let $\sk = \left[ \xk^T, \uk^T, \wk^T, 1 \right]$.
 
 Then we have:
 $$
-V(\xkn) = \sk^T M_v \sk
+V(\xkn) = \sk^T M_v \sk - 1
 $$
 with
 $$
@@ -194,7 +204,7 @@ M_v =
 A^T P A & A^T P B & A^T P E & 0 \\
 B^T P A & B^T P B & B^T P E & 0 \\
 E^T P A & E^T P B & E^T P E & 0 \\
-0       & 0       & 0       & 0 \\
+0       & 0       & 0       & -1 \\
 \end{bmatrix}
 $$
 
@@ -248,7 +258,7 @@ f_u \leq 0\\
 \end{array}
 \right.
 \Rightarrow
-f_v \leq f_p
+f_v \leq 0
 \end{equation}
 
 Using the \Sproc{}, if it exists $\alpha,\beta,\gamma \geq 0$ so that:
@@ -268,18 +278,145 @@ As the matrix $M_u$ and $M_w$ does not depend on the matrix $P$, we will conside
 
 \section{Reachability LMI problem}
 \newcommand{\Vu}{V_{\vect{u}}}
-We would like to find the smallest reachable set after applying the control $\vect{u}$.
+\newcommand{\Vk}{V_{k}}
+\newcommand{\Vkn}{V_{k+1}}
+We would like to find the smallest ellipsoidal set that contain all the reached states after applying the control sequence $[\vect{u}_1,\dots,\vect{u}_n]$.
 
-This problem can be reduced to finding a lyapunov function $\Vu$ so that for every points $\vect{x}$ in the invariant set, $\Vu(\xk) \leq 1$ and that $\Vu(\xkn)< \delta$ where $\delta \in [0,1]$ while trying to minimize the volume of the successors.
-
+\newcommand{\ellipse}{\mathcal{E}}
 The volume of an ellipsoid described by the equation 
 $$
-\mathcal{E} = \left\{ \vect{x} \mid \vect{x}^T R \vect{x} < 1 \right\}
+\mathcal{E} = \left\{ \vect{x} \in \mathbb{R}^n \mid \vect{x}^T R \vect{x} < 1 \right\}
 $$
 is proportional to $\frac{1}{2 \sqrt{det( R )}}$.
 
-\newcommand{\fu}{f_{\vect{u}}}
-Lets define:
-$$\fu = \Vu(\xkn)$$
+For every $\vect{u}$, we have 2 properties: the invariance property ($V(\xk) \leq 1 \Rightarrow V(\xkn) \leq 1$) and the the global \comment{attractive property} ($V(\xk) \geq 1 \Rightarrow V(\xkn) \leq V(\xk)$).
+
+In the following part we will formulate the problem using the 2 properties.
+
+For $V_k$ defined by:
+\newcommand{\x}{\vect{x}}
+$$V_k(\x) = \x^T P_k \x + 2 p_k \x + r_k$$
+with $P_k>0$, and $q_k$ and $r_k$ variable of appropriate sizes.
+\begin{align*}
+V(\xkn) &= \xkn^T P \xkn + 2 p \xkn + r\\
+&= (A \xk + E \wk B \uk) ^T P (A \xk + E \wk B \uk)  + 2 p^T (A \xk + E \wk B \uk)  + r\\
+&= \sk^T
+\begin{bmatrix}
+A^T P A & A^T P E\\
+E^T P A & E^T P E\\
+\end{bmatrix}
+\sk
++
+2(p^T + \uk^T B^T)
+\begin{bmatrix}
+A \\ E
+\end{bmatrix}^T
+\sk
++
+\uk^T B^T  P B^T \uk +  2 p^T B \uk + r\\
+&=  \sk^T M_P \sk + 2 T_P \sk + t_P
+\end{align*}
+
+where:
+$$\sk = [\xk^T, \wk^T]^T
+\textrm{, }
+M_P = 
+\begin{bmatrix}
+A^T P A & A^T P E\\
+E^T P A & E^T P E\\
+\end{bmatrix}
+$$
+$$
+T_P = 
+2(p^T + \uk^T B^T)
+\begin{bmatrix}
+A & E
+\end{bmatrix}
+\textrm{, }
+t_P=\uk^T B^T  P B^T \uk +  2 p^T B \uk + r$$
+
+Using the Schur complement we know that:
+$$V(\xkn) \leq 1$$
+is equivalent to\comment{Not exactly}:
+$$
+\begin{bmatrix}
+M_P & T_P^T\\
+T_P & t_P-1\\
+\end{bmatrix}
+\leq
+0
+$$
+
+Between 2 consecutive steps, we have the invariant property:
+\begin{equation}\label{ineq:inv}
+\left\{
+\begin{array}{ll}
+V_k(\xk) &\leq 1 \\ 
+\wk R_w \wk &\leq 1
+\end{array}
+\right.
+\Rightarrow
+\Vkn(\xkn) \leq 1
+\end{equation}
+and the attractive property:
+\begin{equation}
+\left\{
+\begin{array}{ll}
+V_k(\xk) &\geq 1 \\ 
+\wk R_w \wk &\leq 1
+\end{array}
+\right.
+\Rightarrow
+\Vkn(\xkn) \leq \Vkn(\xk)
+\end{equation}
+
+\newcommand{\Mk}{M_k}
+\newcommand{\Mkn}{M_{k+1}}
+\newcommand{\Mw}{M_w}
+
+\newcommand{\ta}{\tau_1}
+\newcommand{\tb}{\tau_2}
+
+We will apply the \Sproc{} over these 2 properties.
+A sufficient condition so that implication \ref{ineq:inv} is satisfied is that it exists $\ta,\tb>0$ so that:
+$$
+\Mkn \leq \ta \Mk + \tb \Mw
+$$
+where the matrices are defined by,
+$$
+\Mkn = 
+\begin{bmatrix}
+M_P & T_P^T\\
+T_P & t_P-1\\
+\end{bmatrix}
+$$
+
+$$
+\Mk = 
+\begin{bmatrix}
+P_k & p_k\\
+p_k^T & r_k-1\\
+\end{bmatrix}
+$$
+
+Without loss of generality, we will choose $r_k = p_k^T P_k p_k$.
+This does not restrict in any way the set of ellipsoid used, and it reduce the number of free variables (see section 3.7.1 p43, I need to use the schur complement).
+In order that the problem is well posed, we need to add the following constraint.
+$$\Mk^c \geq 0$$
+where
+$$
+\Mk^c = 
+\begin{bmatrix}
+P_k & p_k\\
+p_k^T & r_k\\
+\end{bmatrix}
+$$
+
+By applying the second relation, we get the following relation: $\ta +\tb = 1$
+
+\section{Conclusion}
+2 methods of computation of the reached set has been presented.
+Many different methods has been used in the litterature, our main goal was to show how they can be used and to adapt them too the models used in this work.
+
 
 \end{document}

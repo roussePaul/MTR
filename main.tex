@@ -1,0 +1,138 @@
+\documentclass{kthesis}
+
+\usepackage[english]{babel}
+\usepackage{import}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{nicefrac}
+\usepackage{graphicx}
+\usepackage{breqn}
+\usepackage{tabularx}
+
+\graphicspath{{./plots/}{./env/}}
+\usepackage[mode=buildnew]{standalone}
+
+
+% DEFINITION/THEOREM ENVIRONMENTS
+\newtheorem{theorem}{Theorem}
+\newtheorem{problem}{Problem}
+\newtheorem{olddefinition}{Definition}
+\newtheorem{property}{Property}
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+\newtheorem*{namedproperty}{Property}
+
+\newcommand{\thmsymbol}{\( \blacktriangle \)}
+\newcommand{\propsymbol}{\( \blacklozenge \)}
+
+\newenvironment{nameddef}[1]
+    {\begin{samepage}
+    \begin{nameddefinition}[#1]
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{nameddefinition} 
+    \end{samepage}
+    }
+\newenvironment{namedprop}[1]
+    {\begin{samepage}
+    \begin{namedproperty}[#1]
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{namedproperty} 
+    \end{samepage}
+    }
+\newenvironment{namedtheo}[1]
+    {\begin{samepage}
+    \begin{namedtheorem}[#1]
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{namedtheorem} 
+    \end{samepage}
+    }
+\newenvironment{prop}[0]
+    {\begin{samepage}
+    \begin{property}
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{property} 
+    \end{samepage}
+    }
+\newenvironment{definition}[0]
+    {\begin{samepage}
+    \begin{olddefinition}
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{olddefinition} 
+    \end{samepage}
+    }
+    
+    
+    
+\usepackage[all]{xy}
+\usepackage{amssymb}
+
+\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
+\newcommand{\transition}{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
+  }
+\newcommand{\labelledtransition}[1]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
+  }
+
+\usepackage{nicefrac}
+\newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
+  
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
+\usepackage{pgfplots}
+\usepackage{subcaption}
+
+
+\usepackage{cite}
+
+%\usepackage{showframe}
+% use to create colored comments
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{varwidth}
+
+
+\begin{document}
+
+\title{The impossible master thesis}
+\subtitle{Will I finish it?}
+\author{Paul Rousse}
+\date{Today}
+\thesistype{Master of Science Thesis}
+\imprint{}
+\disputationsdatum{}
+\disputationslokal{}
+\publisher{}
+\examen{}
+
+\frontmatter
+
+\maketitle
+
+\mainmatter 
+
+\chapter{Abstraction reduction}
+\input{chapters/abstraction_reduction/abstraction.tex}
+
+\end{document}
