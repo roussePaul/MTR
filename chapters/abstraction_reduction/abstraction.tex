@@ -45,7 +45,7 @@ The alternating simulation relation between $\sysA$ and $\sysB$ is weaker than t
 Lets denote the composition of systems by the operator $\times$.
 If $sysA$ alternatingly simulate by $\sysB$ for a controller $\Cont$ composable with $\sysA$ or $\sysB$, then $\sysA \times \Cont$ verify the same reachability properties than $\sysB \times \Cont$, and $\sysB \times \Cont$ verify the same safety properties than $\sysA \times \Cont$.
 
-\section{Abstraction reduction}
+\section{Abstraction reduction} \label{sec:abstraction}
 Our approach in order to reduce the size of an abstraction $\sys$ is create an abstraction $\sysa$ with a smaller state space than $\sys$ and to add the knowledge of the last $\Ninputs$ inputs of the system.
 
 The term "reduction" will be justified later. This does not always correspond to a reduction of the abstraction size (the set of all the input sequences might be larger than the size of the states dimensions that have be suppressed). However, the efficient utilization of this methods correspond to a reduction of the state space size.
@@ -56,6 +56,8 @@ To use control synthesis methods with the new abstraction $\sysa$, we need that 
 Without loss of generality, lets assume that the state $\x$ of the system $\sys$ can be decomposed in this way $\x = [\xobs,\xunobs]$ where $\xobs$ is observed and $\xunobs$ is an unobserved (internal) state.
 In practice, the state $\xunobs$ correspond to the part of the system that we will suppress.
 Then the states of $\sysa$ will be expressed by $\xa_n = [\xobs_n,\Pastuseq]$ where $\Pastuseq = [\pastuseq]$ correspond to the $\Ninputs$ last control actions.
+
+Let define the system $\Sunobs$ as the projection of the system $\sys$ on the state $\xunobs$.
 
 %% TODO: I REALLY NEED TO IMPROVE THE EXPLAINATION AT THE BEGGINNING
 In order to compute the successors of the the state $\xa_n$, we need to find the set $\Xunobs(\Pastuseq)$ of all the possible states $\xunobs_n$ of system $\sys$ after applying the control sequence $\Pastuseq$.

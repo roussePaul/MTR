@@ -2,18 +2,31 @@
 
 \usepackage[english]{babel}
 \usepackage{import}
+\usepackage{enumitem}
 
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amsthm}
+%% MATH
+\usepackage{amsmath, amsfonts, amsthm}
 \usepackage{nicefrac}
-\usepackage{graphicx}
 \usepackage{breqn}
 \usepackage{tabularx}
+\usepackage{stmaryrd} % for llbracket and rrbracket
 
+\newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
+\newcommand{\leftint}{\left \llbracket}
+\newcommand{\rightint}{\right \rrbracket}
+
+
+%% GRAPHICS
+\usepackage{graphicx}
 \graphicspath{{./plots/}{./env/}}
 \usepackage[mode=buildnew]{standalone}
 \usepackage{epstopdf}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
+\usepackage{pgfplots}
+\usepackage{subcaption}
+
 
 
 % DEFINITION/THEOREM ENVIRONMENTS
@@ -82,10 +95,9 @@
     }
     
     
-    
+%% TRANSITION SYSTEM
 \usepackage[all]{xy}
 \usepackage{amssymb}
-
 \newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
 \newcommand{\transition}{
   \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
@@ -94,28 +106,12 @@
   \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
   }
 
-\usepackage{nicefrac}
-\newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
   
 
-
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
-\usepackage{pgfplots}
-\usepackage{subcaption}
-
-
-\usepackage{cite}
-
-%\usepackage{showframe}
-% use to create colored comments
-\usepackage{xcolor}
-\usepackage{color}
-\usepackage{varwidth}
-
-\usepackage{enumitem}
-
 \begin{document}
+
+
+\newpage
 
 \title{The impossible master thesis}
 \subtitle{Will I finish it?}
@@ -128,11 +124,11 @@
 \publisher{}
 \examen{}
 
-\frontmatter
+%\frontmatter
 
-\maketitle
+%\maketitle
 
-\mainmatter 
+%\mainmatter 
 
 \chapter{Abstraction reduction}
 \newcommand{\Ninputs}{\Delta n_u}%
@@ -143,6 +139,7 @@
 \newcommand{\Xobsinit}{X^o_0}%
 \newcommand{\xunobs}{\vect{x}^i}%
 \newcommand{\Xunobs}{X^i}%
+\newcommand{\Sunobs}{\mathcal{S}^i}%
 \newcommand{\Xuinv}{{\mathcal{X}^i}}%
 \newcommand{\pastuseq}{\vect{u}_{n-\Ninputs},\dots,\vect{u}_{n-1}}%
 \newcommand{\Pastuseq}{U_n}%
@@ -151,8 +148,39 @@
 \newcommand{\sysaU}{\mathcal{U}}%
 \newcommand{\sysA}{\mathcal{S}_A}%
 \newcommand{\sysB}{\mathcal{S}_B}%
+\newcommand{\Usys}{\mathcal{U}}%
+\newcommand{\Wsys}{\mathcal{W}}%
+\newcommand{\Uunobs}{{\mathcal{U}^i}}%
+\newcommand{\Wunobs}{{\mathcal{W}^i}}%
+\newcommand{\uobs}{\vect{u}^o}%
+\newcommand{\wobs}{\vect{w}^o}%
+\newcommand{\uunobs}{\vect{u}^i}%
+\newcommand{\wunobs}{\vect{w}^i}%
+\newcommand{\Dunobs}{n^i}% Dimension of the ss of unobs
+\newcommand{\R}{\mathbb{R}}% real set
+%%
+% Monotone systems
+\newcommand{\mle}{\prec}
+\newcommand{\mleq}{\preceq}
+\newcommand{\minf}[1]{\underline{#1}}
+\newcommand{\msup}[1]{\overline{#1}}
+%%
+% linear system
+\newcommand{\X}{X}%
+\newcommand{\Xinv}{\mathcal{X}}%
+\newcommand{\U}{\mathcal{U}}%
+\newcommand{\W}{\mathcal{W}}%
+\newcommand{\vu}{\vect{u}}%
+\newcommand{\w}{\vect{w}}%
+\newcommand{\s}{\vect{s}}%
+\newcommand{\st}{\vect{t}}%
 \input{chapters/abstraction_reduction/abstraction.tex}
-%\input{chapters/abstraction_reduction/reach_monotone.tex}
-%\input{chapters/abstraction_reduction/discussion.tex}
+\input{chapters/abstraction_reduction/reach_monotone.tex}
+\input{chapters/abstraction_reduction/discussion.tex}
+
+
+
+%\bibliographystyle{kthplain}
+%\bibliography{bibliography}{}
 
 \end{document}
