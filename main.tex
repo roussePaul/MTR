@@ -10,6 +10,44 @@
 \usepackage{breqn}
 \usepackage{tabularx}
 \usepackage{stmaryrd} % for llbracket and rrbracket
+\usepackage[ruled]{algorithm2e}
+
+% LTL temporal operator
+\DeclareFontFamily{U}{matha}{\hyphenchar\font45}
+\DeclareFontShape{U}{matha}{m}{n}{
+      <5> <6> <7> <8> <9> <10> gen * matha
+      <10.95> matha10 <12> <14.4> <17.28> <20.74> <24.88> matha12
+      }{}
+\DeclareSymbolFont{matha}{U}{matha}{m}{n}
+\DeclareMathSymbol{\vDash}{3}{matha}{'52}
+\DeclareMathSymbol{\nvDash}{3}{matha}{'50}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\splitatcommas}[1]{%
+  \begingroup
+  \begingroup\lccode`~=`, \lowercase{\endgroup
+    \edef~{\mathchar\the\mathcode`, \penalty0 \noexpand\hspace{0pt plus 1em}}%
+  }\mathcode`,="8000 #1%
+  \endgroup
+}
+\renewcommand{\splitatcommas}[1]{#1}
+
+\newcommand{\buchi}[0]{B\"uchi}
+
+%% LTL symbols defintion
+\usepackage{latexsym} % get the right \Diamond symbol
+\newcommand{\LTLalways}		{\ensuremath{\square}}
+\newcommand{\LTLeventually}	{\ensuremath{\Diamond}}
+\newcommand{\LTLuntil}		{\ensuremath{\mathsf{U}}}
+\newcommand{\LTLnext}		{\ensuremath{\bigcirc}}
+\newcommand{\LTLimply}			{\ensuremath{\rightarrow}}
+\newcommand{\true}			{\ensuremath{\top}}
+
+
+\newcommand{\outpost}{ \ensuremath{\overline{Post} } }
+\newcommand{\inpre}{ \ensuremath{\overline{Pre} } }
+
 
 \newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
 \newcommand{\leftint}{\left \llbracket}
@@ -30,6 +68,8 @@
 
 
 % DEFINITION/THEOREM ENVIRONMENTS
+\newcommand{\inlinedef}[1]{\textit{#1}}
+
 \newtheorem{theorem}{Theorem}
 \newtheorem{problem}{Problem}
 \newtheorem{olddefinition}{Definition}
@@ -174,11 +214,12 @@
 \newcommand{\w}{\vect{w}}%
 \newcommand{\s}{\vect{s}}%
 \newcommand{\st}{\vect{t}}%
-\input{chapters/abstraction_reduction/abstraction.tex}
+%\input{chapters/abstraction_reduction/abstraction.tex}
 \input{chapters/abstraction_reduction/reach_monotone.tex}
 \input{chapters/abstraction_reduction/discussion.tex}
 
-
+%\chapter{Backward reachability algorithm}
+%\input{chapters/algorithm/backward_reach_alg.tex}
 
 %\bibliographystyle{kthplain}
 %\bibliography{bibliography}{}

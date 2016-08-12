@@ -1,40 +1,266 @@
-\documentclass{report}
+\documentclass{article}
+
+\usepackage{amsmath, amsfonts, amsthm}
+\usepackage{nicefrac}
+\usepackage{breqn}
+\usepackage{tabularx}
+\usepackage{stmaryrd} % for llbracket and rrbracket
+
 \begin{document}
-
-\chapter*{Abstraction}
-
-\section*{Introduction}
-
-But de l abstraction
-
-Tabuada
-
-bisimulation
-
-differents type d'abstraction
-deterministic, undeterministic, prise en compte du bruit, passage du modele dynamique au modele discret
-
-Problems:
--state space explosion
+\title{Error in partially observed abstractions}
+\author{Paul Rousse}
+\maketitle
 
 
-\section*{Previous works}
 
-Calin Belta
+\newcommand{\mle}{\prec}
+\newcommand{\mleq}{\preceq}
+\newcommand{\minf}[1]{\underline{#1}}
+\newcommand{\msup}[1]{\overline{#1}}
 
-ajout de memoires dans l'etat
+\newcommand{\vect}[1]{\mathbf{#1}}
 
-\section*{Monotonic systems}
+\newcommand{\x}{\vect{x}}%
+\renewcommand{\u}{\vect{u}}%
+\newcommand{\w}{\vect{w}}%
+
+\newcommand{\y}{\vect{y}}%
+\newcommand{\yk}{\vect{y}_k}%
+\newcommand{\ykn}{\vect{y}_{k+1}}%
+
+\newcommand{\xk}{\vect{x}_k}%
+\newcommand{\xkn}{\vect{x}_{k+1}}%
+
+\newcommand{\uk}{\vect{u}_k}%
+\newcommand{\wk}{\vect{w}_k}%
+
+\newcommand{\xo}{\vect{x}^o}%
+\newcommand{\xr}{\vect{x}^r}%
+
+\newcommand{\Ao}{A_o}%
+\newcommand{\Ar}{A_r}%
+\newcommand{\Aro}{A_{ro}}%
+
+\newcommand{\Bo}{B_o}%
+\newcommand{\Br}{B_r}%
+
+\newcommand{\Eo}{E_o}%
+\newcommand{\Er}{E_r}%
+
+\newcommand{\Xr}{X_r}%
+
+\newcommand{\Xrinv}{\mathcal{X}_r}%
+\newcommand{\xrinf}{\minf{\x}_r}%
+\newcommand{\xrsup}{\msup{\x}_r}%
 
 
-\section*{Multiagent system}
-product automaton
-state space explosion 
-centralized control strategy
+\newcommand{\Wsup}{\msup{W}}
+\newcommand{\Winf}{\minf{W}}
+\newcommand{\Wk}{W_k}
 
-Dans mon cas, je ne vais pas faire le produit d'automates mais une composition des systemes dynamiques puis l'abstraction (pour continuer d'utiliser les algo anti-stuttering).
+\renewcommand{\wr}{\vect{w}^r}
+\newcommand{\Wrsup}{\msup{W}^r}
+\newcommand{\Wrinf}{\minf{W}^r}
+\newcommand{\Wrk}{W^r_k}
 
-\section*{Noise modelisation}
+\newcommand{\traj}{\varphi}
 
+\section{System definition}
+We will take the following system:
+
+\begin{equation}
+\begin{aligned}
+\xkn &=
+\begin{bmatrix} \Ao&\Aro\\ 0& \Ar \end{bmatrix} \xk + 
+\begin{bmatrix} \Bo\\ \Br \end{bmatrix} \uk + 
+\begin{bmatrix} \Eo\\ \Er \end{bmatrix} \wk
+\\
+\yk &= \xo_k
+\end{aligned}
+\end{equation}
+
+We will suppose that the system is monotonic. 
+And that the noise and the inputs are bounded:
+\begin{equation}
+\begin{aligned}
+\u &\in [\minf{\u},\msup{\u}]\\
+\w &\in [\minf{\w},\msup{\w}]\\
+\end{aligned}
+\end{equation}
+
+\section{Abstraction reduction}
+
+The abstraction reduction is performed in this way. First, we define the smallest invariant of the unobserved state:
+$$
+\Xrinv = [\xrinf,\xrsup]
+$$
+where,
+$$
+\begin{aligned}
+\xrinf &= (I-A)^{-1} (\Br \minf{\u} + \Er \minf{\w})\\
+\xrsup &= (I-A)^{-1} (\Br \msup{\u} + \Er \msup{\w})
+\end{aligned}
+$$
+
+Lets now define analytically the set $\Xr(U)$ that correspond to the interval that contain the image of $\Xrinv$ after applying the control sequence $U = [u_1,\dots,u_n]$.
+Thanks to the monotonicity property, we have the following property:
+\newcommand{\xui}{\minf{\x}^U_r}
+\newcommand{\xus}{\msup{\x}^U_r}
+\newcommand{\xu}{\x^U_r}
+$$\Xr(U) = [\xui,\xus]$$
+where
+$$\xui = \traj (\xrinf,U,\Winf)
+\textrm{, }
+\xus = \traj (\xrsup,U,\Wsup)$$
+$$ \Winf = [\minf{\w},\dots,\minf{\w}]
+\textrm{, }
+\Wsup = [\msup{\w},\dots,\msup{\w}]$$
+so that $\Wsup$ and $\Winf$ are a sequence of $n$ elements.
+
+
+\newcommand{\An}{\mathcal{A}^r_n}
+\newcommand{\Bn}{\mathcal{B}^r_n}
+\newcommand{\En}{\mathcal{E}^r_n}
+\begin{align}
+\xu &=
+\begin{bmatrix}
+A_r^k & A_r^{k-1} &\dots & A_r & I
+\end{bmatrix}
+\begin{bmatrix}
+\x_0 \\
+B_r \u_0 + E_r \w_0\\
+\vdots \\
+B_r \u_{k-1} + E_r \w_{k-1}\\
+\end{bmatrix}\\
+\xu &=
+\An
+\begin{bmatrix}
+\x_0 \\
+\Bn U + \En W
+\end{bmatrix}
+\end{align}
+
+where
+$$
+\An = 
+\begin{bmatrix}
+A_r^n & A_r^{n-1} &\dots & A_r & I
+\end{bmatrix}
+\textrm{, }
+\Bn = 
+\begin{bmatrix}
+B_r\\
+\vdots\\
+B_r
+\end{bmatrix}
+\textrm{ and }
+\En = 
+\begin{bmatrix}
+E_r\\
+\vdots\\
+E_r
+\end{bmatrix}
+$$
+
+\newcommand{\xuki}{\minf{\x}^{U_k}_r}
+\newcommand{\xuks}{\msup{\x}^{U_k}_r}
+\newcommand{\xuk}{\x^{U_k}_r}
+Let define the variable $\xuki$ and $\xuks$ (guess it from previous definition).
+
+\section{Admissible noise}
+We would like now to compute the admissible noise that our new abstraction is able to handle.
+\newcommand{\sykn}{\msup{\y}_{k+1}}%
+\newcommand{\iykn}{\minf{\y}_{k+1}}%
+Recall the definition of the alternate simulation relation.
+$$
+\ykn \in [\sykn,\iykn]
+$$
+where 
+\begin{align*}
+\sykn &= C \msup{\xo}_{k+1}\\
+\sykn &= C A 
+\begin{bmatrix}
+\xo_{k} \\
+\xuks
+\end{bmatrix}
++ C B \uk + C E \msup{\w}
+\\
+\iykn &= C \minf{\xo}_{k+1}\\
+\iykn &= C A 
+\begin{bmatrix}
+\xo_{k} \\
+\xuki
+\end{bmatrix}
++ C B \uk + C E \minf{\w}
+\\
+\ykn &= C \minf{\xo}_{k+1}\\
+\ykn &= C A 
+\begin{bmatrix}
+\xo_{k} \\
+\xuk
+\end{bmatrix}
++ C B \uk + C E \wk
+\end{align*}
+
+We will now use the different form to get a condition over $\Wk$
+
+Lets gooooo!
+
+\begin{align*}
+\ykn \mleq \sykn
+& \Leftrightarrow
+0 \mleq \sykn - \ykn \\
+& \Leftrightarrow
+0 \mleq
+C A \begin{bmatrix} 0 \\ \xuks-\xuk \end{bmatrix}
++ C E (\msup{\w} -\wk)
+\\
+& \Leftrightarrow
+0 \mleq
+C A 
+\begin{bmatrix} 0 \\ \An \end{bmatrix} 
+\begin{bmatrix}
+\xrsup - \xr_{k-n}\ \\
+\En (\Wrsup - \Wrk)
+\end{bmatrix}
++ C E (\msup{\w} -\wk)
+\end{align*}
+
+We have the following equality:
+\begin{align*}
+C A \begin{bmatrix} 0 \\ \An \end{bmatrix} 
+& = \Aro \An
+\end{align*}
+
+So,
+\begin{align*}
+\ykn \mleq \sykn
+& \Leftrightarrow
+0 \mleq
+\Aro \An
+\begin{bmatrix}
+\xrsup - \xr_{k-n} \\
+\En (\Wrsup - \Wrk)
+\end{bmatrix}
++ C E (\msup{\w} -\wk)
+\end{align*}
+
+We can derive the same inequality with $\iykn$:
+
+\begin{align*}
+\iykn \mleq \ykn
+& \Leftrightarrow
+0 \mleq
+\Aro \An
+\begin{bmatrix}
+\xr_{k-n} - \xrinf \\
+\En (\Wrk - \Wrinf)
+\end{bmatrix}
++ C E (\wk - \minf{\w})
+\end{align*}
+
+If we are able to find what is the maximum $\xr_{k-n}$ for the constraint given before, then the problem is solved. I need to find the interval where all the trajectories lies for an integral constraint over the noise.
+
+This equation correspond to an integral constraint over the noise.
 
 \end{document}
