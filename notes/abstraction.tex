@@ -75,7 +75,7 @@ We will take the following system:
 \begin{bmatrix} \Bo\\ \Br \end{bmatrix} \uk + 
 \begin{bmatrix} \Eo\\ \Er \end{bmatrix} \wk
 \\
-\yk &= \xo_k
+\yk &= C\xk = \xo_k
 \end{aligned}
 \end{equation}
 
@@ -147,19 +147,20 @@ $$
 A_r^n & A_r^{n-1} &\dots & A_r & I
 \end{bmatrix}
 \textrm{, }
-\Bn = 
+\Bn =
+diag( 
 \begin{bmatrix}
-B_r\\
-\vdots\\
+B_r &
+\dots &
 B_r
-\end{bmatrix}
+\end{bmatrix})
 \textrm{ and }
 \En = 
-\begin{bmatrix}
-E_r\\
-\vdots\\
+diag(\begin{bmatrix}
+E_r &
+\dots &
 E_r
-\end{bmatrix}
+\end{bmatrix} )
 $$
 
 \newcommand{\xuki}{\minf{\x}^{U_k}_r}
@@ -171,7 +172,7 @@ Let define the variable $\xuki$ and $\xuks$ (guess it from previous definition).
 We would like now to compute the admissible noise that our new abstraction is able to handle.
 \newcommand{\sykn}{\msup{\y}_{k+1}}%
 \newcommand{\iykn}{\minf{\y}_{k+1}}%
-Recall the definition of the alternate simulation relation.
+Recall the definition of the alternate simulation relation, the system is alternately simulated by the abstraction if for every $\ykn$ we have:
 $$
 \ykn \in [\sykn,\iykn]
 $$
@@ -202,7 +203,7 @@ where
 + C B \uk + C E \wk
 \end{align*}
 
-We will now use the different form to get a condition over $\Wk$
+We will now use the different form to get a condition over $\Wk$.
 
 Lets gooooo!
 
@@ -258,9 +259,56 @@ We can derive the same inequality with $\iykn$:
 \end{bmatrix}
 + C E (\wk - \minf{\w})
 \end{align*}
+If we are able to find what is the upper bounds of all the trajectories $\xr_{k-n}$ for the previously given constraint, then the problem is solved:
+\begin{align*}
+0 \mleq
+\Aro \An
+\begin{bmatrix}
+\xrsup - \msup{z} \\
+\En (\Wrsup - \Wrk)
+\end{bmatrix}
+\Rightarrow
+\ykn \mleq \sykn
+\end{align*}
 
-If we are able to find what is the maximum $\xr_{k-n}$ for the constraint given before, then the problem is solved. I need to find the interval where all the trajectories lies for an integral constraint over the noise.
+\textit{I have forgotten the part of the noise coming from $CE$.}
+
+\textit{TODO: finish the computations, do them for $\minf{\w}$, plot some curves.}
+
+Where $\msup{z}$ is the upper bound of all the trajectories of the following system:
+\newcommand{\z}{\vect{z}}%
+\newcommand{\zk}{\z_k}%
+\newcommand{\zkn}{\z_{k+1}}%
+\begin{align*}
+&\zkn = A_r \zk + E_r \wk \\
+&\forall k \in \mathbb{N}, \sum_{i=1}^n A^{n-i} E \w_{k+i} \in [\minf{\w}_z,\msup{\w}_z]
+\end{align*}
+
+I need to find the interval where all the trajectories lies for an integral constraint over the noise.
 
 This equation correspond to an integral constraint over the noise.
+
+Please note that the maximum constant noise admissible noise remain the same, however, the system is capable to handle integral bounds of the noise (which is a bigger set).
+
+\paragraph{Monotonic system with special integral constraint.}
+Lets consider the following system.
+\begin{align*}
+\xkn = A \xk + E \wk \\
+\forall k \in \mathbb{N}, \sum_{i=1}^n A^{n-i} E \w_{k+i} \in [\minf{\w},\msup{\w}]
+\end{align*}
+\newcommand{\mxint}{[\minf{\x},\msup{\x}]}
+We would like to find a monotone invariant $\mxint$ of the system.
+
+If I prove it for a sequence (parametrized for a $x$ in this sequence) then I will be able to prove it for the full system.
+
+\paragraph{If no closed form solution:} just do it on a stupid example. Did it for the quad.
+Super efficient.
+
+I need to do real measurement on the quad.
+
+\section{Frequency analysis of the admissible noise}
+Talk about the fact that the model can deal with this can of noise.
+
+Maybe
 
 \end{document}
