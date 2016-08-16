@@ -1,10 +1,179 @@
 \documentclass{article}
 
+\usepackage[english]{babel}
+\usepackage{import}
+\usepackage{enumitem}
+
+%% MATH
 \usepackage{amsmath, amsfonts, amsthm}
 \usepackage{nicefrac}
 \usepackage{breqn}
 \usepackage{tabularx}
 \usepackage{stmaryrd} % for llbracket and rrbracket
+\usepackage[ruled]{algorithm2e}
+
+% LTL temporal operator
+\DeclareFontFamily{U}{matha}{\hyphenchar\font45}
+\DeclareFontShape{U}{matha}{m}{n}{
+      <5> <6> <7> <8> <9> <10> gen * matha
+      <10.95> matha10 <12> <14.4> <17.28> <20.74> <24.88> matha12
+      }{}
+\DeclareSymbolFont{matha}{U}{matha}{m}{n}
+\DeclareMathSymbol{\vDash}{3}{matha}{'52}
+\DeclareMathSymbol{\nvDash}{3}{matha}{'50}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\makeatletter
+\newcommand{\tuple}[1]{
+	\@tempcnta=0
+	\def\mylist{#1}
+	\@for\next:=\mylist\do{
+	\ifnum \@tempcnta = 0 \else ,\linebreak[1]\fi \next
+	\advance\@tempcnta\@ne}
+}
+\makeatother
+
+%\renewcommand{\splitatcommas}[1]{#1}
+
+\newcommand{\buchi}[0]{B\"uchi}
+
+%% LTL symbols defintion
+\usepackage{latexsym} % get the right \Diamond symbol
+\newcommand{\LTLalways}		{\ensuremath{\square}}
+\newcommand{\LTLeventually}	{\ensuremath{\Diamond}}
+\newcommand{\LTLuntil}		{\ensuremath{\mathsf{U}}}
+\newcommand{\LTLnext}		{\ensuremath{\bigcirc}}
+\newcommand{\LTLimply}			{\ensuremath{\rightarrow}}
+\newcommand{\true}			{\ensuremath{\top}}
+
+
+\newcommand{\outpost}{ \ensuremath{\overline{Post} } }
+\newcommand{\inpre}{ \ensuremath{\overline{Pre} } }
+
+
+\newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
+\newcommand{\leftint}{\left \llbracket}
+\newcommand{\rightint}{\right \rrbracket}
+
+
+%% GRAPHICS
+\usepackage{graphicx}
+\graphicspath{{./plots/}{./env/}}
+\usepackage[mode=buildnew]{standalone}
+\usepackage{epstopdf}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
+\usepackage{pgfplots}
+\usepackage{subcaption}
+
+
+
+% DEFINITION/THEOREM ENVIRONMENTS
+\newcommand{\inlinedef}[1]{\textit{#1}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{problem}{Problem}
+\newtheorem{olddefinition}{Definition}
+\newtheorem{property}{Property}
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\newtheorem*{nameddefinition}{Definition}
+\newtheorem*{namedproperty}{Property}
+
+\newcommand{\thmsymbol}{\( \blacktriangle \)}
+\newcommand{\propsymbol}{\( \blacklozenge \)}
+
+\newenvironment{nameddef}[1]
+    {\begin{samepage}
+    \begin{nameddefinition}[#1]
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{nameddefinition} 
+    \end{samepage}
+    }
+\newenvironment{namedprop}[1]
+    {\begin{samepage}
+    \begin{namedproperty}[#1]
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{namedproperty} 
+    \end{samepage}
+    }
+\newenvironment{namedtheo}[1]
+    {\begin{samepage}
+    \begin{namedtheorem}[#1]
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{namedtheorem} 
+    \end{samepage}
+    }
+\newenvironment{prop}[0]
+    {\begin{samepage}
+    \begin{property}
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{property} 
+    \end{samepage}
+    }
+\newenvironment{definition}[0]
+    {\begin{samepage}
+    \begin{olddefinition}
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
+    }
+    {
+    \popQED % in order to pop it before (in case of itemize) just call it in an item
+    \end{olddefinition} 
+    \end{samepage}
+    }
+    
+    
+%% TRANSITION SYSTEM COMMANDS
+\usepackage[all]{xy}
+\usepackage{amssymb}
+\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
+\newcommand{\transition}{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
+  }
+\newcommand{\labelledtransition}[1]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
+  }
+\newcommand{\systransition}[2]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#2}_{#1}&} }
+  }
+
+\newcommand{\Post}[2]{Post_{#2}^{#1}}
+\newcommand{\Reach}[2]{Reach^{#1}({#2})}
+\newcommand{\ReachSeq}[2]{Reach^{*#1}(#2)}
+
+\newcommand{\sysDef}[1]{(\)}
+  
+%% COMMENTS
+\newcommand{\comment}[1]{\textit{\textbf{#1}}}
+
+%% SUPER SCRIPT STUFF
+\makeatletter
+\newcommand\newsubcommand[3]{\newcommand#1{#2\sc@sub{#3}}}
+\def\sc@sub#1{\def\sc@thesub{#1}\@ifnextchar_{\sc@mergesubs}{_{\sc@thesub}}}
+\def\sc@mergesubs_#1{_{\sc@thesub#1}}
+
+\newcommand\newsupcommand[3]{\newcommand#1{#2\sc@sup{#3}}}
+\def\sc@sup#1{\def\sc@thesup{#1}\@ifnextchar^{\sc@mergesups}{^{\sc@thesup}}}
+\def\sc@mergesups^#1{^{\sc@thesup#1}}
+\makeatother
+
+\newcommand{\T}[1]{#1{}^\top}
+\newcommand{\proj}[1]{|_{#1}}
+
 
 \begin{document}
 \title{Error in partially observed abstractions}
@@ -18,7 +187,7 @@
 \newcommand{\minf}[1]{\underline{#1}}
 \newcommand{\msup}[1]{\overline{#1}}
 
-\newcommand{\vect}[1]{\mathbf{#1}}
+
 
 \newcommand{\x}{\vect{x}}%
 \renewcommand{\u}{\vect{u}}%
@@ -46,6 +215,7 @@
 
 \newcommand{\Eo}{E_o}%
 \newcommand{\Er}{E_r}%
+\newcommand{\Ero}{E_{ro}}%
 
 \newcommand{\Xr}{X_r}%
 
@@ -59,11 +229,28 @@
 \newcommand{\Wk}{W_k}
 
 \renewcommand{\wr}{\vect{w}^r}
+\newcommand{\wrsup}{\msup{\vect{w}}^r}
+\newcommand{\wrinf}{\minf{\vect{w}}^r}
 \newcommand{\Wrsup}{\msup{W}^r}
 \newcommand{\Wrinf}{\minf{W}^r}
 \newcommand{\Wrk}{W^r_k}
 
 \newcommand{\traj}{\varphi}
+
+\newcommand{\z}{\vect{z}}%
+\newcommand{\zk}{\z_k}%
+\newcommand{\zkn}{\z_{k+1}}%
+
+\newcommand{\Z}{\mathbf{z}}
+\newcommand{\Zk}{\Z_k}
+\newcommand{\Zkn}{\Z_{k+1}}
+\newcommand{\hk}{\vect{h}_{k}}
+\newcommand{\h}{\vect{h}}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\wnoise}{\msup{\sigma}}
+
+\newcommand{\size}{N}
+\newcommand{\norminf}[1]{\left\|#1\right\|_{\infty}}
 
 \section{System definition}
 We will take the following system:
@@ -73,7 +260,7 @@ We will take the following system:
 \xkn &=
 \begin{bmatrix} \Ao&\Aro\\ 0& \Ar \end{bmatrix} \xk + 
 \begin{bmatrix} \Bo\\ \Br \end{bmatrix} \uk + 
-\begin{bmatrix} \Eo\\ \Er \end{bmatrix} \wk
+\begin{bmatrix} \Eo & \Ero \\ 0 & \Er \end{bmatrix} \wk
 \\
 \yk &= C\xk = \xo_k
 \end{aligned}
@@ -83,14 +270,14 @@ We will suppose that the system is monotonic.
 And that the noise and the inputs are bounded:
 \begin{equation}
 \begin{aligned}
-\u &\in [\minf{\u},\msup{\u}]\\
-\w &\in [\minf{\w},\msup{\w}]\\
+\u &\in [\minf{\u},\msup{\u}] \subset \mathbb{R}^{n_u}\\
+\w &\in [\minf{\w},\msup{\w}] \subset \mathbb{R}^{n_w}\\
 \end{aligned}
 \end{equation}
 
 \section{Abstraction reduction}
 
-The abstraction reduction is performed in this way. First, we define the smallest invariant of the unobserved state:
+The abstraction reduction is done in this way. First, we define the smallest invariant of the unobserved state:
 $$
 \Xrinv = [\xrinf,\xrsup]
 $$
@@ -102,7 +289,7 @@ $$
 \end{aligned}
 $$
 
-Lets now define analytically the set $\Xr(U)$ that correspond to the interval that contain the image of $\Xrinv$ after applying the control sequence $U = [u_1,\dots,u_n]$.
+Lets now define analytically the set $\Xr(U)$ that correspond to the image of $\Xrinv$ after applying the control sequence $U = [u_0,\dots,u_{n-1}]$.
 Thanks to the monotonicity property, we have the following property:
 \newcommand{\xui}{\minf{\x}^U_r}
 \newcommand{\xus}{\msup{\x}^U_r}
@@ -121,16 +308,16 @@ so that $\Wsup$ and $\Winf$ are a sequence of $n$ elements.
 \newcommand{\An}{\mathcal{A}^r_n}
 \newcommand{\Bn}{\mathcal{B}^r_n}
 \newcommand{\En}{\mathcal{E}^r_n}
-\begin{align}
+\begin{align} \label{expr:xur}
 \xu &=
 \begin{bmatrix}
-A_r^k & A_r^{k-1} &\dots & A_r & I
+A_r^n & A_r^{n-1} &\dots & A_r & I
 \end{bmatrix}
 \begin{bmatrix}
 \x_0 \\
 B_r \u_0 + E_r \w_0\\
 \vdots \\
-B_r \u_{k-1} + E_r \w_{k-1}\\
+B_r \u_{n-1} + E_r \w_{n-1}\\
 \end{bmatrix}\\
 \xu &=
 \An
@@ -154,7 +341,8 @@ B_r &
 \dots &
 B_r
 \end{bmatrix})
-\textrm{ and }
+$$
+$$\textrm{ and }
 \En = 
 diag(\begin{bmatrix}
 E_r &
@@ -163,39 +351,61 @@ E_r
 \end{bmatrix} )
 $$
 
+$$
+W = \begin{bmatrix}
+\w_0\\
+\vdots\\
+\w_{n-1}
+\end{bmatrix}
+\textrm{, }
+U = \begin{bmatrix}
+\u_0\\
+\vdots\\
+\u_{n-1}
+\end{bmatrix}
+$$
+
 \newcommand{\xuki}{\minf{\x}^{U_k}_r}
 \newcommand{\xuks}{\msup{\x}^{U_k}_r}
 \newcommand{\xuk}{\x^{U_k}_r}
 Let define the variable $\xuki$ and $\xuks$ (guess it from previous definition).
 
 \section{Admissible noise}
-We would like now to compute the admissible noise that our new abstraction is able to handle.
+In the previous sections, we have been using a dynamical model to build an abstraction $S_a$. In this part, we will solve the opposite problem:  we would like to find all the admissible models that can be alternatively simulated by $S_a$.
+
+In our case, we will just investigate the set of admissible noise sequences.
+
+\newcommand{\ANoise}{\Omega}
+\newcommand{\NoiseSet}{\mathcal{W}}
+\newcommand{\infseq}{\omega}
+\newcommand{\xa}{\x^a}
+
 \newcommand{\sykn}{\msup{\y}_{k+1}}%
 \newcommand{\iykn}{\minf{\y}_{k+1}}%
-Recall the definition of the alternate simulation relation, the system is alternately simulated by the abstraction if for every $\ykn$ we have:
-$$
-\ykn \in [\sykn,\iykn]
-$$
+For a sequence of noise given, if the following condition is verified for every trajectory of the system at every timesteps, then the noise sequence is an admissible noise sequence for the system:
+\begin{equation} \label{valid_transition}
+\ykn \in [\iykn,\sykn]
+\end{equation}
 where 
 \begin{align*}
-\sykn &= C \msup{\xo}_{k+1}\\
-\sykn &= C A 
+\sykn &= C \msup{\xo}_{k+1} = 
+C A 
 \begin{bmatrix}
 \xo_{k} \\
 \xuks
 \end{bmatrix}
 + C B \uk + C E \msup{\w}
 \\
-\iykn &= C \minf{\xo}_{k+1}\\
-\iykn &= C A 
+\iykn &= C \minf{\xo}_{k+1} 
+= C A 
 \begin{bmatrix}
 \xo_{k} \\
 \xuki
 \end{bmatrix}
 + C B \uk + C E \minf{\w}
 \\
-\ykn &= C \minf{\xo}_{k+1}\\
-\ykn &= C A 
+\ykn &= C \xo_{k+1}
+= C A 
 \begin{bmatrix}
 \xo_{k} \\
 \xuk
@@ -203,10 +413,7 @@ where
 + C B \uk + C E \wk
 \end{align*}
 
-We will now use the different form to get a condition over $\Wk$.
-
-Lets gooooo!
-
+We will now use the inequalities \ref{valid_transition} to get a condition over $\Wk$:
 \begin{align*}
 \ykn \mleq \sykn
 & \Leftrightarrow
@@ -225,6 +432,7 @@ C A
 \En (\Wrsup - \Wrk)
 \end{bmatrix}
 + C E (\msup{\w} -\wk)
+&& \textrm{see \ref{expr:xur}}
 \end{align*}
 
 We have the following equality:
@@ -234,7 +442,8 @@ C A \begin{bmatrix} 0 \\ \An \end{bmatrix}
 \end{align*}
 
 So,
-\begin{align*}
+\begin{equation}\label{upp_equi}
+\begin{split}
 \ykn \mleq \sykn
 & \Leftrightarrow
 0 \mleq
@@ -244,11 +453,13 @@ So,
 \En (\Wrsup - \Wrk)
 \end{bmatrix}
 + C E (\msup{\w} -\wk)
-\end{align*}
+\end{split}
+\end{equation}
 
 We can derive the same inequality with $\iykn$:
 
-\begin{align*}
+\begin{equation}\label{low_equi}
+\begin{split}
 \iykn \mleq \ykn
 & \Leftrightarrow
 0 \mleq
@@ -258,57 +469,43 @@ We can derive the same inequality with $\iykn$:
 \En (\Wrk - \Wrinf)
 \end{bmatrix}
 + C E (\wk - \minf{\w})
-\end{align*}
-If we are able to find what is the upper bounds of all the trajectories $\xr_{k-n}$ for the previously given constraint, then the problem is solved:
-\begin{align*}
-0 \mleq
+\end{split}
+\end{equation}
+
+\newcommand{\filter}{\mathcal{F}}
+Inequality \ref{borne_sup} and \ref{low_equi} can be seen as a filter $G$. Let $\zk=[\xr_{k-n},\wr_{k-n},\dots,\wr_{k-1}]$  defined by:
+\begin{equation}
+\filter:
+\left\{
+\begin{split}
+\zkn &= F \zk + G \wk \\
+\hk &= H \zk + K \wk \\
+\end{split}
+\right.
+\end{equation}
+where
+\begin{equation}
+F = \begin{bmatrix}
+A & E & 0\\
+0 & 0 & I_\z\\
+0 & 0 & 0 \\
+\end{bmatrix}
+\textrm{, }
+H = 
 \Aro \An
 \begin{bmatrix}
-\xrsup - \msup{z} \\
-\En (\Wrsup - \Wrk)
+I \\
+\En
 \end{bmatrix}
-\Rightarrow
-\ykn \mleq \sykn
-\end{align*}
-
-\textit{I have forgotten the part of the noise coming from $CE$.}
-
-\textit{TODO: finish the computations, do them for $\minf{\w}$, plot some curves.}
-
-Where $\msup{z}$ is the upper bound of all the trajectories of the following system:
-\newcommand{\z}{\vect{z}}%
-\newcommand{\zk}{\z_k}%
-\newcommand{\zkn}{\z_{k+1}}%
+\textrm{, }
+K = \En
+\end{equation}
+with $I_\z$ the identity matrix of size $(n-2)\size$.
+Let,
 \begin{align*}
-&\zkn = A_r \zk + E_r \wk \\
-&\forall k \in \mathbb{N}, \sum_{i=1}^n A^{n-i} E \w_{k+i} \in [\minf{\w}_z,\msup{\w}_z]
+\msup{\h} &= H \msup{\z} + K \wrsup\\
+\minf{\h} &= H \minf{\z} + K \wrinf
 \end{align*}
-
-I need to find the interval where all the trajectories lies for an integral constraint over the noise.
-
-This equation correspond to an integral constraint over the noise.
-
-Please note that the maximum constant noise admissible noise remain the same, however, the system is capable to handle integral bounds of the noise (which is a bigger set).
-
-\paragraph{Monotonic system with special integral constraint.}
-Lets consider the following system.
-\begin{align*}
-\xkn = A \xk + E \wk \\
-\forall k \in \mathbb{N}, \sum_{i=1}^n A^{n-i} E \w_{k+i} \in [\minf{\w},\msup{\w}]
-\end{align*}
-\newcommand{\mxint}{[\minf{\x},\msup{\x}]}
-We would like to find a monotone invariant $\mxint$ of the system.
-
-If I prove it for a sequence (parametrized for a $x$ in this sequence) then I will be able to prove it for the full system.
-
-\paragraph{If no closed form solution:} just do it on a stupid example. Did it for the quad.
-Super efficient.
-
-I need to do real measurement on the quad.
-
-\section{Frequency analysis of the admissible noise}
-Talk about the fact that the model can deal with this can of noise.
-
-Maybe
+Then \ref{upp_equi} and \ref{low_equi} are satisfied if the output of the filter $\filter$ is in $[\minf{\h},\msup{\h}]$ for all the timesteps.
 
 \end{document}

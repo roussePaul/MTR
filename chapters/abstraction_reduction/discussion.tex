@@ -1,18 +1,13 @@
 \section{Discussion}
-Advantage: by knowing the $R_w$, we can design the optimal noise ie no measure needed.
-
-Here we will discuss how does this abstraction behave.
 
 \subsection{Reduction}
-As it as been mentioned in the introduction, this abstraction does not always end up in a smaller abstraction than a direct discretization of the state space.
-
-"Optimal" discretization, say that all of them are reached.
+As it as been mentioned in the introduction, the "abstraction reduction" does not always create smaller abstractions.
+This depends on the type of inputs (discrete, continuous), the number of dimension of inputs, the dimension of the suppressed subspace of the state space and the initial discretization of it.
 
 \subsection{Covering/Overlap in the state space}
-When we replace the knowledge of a part of the state by the estimation of the state based on inputs, there can be no equivalent discretization of the state space.
+When we replace the knowledge of part of the state by the estimation of the state based on inputs, there can be no equivalent discretization of the state space.
 Mainly because 2 input sequences can produce reached sets that overlaps.
 These overlap (see \ref{fig:overlapp}) cannot happened in discretization of the state space without any memory (the state is supposed to belong to one and only one observation).
-The equivalent discretization of the state space to keep the same reachability property produce larger abstraction.
 
 We will see later that it can bring to improvement of the size of the abstraction in practice.
 
@@ -87,10 +82,32 @@ $|U|$ & $n_u$ & $n_u$\\
 $V_w$ &  & bigger \\
 \end{tabular}
 
-\section{Notes for the future}
+\subsection{Size of the reached sets}
+Talk about the continuous model
+
+Studying the continuous case can give us a good insight about the influence of the sampling rate over the size of the estimated sets.
+
+For the following model:
+\begin{equation}
+\dot{\x} = A \x + B \vu + E \w
+\end{equation}
+we can show that for a quadratic Lyapunov function, we can compute an upper bound on the size of the successors of the model.
+The noise is moving the state from its equilibrium position, and every increase of the noise magnitude increase the number of successors.
+
+The figure \ref{fig:lyap_deacr} is a plot of the lyapunov decrease.
+From this graphic we can see that as the time passes, the number of successors between the reduced and the non reduced abstraction tend to be the same. This mean that when the sampling rate is slower than the dynamics, the number of successors of the models will almost the same (compared to the volume of successors).
+However, when the sampling rate is faster than the dynamic, the reduction over approximate the set of successors, and it might be more interesting to keep the observation of the model.
+
+Ones should note as well than the number of successors is always smaller for the abstraction than for the reduced model. This come from the fact that the set of all the possible estimation of the state must contain the measure.
+However, when it comes to state space discretization this difference might not be the same as the knowledge of the sequence of past inputs is not used. 
+
+\subsection{Reachability/Controllability}
+Reachable sets are computed with the invariant set. As the invariant set is an over approximation of the state, it is always possible to find a discretization of the unobserved subspace that create less successors than the estimation of the state.
+This might results in an abstraction that is unusable whatever the number of memories we are using or the sampling rate of the model.
+
+\subsection{Notes}
 Self loops are not desirable.
 
 Self loops hide any time information (that is why I have been working on the time information chapter).
 
 In the case of the reduction of the abstraction.
-
