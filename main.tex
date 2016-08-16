@@ -4,6 +4,11 @@
 \usepackage{import}
 \usepackage{enumitem}
 
+% copyright sign
+\usepackage{textcomp}
+\renewcommand{\copyright}{\textsuperscript{\textcopyright}}
+\newcommand{\trademark}{\textsuperscript{\texttrademark}}
+
 %% MATH
 \usepackage{amsmath, amsfonts, amsthm}
 \usepackage{nicefrac}
@@ -58,16 +63,13 @@
 
 %% GRAPHICS
 \usepackage{graphicx}
-\graphicspath{{./plots/}{./env/}}
+\graphicspath{{./plots/}{./env/}{./results/}}
 \usepackage[mode=buildnew]{standalone}
 \usepackage{epstopdf}
 
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
 \usepackage{pgfplots}
-\usepackage{subcaption}
-
-
 
 % DEFINITION/THEOREM ENVIRONMENTS
 \newcommand{\inlinedef}[1]{\textit{#1}}
@@ -173,6 +175,9 @@
 
 \newcommand{\T}[1]{#1{}^\top}
 \newcommand{\proj}[1]{|_{#1}}
+
+\renewcommand{\exp}[1]{e^{#1}}
+
 \begin{document}
 
 
@@ -199,6 +204,7 @@
 \newcommand{\SSunobs}{\mathfrak{X}^i}
 \newcommand{\SSobs}{\mathfrak{X}^o}
 \newcommand{\Ninputs}{\Delta n_u}%
+\newcommand{\y}{\vect{y}}%
 \newcommand{\x}{\vect{x}}%
 \newcommand{\xa}{\vect{x}^a}%
 \newcommand{\xobs}{\vect{x}^o}%
@@ -243,12 +249,18 @@
 \newcommand{\w}{\vect{w}}%
 \newcommand{\s}{\vect{s}}%
 \newcommand{\st}{\vect{t}}%
-\input{chapters/abstraction_reduction/abstraction.tex}
-\input{chapters/abstraction_reduction/reach_monotone.tex}
-\input{chapters/abstraction_reduction/discussion.tex}
+%\input{chapters/abstraction_reduction/abstraction.tex}
+%\input{chapters/abstraction_reduction/reach_monotone.tex}
+%\input{chapters/abstraction_reduction/discussion.tex}
 
-\chapter{Backward reachability algorithm}
-\input{chapters/algorithm/backward_reach_alg.tex}
+%\chapter{Backward reachability algorithm}
+%\input{chapters/algorithm/backward_reach_alg.tex}
+
+\chapter{Experiments}
+\input{chapters/results/model.tex}
+\input{chapters/results/single1Dexperiments.tex}
+\input{chapters/results/single2Dexperiments.tex}
+%\input{chapters/results/multiagentexperiments.tex}
 
 %\bibliographystyle{kthplain}
 %\bibliography{bibliography}{}
