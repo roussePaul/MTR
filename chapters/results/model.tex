@@ -79,26 +79,25 @@ k \exp{-k \dt}
 E_d = Ad
 \end{equation*}
 
-We can then identify the different matrices used for the reduction of the abstraction:
-\begin{equation}
-A_r =  \begin{bmatrix} \exp{-k\dt} \end{bmatrix} 
-\textrm{, }
-B_r =  \begin{bmatrix} k \exp{-k\dt} \end{bmatrix} 
-\textrm{, }
-E_r =  \begin{bmatrix} \exp{-k\dt} \end{bmatrix} 
-\textrm{, }
-A_z =  \begin{bmatrix} 1 \end{bmatrix} 
-\textrm{, }
-\end{equation}
-\begin{equation}
-A_{rz} =  \begin{bmatrix} (\exp{-k \dt} - 1)\frac{1}{k} \end{bmatrix} 
-\textrm{, }
-B_z =  \begin{bmatrix} \exp{-k \dt} - 1 \end{bmatrix} 
-\textrm{, }
-E_z =  \begin{bmatrix} \exp{-k \dt} - 1 \end{bmatrix} 
-\textrm{, }
-E_{rz} =  \begin{bmatrix} (\exp{-k \dt} - 1)\frac{1}{k} \end{bmatrix} 
-\end{equation}
+We can then identify the different matrices used for the reduction of the abstraction:\\
+\begin{tabular}{lll}
+$A_r =  \begin{bmatrix} \exp{-k\dt} \end{bmatrix} $
+&
+$A_z =  \begin{bmatrix} 1 \end{bmatrix} $
+&
+$A_{rz} =  \begin{bmatrix} (\exp{-k \dt} - 1)\frac{1}{k} \end{bmatrix}$
+\\
+$B_z =  \begin{bmatrix} \exp{-k \dt} - 1 \end{bmatrix} $
+&
+$B_r =  \begin{bmatrix} k \exp{-k\dt} \end{bmatrix} $
+&
+\\
+$E_r =  \begin{bmatrix} \exp{-k\dt} \end{bmatrix} $
+&
+$E_z =  \begin{bmatrix} \exp{-k \dt} - 1 \end{bmatrix} $
+&
+$E_{rz} =  \begin{bmatrix} (\exp{-k \dt} - 1)\frac{1}{k} \end{bmatrix}$
+\end{tabular}
 
 We will choose an input set $\U = \{-0.2,0.0,0.2\}$.
 We have been modelling the noise with $\W = [\minf{\w},\msup{\w}]$.
@@ -108,7 +107,8 @@ We have been modelling the noise with $\W = [\minf{\w},\msup{\w}]$.
 \msup{\w} = \T{ \begin{bmatrix}  0.02& 0.15 \end{bmatrix} }
 \end{equation}
 
-The position and the velocity are not coupled. The input and noise sets are bounded and the matrix $A_r$ have eigenvalues strictly less than 1. So all the assumptions about the abstraction are met. More over, the reduced system is monotonic.
+The input and noise sets are bounded. The position and the velocity are not coupled and the dynamic on the velocity is asymptotically stable.
+We can therefore do the reduction of the abstraction on the velocity. More over, the reduced system is monotonic.
 
 \subsection{Discretization of the environment}
 \begin{figure}
