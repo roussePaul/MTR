@@ -1,0 +1,73 @@
+\section{Self loops}
+%///////////////////////////////////////////////////////////
+%*** Self loops ***
+%	!! pb pas vraiment à propos de la réduction, plus à propos de l'algo
+%	- arguments about considering the self loops (this is about the strategy chosen for the algorithm, not about the abstraction)
+%		. special case where there is no inputs: single integrator
+%			¤ why do I choose the single integrator?
+%			-> I have to choose a model, this case is interesting to show that it is really efficient in some case
+%		. give the link between state space discretization and sampling rate
+%		. way smaller discretization for the same sampling rate
+%		%% show the graphs about the single integrator
+%
+%	- disadvantage of self loops
+%		-> create asynchronous systems that are terrible for multi agent systems, we are loosing time information which is super bad for synchronisation of course
+%		can I find a number to talk about it
+%///////////////////////////////////////////////////////////
+%
+\newcommand{\Snosl}{S_{nosl}}
+\newcommand{\Ssl}{S_{sl}}
+\newcommand{\xdsl}{\xd^{sl}}
+\newcommand{\xdnosl}{\xd^{nosl}}
+In this part we intend to show how does the self loops can reduce the complexity of the formal controller synthesis.
+We will work with the 0-reduced model ($\Ninputs=0$) that can be treated as the single integrator model.
+
+Let $\Ssl$ the abstraction with self loops. And $\Snosl$ the abstraction without any self loops (except on null control inputs).
+The sampling time $\dt$ for the 2 models will be the same.
+
+For the abstraction $\Ssl$, the only requirement so that the abstraction is controllable is that $\abs{\u}>\abs{\w}$ for all non null controls $\u$ and all noise $\w$.
+This inequality assert that the system must be able to counteract the influence of the noise.
+In the case of the abstraction $\Snosl$, the control input must at least bring the state to the next cell.
+Let $\xdnosl$ the discretization step of $\Snosl$, $\xdnosl$ must verify $\xdnosl<\abs{\u + \w}\dt$ for any non null control actions $\u$ and any noise $\w$. 
+
+Figure \ref{fig:simple_int_sl} show that for a fixed length of the environment, the model $\Ssl$ will have the same complexity for any noise level (as long as it is smaller than the input $\u$).
+In the case of the abstraction $\Snosl$, as the number of cells needed to find a solution to the controller is inversely proportional to the noise magnitude.
+
+\begin{figure}
+	\includestandalone[width=0.5\textwidth]{single_int_self_loops_less}
+	\caption{Testing environment}
+	\label{fig:simple_int_sl}
+\end{figure}
+
+\subsection{Size of the fixed points}
+%///////////////////////////////////////////////////////////
+%*** Size of the fixed point ***
+%	%% plot the influence of the size of the fixed point for the single integrator
+%	- show that the best option is to limit it as possible (but it does worth it for small number of fixed points)
+%///////////////////////////////////////////////////////////
+%
+The real drawback of strong cyclic planning method lie in the search of a fair control combination. Lets try to see what are the limitation of the algorithm.
+In the previous experiments, we have been investigating cases where the maximal fixed point size is equal to 2. However, this complexity is increasing exponentially in the number of controls in $\U$ and in the number of possible successors (the number of combinations of controls for a set of $n$ nodes is equal to $|\U|^n$).
+
+The current implementation of our algorithm is not able to deal with computation of fixed point bigger that 9 (which corresponds in our model where $|\U|= 9$ to $|\U|^9 \approx 3.8e8$ possible fixed points configurations).
+We have been running a test (see figure \ref{fig:cycle_sizes}) with increasing number of successors. 
+The more successors we have, the biggest will be the fixed points of the plan. This result in a higher complexity.
+
+Models with undesirable self loops (self loops that appear on input different from \uo) produce systems where a transition will be taken after an unknown finite time.
+This hide all the time information of our system.
+For multi agent applications, these models behave the same as asynchronous system.
+This result in a possible state space that is generally too high to use any graph search algorithm on it.
+
+\begin{figure}
+\centering
+\begin{minipage}[t]{0.49\linewidth}
+	\includestandalone[width=\linewidth]{nbre_succ_single_int}
+	\caption{Influence of the strong cycles sizes.}
+	\label{fig:cycle_sizes}
+\end{minipage}
+\begin{minipage}[t]{0.49\linewidth}
+	\includestandalone[width=\linewidth]{nbre_node_single_int_size_fp}
+	\caption{Influence of the number of successors over the number of nodes for different models: without self loops (wol), with self loops (wl), with 9 or 4 successors.}
+	\label{fig:max_cycle_tree}
+\end{minipage}
+\end{figure}

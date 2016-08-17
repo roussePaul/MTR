@@ -59,7 +59,7 @@
 \newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
 \newcommand{\leftint}{\left \llbracket}
 \newcommand{\rightint}{\right \rrbracket}
-
+\newcommand{\abs}[1]{\left|#1\right|}
 
 %% GRAPHICS
 \usepackage{graphicx}
@@ -160,7 +160,9 @@
 \newcommand{\sysDef}[1]{(\)}
   
 %% COMMENTS
-\renewcommand{\comment}[1]{\textit{\textbf{#1}}}
+\usepackage{color}
+\definecolor{colorcomment}{RGB}{100,0,250}
+\renewcommand{\comment}[1]{\textit{\textbf{\color{colorcomment} #1}}}
 
 %% SUPER SCRIPT STUFF
 \makeatletter
@@ -249,6 +251,9 @@
 \newcommand{\s}{\vect{s}}%
 \newcommand{\st}{\vect{t}}%
 %
+% discretization steps
+\newcommand{\xd}{\x_d}
+\newcommand{\vd}{\vect{v}_d}
 %
 \chapter{Abstraction reduction}
 %\input{chapters/abstraction_reduction/abstraction.tex}
@@ -260,10 +265,22 @@
 %\input{chapters/algorithm/backward_reach_alg.tex}
 %
 %
-%\chapter{Experiments}
-%\input{chapters/results/model.tex}
-%\input{chapters/results/single1Dexperiments.tex}
-%\input{chapters/results/single2Dexperiments.tex}
+\chapter{Model}
+\newcommand{\um}{\u_{-}}
+\newcommand{\up}{\u_{+}}
+\newcommand{\uo}{\vect{0}}
+\input{chapters/results/model.tex}
+
+\chapter{Simulations}
+\input{chapters/simulation/algorithm.tex}
+\input{chapters/simulation/abstraction.tex}
+\input{chapters/simulation/feasability.tex}
+\input{chapters/simulation/noise.tex}
+
+\chapter{Experiments}
+\input{chapters/results/setup.tex}
+\input{chapters/results/single1Dexperiments.tex}
+\input{chapters/results/single2Dexperiments.tex}
 %\input{chapters/results/multiagentexperiments.tex}
 
 %\bibliographystyle{kthplain}

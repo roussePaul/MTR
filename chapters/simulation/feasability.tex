@@ -1,0 +1,319 @@
+\section{Size of the environment}
+%///////////////////////////////////////////////////////////
+%*** State space discretization and sampling rate constraints for feasability ***
+%	- explain that there is no rules about it, it is specific to applications
+%
+%	~ slowly converge to the idea that for a model it might not exist any parameter set solution for the problem
+%	~ abstraction is then not precise enough
+%	- constraint on the discretization for all the models
+%		%% global constraints
+%			upper constraint: not going out of the environment
+%		%% specific constraints
+%			no self loops on the velocity in the 2sd int model
+%			no going backward for the simple int
+%		%% show that for some models, it is not possible to find abstraction controllable for all the sampling rates
+%			too noisy
+%	
+%	- conclude with a link between the size of the environment and the feasability
+%///////////////////////////////////////////////////////////
+%
+\paragraph{Comparison for the second integrator model over 1 dimension:} in this paragraph, we are going to investiguate when each model are better than each other.
+We will compare 3 different models:
+the second integrator model,
+the reduced model of the second integrator ($\Delta n_u = 1$)
+and the single integrator model (which is equivalent to the second integrator reduced model with $\Delta n_u = 0$).
+In each cases, we will choose the optimal discretization. These tests are made in 1 dimension in order to be able to work with the 3 models (the complexity might be sometime too high for them).
+
+These study is supposed to give us a good inside in what to do.
+
+I have been working on different models mainly because the size of the environment is  too small for using a single integrator.
+
+
+Figures \ref{fig:compare_cpu} and \ref{fig:compare_dt} show the comparison between the different models. We have been running algorithm to search for the smallest (in term of nodes) abstraction for different models: the second integrator with velocity feedback, the reduced model with $\Delta n_u = 1$ and $\Delta n_u = 0$.
+As we have seen in the previous sections, the reduction can hide the transient state of the intial model and reduce the size of the abstraction.
+These results are showing this.
+When the size of the environment is too small, the transient state of the single integrator is making the all model uncontrollable and w are not able to find any solution to the problem.
+By adding some states to take in account the transient state, we can find a solution to the problem for $L<|u| \lambda$. Both the second integrator model and the 1-input reduced model are usable in this situation, however, the discretization of the velocity in the second integrator model most of the time is the "same" than the reduced model. So I believe that the reduced model is finding directly the optimal abstraction in this case.
+On the 2 figures, the vertical lines correspond to limits where we were not able to find valid abstraction in these area. In the case of the single integrator without loops, it correspond to the limits where any decrease of the sampling time create self-loops,. For the single integrator with self-loops, it correspond to controllability issues. For 2 other models, it might be more complex to understand.
+
+\comment{I need to add the single integrator without self-loops in order to show when it is better to use it instead of the single integrator.}
+\comment{talk about typical distances that make sense to compare the abstraction to.}
+\comment{Try to determine what is extrem size where we will not be able to control the plant (by taking an infinite precise abstraction). To show until when it is smart to perform the study.}
+
+
+\pgfplotstableread{
+a N_pos CPU_time diam nc b_pos L edges v_max nodes N_vel sl found max_fixed_point_size deg dt b_vel
+1.00e-01 22 1.69e+01 13 9.02e+00 1.00e-02 0.063095734448019331 3620 1.05e-01 244 13 5.16e-01 1 2 4.95e+00 0.17692307692307691 1.00e-02
+1.00e-01 18 5.46e+00 14 7.98e+00 1.00e-02 0.085769589859089418 1874 1.05e-01 168 11 6.07e-01 1 2 3.72e+00 0.19090909090909092 1.00e-02
+1.00e-01 6 7.07e-02 5 2.10e+00 1.00e-02 0.11659144011798317 158 1.05e-01 20 5 1.00e+00 1 2 2.63e+00 0.40000000000000002 1.00e-02
+1.00e-01 6 2.98e-02 5 1.19e+00 1.00e-02 0.15848931924611137 52 1.05e-01 10 3 1.00e+00 1 2 1.73e+00 0.53333333333333344 1.00e-02
+1.00e-01 6 2.59e-02 5 1.19e+00 1.00e-02 0.21544346900318839 52 1.05e-01 10 3 1.00e+00 1 2 1.73e+00 0.53333333333333344 1.00e-02
+1.00e-01 4 1.92e-02 3 5.76e-01 1.00e-02 0.29286445646252368 28 1.05e-01 6 3 1.00e+00 1 2 1.56e+00 1.1333333333333335 1.00e-02
+1.00e-01 4 1.89e-02 3 5.76e-01 1.00e-02 0.39810717055349731 28 1.05e-01 6 3 1.00e+00 1 2 1.56e+00 1.1333333333333335 1.00e-02
+1.00e-01 4 1.95e-02 3 5.76e-01 1.00e-02 0.54116952654646377 28 1.05e-01 6 3 1.00e+00 1 2 1.56e+00 1.0333333333333334 1.00e-02
+1.00e-01 4 2.01e-02 3 5.76e-01 1.00e-02 0.73564225445964138 28 1.05e-01 6 3 1.00e+00 1 2 1.56e+00 1.1333333333333335 1.00e-02
+1.00e-01 4 1.88e-02 3 5.76e-01 1.00e-02 1.0 28 1.05e-01 6 3 1.00e+00 1 2 1.56e+00 1.1333333333333335 1.00e-02
+} \datadouble
+
+\pgfplotstableread{
+a                     CPU_time  b                     nc         nodes  L                     edges  N  diam  sl        dt                   max_fixed_point_size  deg
+0.061562757024726023 1.07e-02 0.053437242975273962 -3.27e-01 3 0.20309176209047358 7 4 3 1.00e+00 1.1773435408566417 2 7.78e-01
+0.066564806686465611 9.60e-03 0.048435193313534394 -3.27e-01 3 0.24244620170823283 7 4 3 1.00e+00 1.4054852272941025 2 7.78e-01
+0.071239311624347129 1.53e-02 0.043760688375652876 -3.27e-01 3 0.28942661247167517 7 4 3 1.00e+00 1.6778354346184061 2 7.78e-01
+0.07549146940430515 1.34e-02 0.039508530595694882 -3.27e-01 3 0.34551072945922201 7 4 3 1.00e+00 2.0029607504882421 2 7.78e-01
+0.079264202173056367 1.04e-02 0.035735797826943631 -3.27e-01 3 0.41246263829013524 7 4 3 1.00e+00 2.3910877582036765 2 7.78e-01
+0.082541429295829152 1.26e-02 0.03245857070417088 -3.27e-01 3 0.49238826317067413 7 4 3 1.00e+00 2.854424714032886 2 7.78e-01
+0.085342779834559082 inf 0.02965722016544093 0.00e+00 3 0.58780160722749153 9 4 2 1.00e+00 3.4075455491448792 2 1.00e+00
+0.087712089589932069 1.38e-02 0.02728791041006794 -3.27e-01 3 0.70170382867038295 7 4 3 1.00e+00 4.0678482821471471 2 7.78e-01
+0.089704299805719326 inf 0.0252957001942807 0.00e+00 3 0.83767764006829204 9 4 2 1.00e+00 4.8561022612654607 2 1.00e+00
+0.091375079517141883 1.11e-02 0.023624920482858119 -3.27e-01 3 1.0 7 4 3 1.00e+00 5.7971014492752149 2 7.78e-01
+0.092775037398332053 1.36e-02 0.022224962601667984 -3.27e-01 3 1.1937766417144369 7 4 3 1.00e+00 6.9204442997937541 2 7.78e-01
+0.093947804881452393 8.95e-03 0.021052195118547615 -3.27e-01 3 1.4251026703029992 7 4 3 1.00e+00 8.2614647553796381 2 7.78e-01
+0.094930211151424457 inf 0.020069788848575569 0.00e+00 3 1.7012542798525891 9 4 2 1.00e+00 9.8623436513193568 2 1.00e+00
+0.095753151230405009 8.73e-03 0.01924684876959501 -3.27e-01 3 2.030917620904737 7 4 3 1.00e+00 11.773435483505242 2 7.78e-01
+0.096442509744749647 1.59e-02 0.018557490255250341 -3.27e-01 3 2.4244620170823281 7 4 3 1.00e+00 14.054852272940501 2 7.78e-01
+0.097019969958414221 8.19e-03 0.017980030041585791 -3.27e-01 3 2.8942661247167516 7 4 3 1.00e+00 16.778354346184024 2 7.78e-01
+0.097503695467431803 1.04e-02 0.017496304532568202 -3.27e-01 3 3.4551072945922217 7 4 3 1.00e+00 20.029607504882438 2 7.78e-01
+0.097908901510266516 1.37e-02 0.017091098489733517 -3.27e-01 3 4.1246263829013525 7 4 3 1.00e+00 23.910877582036818 2 7.78e-01
+0.098248333551969616 1.50e-02 0.016751666448030406 -3.27e-01 3 4.9238826317067419 7 4 3 1.00e+00 28.544247140327858 2 7.78e-01
+0.09853266818362616 1.40e-02 0.016467331816373859 -3.27e-01 3 5.878016072274912 7 4 3 1.00e+00 34.075455491425771 2 7.78e-01
+0.098770848946862846 1.55e-02 0.016229151053137145 -3.27e-01 3 7.0170382867038299 7 4 3 1.00e+00 40.678482821444796 2 7.78e-01
+0.098970367646518495 1.54e-02 0.016029632353481541 -3.27e-01 3 8.3767764006829246 7 4 3 1.00e+00 48.561022612520958 2 7.78e-01
+0.099137499999999282 1.18e-02 0.015862500000000695 -3.27e-01 3 10.0 7 4 3 1.00e+00 57.971014492706857 2 7.78e-01
+} \datasimple
+
+\pgfplotstableread{
+a N_pos CPU_time diam nc b_pos L v_max nodes edges sl found max_fixed_point_size deg dt b_vel
+1.00e-01 6 3.34e-02 5 1.92e+00 1.00e-02 0.083767764006829198 1.05e-01 15 109 1.00e+00 1 1 2.42e+00 0.28999999999999992 1.00e-02
+1.00e-01 6 3.27e-02 5 1.92e+00 1.00e-02 0.10000000000000001 1.05e-01 15 109 1.00e+00 1 1 2.42e+00 0.28999999999999992 1.00e-02
+1.00e-01 6 3.29e-02 5 1.92e+00 1.00e-02 0.1193776641714437 1.05e-01 15 109 1.00e+00 1 1 2.42e+00 0.29999999999999993 1.00e-02
+1.00e-01 6 3.39e-02 5 1.92e+00 1.00e-02 0.14251026703029984 1.05e-01 15 109 1.00e+00 1 1 2.42e+00 0.28999999999999992 1.00e-02
+1.00e-01 6 3.26e-02 5 1.92e+00 1.00e-02 0.17012542798525893 1.05e-01 15 109 1.00e+00 1 1 2.42e+00 0.28999999999999992 1.00e-02
+1.00e-01 6 3.17e-02 5 1.92e+00 1.00e-02 0.20309176209047358 1.05e-01 15 109 1.00e+00 1 1 2.42e+00 0.28999999999999992 1.00e-02
+1.00e-01 3 1.74e-02 3 5.76e-01 1.00e-02 0.24244620170823283 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 2.00e-02 3 5.76e-01 1.00e-02 0.28942661247167517 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 2.28e-02 3 5.76e-01 1.00e-02 0.34551072945922201 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0399999999999996 1.00e-02
+1.00e-01 3 1.90e-02 3 5.76e-01 1.00e-02 0.41246263829013524 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0399999999999996 1.00e-02
+1.00e-01 3 1.89e-02 3 5.76e-01 1.00e-02 0.49238826317067413 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0399999999999996 1.00e-02
+1.00e-01 3 2.24e-02 3 5.76e-01 1.00e-02 0.58780160722749153 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0499999999999996 1.00e-02
+1.00e-01 3 2.11e-02 3 5.76e-01 1.00e-02 0.70170382867038295 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 2.21e-02 3 5.76e-01 1.00e-02 0.83767764006829204 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.87e-02 3 5.76e-01 1.00e-02 1.0 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 2.29e-02 3 5.76e-01 1.00e-02 1.1937766417144369 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.95e-02 3 5.76e-01 1.00e-02 1.4251026703029992 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0399999999999996 1.00e-02
+1.00e-01 3 1.88e-02 3 5.76e-01 1.00e-02 1.7012542798525891 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 2.01e-02 3 5.76e-01 1.00e-02 2.030917620904737 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.85e-02 3 5.76e-01 1.00e-02 2.4244620170823281 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.77e-02 3 5.76e-01 1.00e-02 2.8942661247167516 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.68e-02 3 5.76e-01 1.00e-02 3.4551072945922217 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0599999999999996 1.00e-02
+1.00e-01 3 1.98e-02 3 5.76e-01 1.00e-02 4.1246263829013525 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0399999999999996 1.00e-02
+1.00e-01 3 1.89e-02 3 5.76e-01 1.00e-02 4.9238826317067419 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.68e-02 3 5.76e-01 1.00e-02 5.878016072274912 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.72e-02 3 5.76e-01 1.00e-02 7.0170382867038299 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.92e-02 3 5.76e-01 1.00e-02 8.3767764006829246 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+1.00e-01 3 1.88e-02 3 5.76e-01 1.00e-02 10.0 1.05e-01 6 28 1.00e+00 1 1 1.56e+00 1.0299999999999996 1.00e-02
+}\datadoublereduced
+
+\pgfplotstableread{
+a CPU_time b nc nodes L edges N diam sl dt max_fixed_point_size deg
+0.086743962080486847 2.05e-02 0.02825603791951314 7.04e-01 6 0.6614740641230149 18 7 4 0.00e+00 3.7698611790641157 1 1.50e+00
+0.088794088924601861 2.37e-02 0.026205911075398158 7.04e-01 6 0.83767764006829182 18 7 4 0.00e+00 4.4613359045078536 1 1.50e+00
+0.090630820535082673 2.53e-02 0.024369179464917332 7.04e-01 6 1.0608183551394483 18 7 4 0.00e+00 5.3365230267374288 1 1.50e+00
+0.092241709569416269 2.24e-02 0.022758290430583712 7.04e-01 6 1.3433993325989002 18 7 4 0.00e+00 6.4447025043048729 1 1.50e+00
+0.092962706555600738 2.18e-02 0.022037293444399246 7.04e-01 6 1.5117750706156623 18 7 4 0.00e+00 7.1049994850725771 1 1.50e+00
+0.093628996364086919 1.98e-02 0.021371003635913103 7.04e-01 6 1.7012542798525891 18 7 4 0.00e+00 7.8480558531205054 1 1.50e+00
+0.094242445954468165 2.59e-02 0.020757554045531833 7.04e-01 6 1.9144819761699576 18 7 4 0.00e+00 8.6842430262270494 1 1.50e+00
+0.094805321161505987 2.23e-02 0.020194678838494035 7.04e-01 6 2.1544346900318834 18 7 4 0.00e+00 9.6252340782677397 1 1.50e+00
+0.09532017700657186 2.53e-02 0.019679822993428134 7.04e-01 6 2.4244620170823281 18 7 4 0.00e+00 10.684164773749639 1 1.50e+00
+0.095789763406779194 2.43e-02 0.019210236593220808 7.04e-01 6 2.7283333764867681 18 7 4 0.00e+00 11.875817163835599 1 1.50e+00
+0.096216943462902216 1.76e-02 0.018783056537097793 7.04e-01 6 3.0702906297578498 18 7 4 0.00e+00 13.216826000224767 1 1.50e+00
+0.096604624315970736 1.94e-02 0.018395375684029276 7.04e-01 6 3.4551072945922181 18 7 4 0.00e+00 14.725910960361578 1 1.50e+00
+0.096955700194912842 2.48e-02 0.018044299805087146 7.04e-01 6 3.8881551803080874 18 7 4 0.00e+00 16.424137963168967 1 1.50e+00
+0.097273006899109782 2.33e-02 0.01772699310089023 7.04e-01 6 4.3754793750741845 18 7 4 0.00e+00 18.335213236761511 1 1.50e+00
+0.097559286665079209 2.04e-02 0.017440713334920803 7.04e-01 6 4.9238826317067392 18 7 4 0.00e+00 20.485814243163674 1 1.50e+00
+0.097817162194447568 2.06e-02 0.017182837805552461 7.04e-01 6 5.5410203300094922 18 7 4 0.00e+00 22.905962079645072 1 1.50e+00
+0.098049118555969789 2.58e-02 0.016950881444030255 7.04e-01 6 6.2355073412739124 18 7 4 0.00e+00 25.62944055519182 1 1.50e+00
+0.098257491692691309 1.89e-02 0.016742508307308706 7.04e-01 6 7.0170382867038263 18 7 4 0.00e+00 28.694267792171864 1 1.50e+00
+0.098444462340423255 2.07e-02 0.016555537659576753 7.04e-01 6 7.8965228684997246 18 7 4 0.00e+00 32.143226936469503 1 1.50e+00
+0.098612054273609681 2.62e-02 0.016387945726390338 7.04e-01 6 8.8862381627434033 18 7 4 0.00e+00 36.02446338448393 1 1.50e+00
+0.098762135922366129 2.27e-02 0.016237864077633859 7.04e-01 6 10.0 18 7 4 0.00e+00 40.392156863921578 1 1.50e+00
+}\datasimplenosl
+
+
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+minor tick num=0,
+ylabel near ticks,
+xlabel=Size of the environment (m),
+ylabel=CPU Time ($s$),
+xmode=log,
+ymode=log,
+legend pos=north east,
+legend cell align=left,
+mark size=1.5,
+legend style = {row sep=-4pt}]
+\addplot [black,mark=x] table [x={L}, y={CPU_time}] {\datasimple};
+\addplot [black,mark=+] table [x={L}, y={CPU_time}] {\datasimplenosl};
+\addplot [black,mark=*] table [x={L}, y={CPU_time}] {\datadouble};
+\addplot [black,mark=o] table [x={L}, y={CPU_time}] {\datadoublereduced};
+
+\draw [very thin,dashed] ({axis cs:0.0837,0}|-{rel axis cs:0,1}) -- ({axis cs:0.0837,0}|-{rel axis cs:0,0});
+\draw [very thin,dashed] ({axis cs:0.203,0}|-{rel axis cs:0,1}) -- ({axis cs:0.203,0}|-{rel axis cs:0,0});
+\draw [very thin,dashed] ({axis cs:0.66,0}|-{rel axis cs:0,1}) -- ({axis cs:0.66,0}|-{rel axis cs:0,0});
+
+\draw [<-]({axis cs:0.05,2}) -- ({axis cs:0.0837,2}) node[anchor=west] {double int};
+\draw [<->]({axis cs:0.0837,1}) -- ({axis cs:0.203,1}) node[anchor=west] {1-input reduced};
+\draw [->]({axis cs:0.203,0.5}) -- ({axis cs:0.403,0.5}) node[anchor=west] {0-input reduced} ;
+\draw [->]({axis cs:0.66,0.25}) -- ({axis cs:1.2,0.25}) node[anchor=mid west,align=left,text width=3.cm] {0-input reduced without self-loops} ;
+
+\legend{$1^{st}$ int,$1^{st}$ int no sl,$2^{sd}$ int,$2^{sd}$ int reduced}
+\end{axis}
+\end{tikzpicture}
+\caption{Computation time of each models for different sizes of the environment}
+\label{fig:compare_cpu}
+\end{figure}
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+minor tick num=0,
+ylabel near ticks,
+xlabel=Size of the environment (m),
+ylabel=Sampling time ($s$),
+xmode=log,
+ymode=log,
+legend pos=north west,
+legend cell align=left,
+mark size=1,
+legend style = {row sep=-4pt}]
+\addplot [black,mark=*] table [x={L}, y={dt}] {\datasimple};
+\addplot [black,mark=o] table [x={L}, y={dt}] {\datasimplenosl};
+\addplot [black,mark=x] table [x={L}, y={dt}] {\datadouble};
+\addplot [black,mark=+] table [x={L}, y={dt}] {\datadoublereduced};
+\legend{$1^{st}$ int,$1^{st}$ int no sl,$2^{sd}$ int,$2^{sd}$ int reduced}
+\end{axis}
+\end{tikzpicture}
+\caption{Complexity of the different abstractions for different size of the environment. Here the single integrator can be build as a double integrator reduced model with $\Delta n_u=0$.}
+\label{fig:compare_dt}
+\end{figure}
+
+\section{Investigation over discretization of the state space}
+What are the constraints that does exists on the discretization of the state space?
+Many parts of my maser thesis will be justified by this.
+Therefore I need to have a clear approach about it.
+
+This part will justify all the other parts about the different models that I used.
+Try to be as theoretical as possible.
+ 
+
+In this section we will try to understand what are the constraints that apply on the discretization of the state space.
+Our main goal i to verify an LTL formula over the state space. For a given discrete model of the robot, we will say that the discretization of the state space is valid if we are able to find a controller that verify the formula.
+The main problem about the discretization is that it will depend on the LTL formula that we would like to verify. For example if we need to verify the formula $\Diamond \square a$, then the region $a$ must be discretized enough in order that it exist a controller (a finite state controller) that make this region attractive.
+Here I am questioning the feasibility of the LTL formula in the discretization.
+
+In the following paragraph we will try to see what are the impact of it for a monotone linear model and a regular uniform.
+This part just aim to give some inside about the discretization problem:
+We will start
+
+Constraints on the state space discretization:
+\begin{itemize}[noitemsep,nolistsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+\item the goals regions needs to be reachable and eventual
+\item size of $V_\w$
+\end{itemize}
+
+
+\subsubsection{Comparaison}
+We will see what is the influence of the noise on the complexity of the model.
+For $\w,\u \in \mathbb{R}^2$, let $S_\w$ the single integrator model defined by:
+
+\begin{equation}\label{eqn:sing_int}
+S_\w:
+\left \{
+\begin{array}{ll}
+\x_{n+1} &= \x_n + \u_n + \w_n\\
+\y_n &= \x_n
+\end{array}
+\right.
+\end{equation}
+
+with $\w_n \in [-\w,\w]$ and $\u_n \in \mathcal{U} \subset [-\u,\u]$ where $\mathcal{U}$ is a finite set of control inputs.
+
+If we would like to find the abstraction without any self loops, we need to choose a discretization step $\x_d$ that is smaller than $\u-\w$.
+
+In the case where we don't have such constraints, we will choose the biggest discretization step so that there exist a solution to the problem. 
+
+The loop less model needs to increase the accuracy of the model in order to solve the path planning problem.
+The discretization step of the model with loops does not depend on the noise level in this way for every noise level the complexity of the path planning algorithm remain the same.
+See figure \ref{fig:comp_loops}.
+
+\begin{figure}
+    \centering
+    \begin{minipage}[b]{0.49\textwidth}
+        \includestandalone[width=\textwidth]{single_int_self_loops_less}
+        \caption{Computation time}
+    \end{minipage}
+    \begin{minipage}[b]{0.49\textwidth}
+		\includestandalone[width=\textwidth]{single_int_self_loops_less_node}        		\caption{Number of nodes}
+    \end{minipage}
+    \caption{Comparaison of anstraction with self loops and abstraction without self loops. For the same model, when the noise increase, the model with loops does not need a finer discretization.}
+    \label{fig:comp_loops}
+\end{figure}
+
+\paragraph{Comparaison of the complexity for the same number of nodes and the same number of successors:}
+In this case we voluntary choose a suboptimal discretization so that the number of nodes for the 2 models are the same.
+The models are the same except for the control input that is chosen to get a loop less model or a model with loops.
+
+We can see that the computation time is not significantly different.
+This come from the fact that most of the fixed point that the algorithm will search for have a size of 2.
+This does not increase the complexity of the algorithm significantly.
+
+Between the two models, the number of nodes is not exactly the same mainly because in the no loop model the control action is higher than the one in the other model (which means these might bring the state outside of the boundaries, for matter of simplification, and because these nodes will not be used by the algorithm anyway, we have suppressed them).
+
+See figure \ref{fig:same_nbre_nodes}.
+
+\pgfplotstableread{
+noise	cpu_time_wo_loops	cpu_time_w_loops	nodes	nodes_loops
+0.250	1.749	2.054	64	64
+0.200	5.125	6.552	100	100
+0.167	13.468	12.752	144	144
+0.143	31.633	28.445	196	196
+0.125	71.063	54.568	256	256
+0.111	135.655	100.069	324	324
+}\datasamenode
+
+\begin{figure}
+\center
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+minor tick num=0,
+ylabel near ticks,
+xlabel=Number of nodes,
+ylabel=CPU Time ($s$),
+ymode=log,
+legend pos=north west]
+\addplot [black,mark=triangle*] table [x={nodes}, y={cpu_time_wo_loops}] {\datasamenode};
+\addplot [black,mark=*] table [x={nodes_loops}, y={cpu_time_w_loops}] {\datasamenode};
+\legend{without loops,with loops}
+\end{axis}
+\end{tikzpicture}
+\caption{Comparison of the complexity for the same number of nodes and the same number of edges but with or without self loops (note: the maximum size of the cycles is 2).}
+\label{fig:same_nbre_nodes}
+\end{figure}
+
+\section{Feasability}
+%///////////////////////////////////////////////////////////
+%*** Feasability (abstr) ***
+%	- be clear in the introduction:
+%		. we use CPU time computation just to show that the complexity of the abstraction is growing up to a point where there is no solution
+%		  but this part intend to show when the abstraction is good at finding a solution
+%
+%	%% curve about the smallest env size models for each of them
+%		. explain why dbl1 is smaller (overlapp)
+%		. explain why there is a minimal length for feasability for each of the models
+%		. mention why this curve is important (usefull to choose the models)
+%///////////////////////////////////////////////////////////
+%

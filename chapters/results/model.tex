@@ -1,14 +1,5 @@
 \section{Model of the quadricopter}
 
-\subsection{Testing environment}
-We have been doing experiments with Iris Plus 3DR\trademark quadricopters in the testing environment of the Smart Mobility Lab of KTH.
-The environment is a $5\times5$ meter based area of 2 meters high.
-Position of the agents are measured with the motion capture Qualisys\trademark.
-The computation of the discrete controller is done offline.
-
-\begin{figure}
-\includegraphics[width=\linewidth]{diagram.tex}
-\end{figure}
 
 \subsection{Model of the quadricopter}
 We have been considering each quadricopter as 
@@ -111,6 +102,28 @@ The input and noise sets are bounded. The position and the velocity are not coup
 We can therefore do the reduction of the abstraction on the velocity. More over, the reduced system is monotonic.
 
 \subsection{Discretization of the environment}
+All the discretization used are uniform.
+
+For experiments over 1 axes, we will discretize the environment in position with a discretization step $\xd$. In the case of the raw double integrator model, the velocity subspace will be discretized every $\vd$ steps.
+
+For 2D environment, we will use the same discretization steps ($\xd$) for the 2 axis and for the 2 velocity subspaces ($\vd$).
+
 \begin{figure}
-\includegraphics[width=0.5\linewidth]{grid_environment}
+\centering
+\begin{minipage}[b]{0.49\linewidth}
+\includegraphics[width=\linewidth]{grid_environment}
+\end{minipage}
+\begin{minipage}[b]{0.49\linewidth}
+\includegraphics[width=\linewidth]{state_space_repr}
+\end{minipage}
+\caption{Discretization of the 2D environment (left) and of the second integrator model (1D).}
 \end{figure}
+
+We will use the following notation:
+\begin{equation}
+\begin{split}
+\um = -0.2
+\textrm{, }
+\up = 0.2
+\end{split}
+\end{equation}

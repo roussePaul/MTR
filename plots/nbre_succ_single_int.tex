@@ -1,0 +1,41 @@
+\documentclass{standalone}
+
+\usepackage{pgfplots}
+\usepackage{pgfplotstable} % For \pgfplotstableread
+
+
+\begin{document}
+
+%\pgfplotstableread{single_int_self_loops_less.dat}{\CPUTime}
+
+
+\pgfplotstableread{
+n_succ	noise	cpu_time_wo_loops	cpu_time_w_loops	nodes	nodes_loops
+4	-0.000	0.397	5.180	36	36
+9	0.250	3.084	47.384	64	64
+16	0.400	13.785	154.962	100	100
+}\datacyclesize
+
+\pgfplotstableread{
+noise	cpu_time_wo_loops	cpu_time_w_loops	nodes	nodes_loops
+0.250	2.863	10.323	64	64
+0.200	9.404	33.502	100	100
+0.166	24.758	122.959	144	144
+0.143	58.246	193.966	196	196
+0.125	139.124	927.259	256	256
+}\datacyclesizetree
+
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+minor tick num=0,
+ylabel near ticks,
+xlabel=Number of successors,
+ylabel=CPU Time ($s$),
+ymode=log,
+legend pos=north west]
+\addplot [black,mark=triangle*] table [x={n_succ}, y={cpu_time_wo_loops}] {\datacyclesize};
+\addplot [black,mark=*] table [x={n_succ}, y={cpu_time_w_loops}] {\datacyclesize};
+\legend{without loops,with loops}
+\end{axis}
+\end{tikzpicture}
+\end{document}

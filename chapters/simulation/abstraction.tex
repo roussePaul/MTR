@@ -1,0 +1,40 @@
+\section{Self loops}
+%///////////////////////////////////////////////////////////
+%*** Self loops ***
+%	- the reduction tend to suppress self loops in transient transitions:
+%		. ie in order to have self loops, you need to have U(n) = U(n-1)
+%		. suppress all the transients that last not so long
+%		. in another scenario, the only way to suppress self loops in transiant states is to increase the state discretization
+%		%% example of the second integrator that needs 2 steps to go backward
+%		%% plot the case of the reduced model that have overlapps
+%		%% show the second int model discretization that we need for it.
+%
+%		. overlapps:
+%			¤ show a graph of what is happening in the velocity between the dbl and dbl1r
+%			¤ say that it force us to increase the number of cells in the second case to see what is happening
+%///////////////////////////////////////////////////////////
+%
+
+
+\section{Size of the abstraction}
+%///////////////////////////////////////////////////////////
+%*** Size of the state space / FTS ***
+%	In 2 parts: study of the number of nodes, then of the number of edges
+%
+%	- memories are really bad (not so sure) for the state space representation (they you need to consider all the past events) 
+%		. compare the size of the state space for the original model and the previous one
+%		. fixed points number depends on the state size
+%		-> just underline the fact that the size of a set of nodes in a rectangle have also the set of all the inputs and as the algorithm is based on it
+%		then the complexity is growing fastly
+%		. give a formula on the number of nodes, it will be much better for understanding it
+%		. compare it to any models
+%
+%	- study when it worth it to add memories or when it will just increase the size of the state space
+%		. explain when it worth to use reachable sets from invariants or from observation -> link it to the model
+%		%% make 2 curves about it: one will be the reachable set from the invariant, the other will be from the observation
+%		. show that the one with the invariant is always more over approximated than the one with the observation
+%		. there is a link between this and the noise (basically we can model more noise because there is some more space between the lyapunov function and the other estimation)
+%///////////////////////////////////////////////////////////
+%
+
+
