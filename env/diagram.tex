@@ -50,8 +50,8 @@
 %% -- ONLINE PART --
 %% -----------------
 
-\node (controller) [cell, below of=plan] {High level \\controller};
-\draw [arrow] (plan) -- (controller);
+\node (controller) [cell, right of=plan,xshift=2.5cm,yshift=4.5cm] {High level \\controller};
+\draw [arrow] (plan.east) -- ++(0.75,0) -- ++(0,4.5) -- (controller.west);
 
 \node (speed_controller) [cell, below of=controller] {Speed controller\\ (PID feedback)};
 \draw [arrow] (controller) -- (speed_controller) node[pos=0.5, anchor=east] {$v_{ref}$};
@@ -59,20 +59,18 @@
 \node (quad) [cell, below of=speed_controller] {Quadricopter};
 \draw [arrow] (speed_controller) -- (quad) node[align=center,pos=0.5, anchor=east] {$T_{ref},\varphi_{ref},$ \\$\theta_{ref},\dot{\psi}_{ref}$};
 
-\draw [arrow] (quad.west) -- ++(-1,0) -- ++(0,2) node[align=center,pos=0.5, anchor=east] {$x,\dot{x}$} -- (speed_controller);
+\draw [arrow] (quad.east) -- ++(1,0) -- ++(0,2) node[align=center,pos=0.5, anchor=east] {$x,\dot{x}$} -- (speed_controller);
 
-\draw [arrow] (quad.west) -- ++(-2,0)  -- ++(0,4) node[align=center,pos=0.75, anchor=west] {$v$} -- (controller);
+\draw [arrow] (quad.east) -- ++(2,0)  -- ++(0,4) node[align=center,pos=0.75, anchor=east] {$v$} -- (controller);
 
 
-\coordinate (online_box_pt1) at ($(controller.north west) - (2,0)$);
-\coordinate (online_box_pt2) at ($(quad.south east)$);
+\coordinate (online_box_pt1) at ($(controller.north west)$);
+\coordinate (online_box_pt2) at ($(quad.south east) + (2,0)$);
 
 % ONLINE BOX
 \node (online_box) [draw,dashed] [fit = (online_box_pt1) (online_box_pt2)] {};
 
-\node [draw,below right] at (online_box.north west) {Online};
-
-
+\node [draw,below left] at (online_box.north east) {Online};
 
 \end{tikzpicture}
 

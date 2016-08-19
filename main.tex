@@ -1,4 +1,4 @@
-\documentclass{kthesis}
+\documentclass[electronic]{kthesis}
 
 \usepackage[english]{babel}
 \usepackage{import}
@@ -55,11 +55,12 @@
 \newcommand{\outpost}{ \ensuremath{\overline{Post} } }
 \newcommand{\inpre}{ \ensuremath{\overline{Pre} } }
 
-
+%% MATH COMMANDS
 \newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
 \newcommand{\leftint}{\left \llbracket}
 \newcommand{\rightint}{\right \rrbracket}
 \newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\card}[1]{\left|#1\right|}
 
 %% GRAPHICS
 \usepackage{graphicx}
@@ -183,7 +184,6 @@
 \begin{document}
 
 
-\newpage
 
 \title{The impossible master thesis}
 \subtitle{Will I finish it?}
@@ -196,11 +196,11 @@
 \publisher{}
 \examen{}
 
-%\frontmatter
+\frontmatter
 
-%\maketitle
+\maketitle
 
-%\mainmatter 
+\mainmatter 
 
 \newcommand{\SSunobs}{\mathfrak{X}^i}
 \newcommand{\SSobs}{\mathfrak{X}^o}
@@ -216,6 +216,7 @@
 \newcommand{\Sunobs}{\mathcal{S}^i}%
 \newcommand{\Xuinv}{{\mathcal{X}^i}}%
 \newcommand{\pastuseq}{\vect{u}_{n-\Ninputs},\dots,\vect{u}_{n-1}}%
+\newcommand{\pastuseqn}{\vect{u}_{n+1-\Ninputs},\dots,\vect{u}_{n}}%
 \newcommand{\Pastuseq}{U_n}%
 \newcommand{\sys}{\mathcal{S}}%
 \newcommand{\sysa}{\mathcal{S}_a}%
@@ -251,18 +252,25 @@
 \newcommand{\s}{\vect{s}}%
 \newcommand{\st}{\vect{t}}%
 %
-% discretization steps
+% Continuous model
+\newcommand{\traj}{\varphi}
+%
+% discretization of the abstraction
 \newcommand{\xd}{\x_d}
 \newcommand{\vd}{\vect{v}_d}
+\newcommand{\Nobs}{N^o} % number of states of the discretization of the state space \SSobs
 %
 \chapter{Abstraction reduction}
-%\input{chapters/abstraction_reduction/abstraction.tex}
-%\input{chapters/abstraction_reduction/reach_monotone.tex}
+\input{chapters/abstraction_reduction/abstraction.tex}
+\input{chapters/abstraction_reduction/reach_monotone.tex}
 \input{chapters/abstraction_reduction/discussion.tex}
 %
 %
-%\chapter{Backward reachability algorithm}
-%\input{chapters/algorithm/backward_reach_alg.tex}
+\chapter{Backward reachability algorithm}
+\input{chapters/algorithm/backward_reach_alg.tex}
+%
+\chapter{Escape time property}
+\input{chapters/escape_time/simpleescape.tex}
 %
 %
 \chapter{Model}
@@ -278,9 +286,9 @@
 \input{chapters/simulation/noise.tex}
 
 \chapter{Experiments}
-\input{chapters/results/setup.tex}
-\input{chapters/results/single1Dexperiments.tex}
-\input{chapters/results/single2Dexperiments.tex}
+%\input{chapters/results/setup.tex}
+%\input{chapters/results/single1Dexperiments.tex}
+%\input{chapters/results/single2Dexperiments.tex}
 %\input{chapters/results/multiagentexperiments.tex}
 
 %\bibliographystyle{kthplain}

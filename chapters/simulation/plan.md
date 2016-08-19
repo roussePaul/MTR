@@ -11,6 +11,10 @@ Then after all this I talk about when to choose each of the model according to t
 	- why do I choose to focus on the single integrator
 	- discretization of the environment notations
 
+	- the discretization and the sampling rate have constraints due to the environment and the dynamics (as we have seen it for the first integrator model).
+	So it might not be possible to increase the sampling rate.
+	The reduction is efficient to take in account dynamics that happen at the same frequency than the sampling rate.
+
 Organized in 2 parts
 
 /////////////////////////////////////////

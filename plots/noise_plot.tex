@@ -1,0 +1,46 @@
+\documentclass{standalone}
+
+\usepackage{pgfplots}
+\usepackage{pgfplotstable} % For \pgfplotstableread
+\usepgfplotslibrary{groupplots}
+
+\begin{document}
+
+\pgfplotstableread{noise_data.pgf}{\data}
+\pgfplotstableread{noise_data_state.pgf}{\state}
+
+
+\begin{tikzpicture}[scale=1]
+\begin{groupplot}[group style = {group size = 1 by 2}]
+
+\nextgroupplot[
+minor tick num=0,
+ylabel near ticks,
+xlabel=$t$ ($s$),
+ylabel=$\mathbf{x}$ ($m$)]
+ 
+\addplot [black,mark=x,only marks] table [x={T}, y={X0}] {\state};
+
+\addplot [black] table [x={Ty}, y={Ysup}] {\data};
+\addplot [black] table [x={Ty}, y={Yinf}] {\data};
+
+
+\nextgroupplot[
+minor tick num=0,
+ylabel near ticks,
+xlabel=$t$ ($s$),
+ylabel=$\mathbf{w}$ ($m.s^{-1}$)]
+
+\addplot [black] table [x={Ty}, y={W1}] {\data};
+
+\addplot [black, dash pattern=on 3pt off 6pt on 6pt off 6pt] table [x={Ty}, y={Wrsup}] {\data};
+\addplot [black, dash pattern=on 3pt off 6pt on 6pt off 6pt] table [x={Ty}, y={Wrinf}] {\data};
+
+\addplot [black,dashed] table [x={Ty}, y={Wsup1}] {\data};
+\addplot [black,dashed] table [x={Ty}, y={Winf1}] {\data};
+
+\end{groupplot}
+\end{tikzpicture}
+
+
+\end{document}
