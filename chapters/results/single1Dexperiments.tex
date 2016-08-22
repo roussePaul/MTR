@@ -59,6 +59,14 @@ The second integrator model manage to take in account the transient state that w
   \caption{Trajectory and velocity profile of the double integrator reduced model. The agent is trying to achieve 'go infinity often to i and f'.}
 \end{figure}
 
+\begin{figure}[!ht]
+  	\centering
+	\includestandalone[width=0.5\textwidth]{noise_plot}
+  	\label{double_reduced_1D_noise}
+  	\caption{The admissible noise of the abstraction have highr magnitudes for the high frequencies. The first plot correspond to the trajectory of the quad, the second is a plot of the noise (plain line) with noise upper and lower bounds (in simple dashed lines) and the upper and lower noise bounds used in the model (double dashed line).}
+\end{figure}
+
+
 In our setup, the sampling time of model is ${\Delta t = 1s}$ and the timing constants of the reduced system is $\tau_r = {\nicefrac{1}{k} = 0.7s}$. This make relevant to use this reduction method as the internal dynamic of the quadricopter are not vanished enough after a $\Delta t$.
 
 
@@ -122,10 +130,8 @@ Please note that this model is less sensible to the noise on velocity as only th
 We have been noticing that this model was much easier to use thanks to this property.
 
 \subsection{Experiments over 2 axes}
-
 The previous study show the link between the precision and the complexity of the abstraction that we used.
 In this part we will use the previous results in order to solve the following problem for different size of the environment:
-
 \begin{figure}
 	\center
 	\includestandalone[width=0.5\textwidth]{2D_env_problem}

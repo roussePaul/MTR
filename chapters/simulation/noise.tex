@@ -20,3 +20,13 @@
 
 \comment{It would be nice to have a temporal interpretation of it instead of a discrete one (as I have been varying the sampling rate)}
 
+
+When the sampling time is much faster than the dynamic, the reachable are over approximated. This over approximation admit more noise (see figure \ref{fig:bode_gain}).
+The maximum static noise admissible is the same for all the model and is the same than the not reduced abstraction.
+
+\begin{figure}
+\includestandalone[width=\linewidth]{plots/bode_plots}
+\caption{Bode plots of the admissible noise for different models.}
+\end{figure}
+
+

@@ -71,6 +71,7 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
 \usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
 
 % DEFINITION/THEOREM ENVIRONMENTS
 \newcommand{\inlinedef}[1]{\textit{#1}}
@@ -260,10 +261,13 @@
 \newcommand{\vd}{\vect{v}_d}
 \newcommand{\Nobs}{N^o} % number of states of the discretization of the state space \SSobs
 %
+\input{chapters/introduction.tex}
+
 \chapter{Abstraction reduction}
 \input{chapters/abstraction_reduction/abstraction.tex}
 \input{chapters/abstraction_reduction/reach_monotone.tex}
 \input{chapters/abstraction_reduction/discussion.tex}
+\input{chapters/abstraction_reduction/noise.tex}
 %
 %
 \chapter{Backward reachability algorithm}
@@ -286,10 +290,10 @@
 \input{chapters/simulation/noise.tex}
 
 \chapter{Experiments}
-%\input{chapters/results/setup.tex}
-%\input{chapters/results/single1Dexperiments.tex}
-%\input{chapters/results/single2Dexperiments.tex}
-%\input{chapters/results/multiagentexperiments.tex}
+\input{chapters/results/setup.tex}
+\input{chapters/results/single1Dexperiments.tex}
+\input{chapters/results/single2Dexperiments.tex}
+\input{chapters/results/multiagentexperiments.tex}
 
 %\bibliographystyle{kthplain}
 %\bibliography{bibliography}{}
