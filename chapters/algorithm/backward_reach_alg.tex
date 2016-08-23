@@ -42,6 +42,7 @@ a \mid
 \textit{define each symbol inside it.}
 
 \begin{nameddef}{LTL property}
+The truth of an LTL property $\varphi$ is defined by:
 \begin{tabular}[b]{rcl}
 $(\sigma,k) \vDash a$ & $\leftrightarrow$ & $a \in S_k$\\
 $(\sigma,k) \vDash \lnot \varphi$ & $\leftrightarrow$ &  $(\sigma,k) \nvDash  \varphi$ \\
@@ -234,11 +235,11 @@ Please note that if $a$ and $b$ are least fixed points of the monotonic function
 
 \subsection{All non deterministic plans can be decomposed in strongly connected cycles}
 
-\newcommand{\planningdomain}{\ensuremath{ \splitatcommas{\langle S, S_0, \mathcal{A}, \gamma \rangle} }}
+\newcommand{\planningdomain}{\ensuremath{ \tuple{\langle S, S_0, \mathcal{A}, \gamma \rangle} }}
 
-\newcommand{\controller}{\ensuremath{\splitatcommas{ \langle C, c_0, \Gamma, \Lambda, \delta, \Omega \rangle}}}
+\newcommand{\controller}{\ensuremath{\tuple{ \langle C, c_0, \Gamma, \Lambda, \delta, \Omega \rangle}}}
 
-\newcommand{\planningproblem}{\ensuremath{\splitatcommas{ \langle \mathcal{D}, G \rangle}}}
+\newcommand{\planningproblem}{\ensuremath{\tuple{ \langle \mathcal{D}, G \rangle}}}
 I need to define a plan, the model.
 
 \begin{nameddef}{Nondeterministic Planning Domain}
@@ -283,7 +284,7 @@ Then we will investigate the necessity of the fairness property.
 Finally, we will use all these properties in order to justify the planning algorithm that we used.
 
 \subsubsection{Strong cycle decomposition}
-\textit{Try to specify a bit more the language of the graph decomposition.
+\comment{Try to specify a bit more the language of the graph decomposition.
 Modules/components/subcomponents.}
 
 In this section we will use a constructive argument to show that every plan can be decomposed in strong cyclic components.

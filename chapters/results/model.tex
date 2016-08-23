@@ -1,0 +1,131 @@
+\section{Model of the quadricopter}
+
+
+\subsection{Model of the quadricopter}
+We have been considering each quadricopter as 
+Each dynamics of the quadricopter is decoupled from the other.
+The chosen is a second integrator with velocity feedback. 
+
+Modelisation of one axis
+
+\subsection{Model of one axis}
+We will use the second integrator model with a discrete set of controls.
+
+\begin{equation}\label{eqn:lin_sys}
+\begin{split}
+\dot{\mathbf{x}} &= A \mathbf{x} + B \mathbf{u} + \mathbf{w}\\
+\mathbf{y} &= C\mathbf{x}
+\end{split}
+\end{equation}
+with
+\begin{equation*} \label{eqn:sec_int}
+A = \begin{bmatrix}
+0 & 1\\ 
+0 & -k
+\end{bmatrix}
+\textrm{, }
+B = \begin{bmatrix}
+0 \\ 
+k 
+\end{bmatrix}
+\textrm{, }
+k \in \mathbb{R}_+^\star
+\end{equation*}
+
+We will study the effect of the reduction over the size of the abstraction. In the case of the second integrator, we will observe both the position and the velocity of the agent:
+\begin{equation}
+C_{dble} = \begin{bmatrix}
+1 & 0\\
+0 & 1
+\end{bmatrix}
+\end{equation}
+In the case of the reduced abstraction, only the position will be used:
+\begin{equation}
+ C_r = \begin{bmatrix}
+ 1 & 0
+ \end{bmatrix}
+\end{equation}
+
+This system is monotonic (in fact it is cooperative ).
+
+As we will work on models with different sampling rates, the assumptions will be verified for the continuous system.
+
+\newcommand{\dt}{T}
+The discrete system sampled at $\dt$ is expressed by:
+\begin{equation}
+\x_{k+1} = A_d \x_k + B_d \u_k + E_d \w_k
+\end{equation}
+with
+\begin{equation*} \label{eqn:sec_int_disc}
+A = \begin{bmatrix}
+1 & (\exp{-k \dt} - 1)\frac{1}{k}\\ 
+0 & \exp{-k\dt}
+\end{bmatrix}
+\textrm{, }
+B_d = \begin{bmatrix}
+\exp{-k \dt} - 1 \\ 
+k \exp{-k \dt}
+\end{bmatrix}
+\textrm{, }
+E_d = Ad
+\end{equation*}
+
+We can then identify the different matrices used for the reduction of the abstraction:\\
+\begin{tabular}{lll}
+$A_r =  \begin{bmatrix} \exp{-k\dt} \end{bmatrix} $
+&
+$A_z =  \begin{bmatrix} 1 \end{bmatrix} $
+&
+$A_{rz} =  \begin{bmatrix} (\exp{-k \dt} - 1)\frac{1}{k} \end{bmatrix}$
+\\
+$B_z =  \begin{bmatrix} \exp{-k \dt} - 1 \end{bmatrix} $
+&
+$B_r =  \begin{bmatrix} k \exp{-k\dt} \end{bmatrix} $
+&
+\\
+$E_r =  \begin{bmatrix} \exp{-k\dt} \end{bmatrix} $
+&
+$E_z =  \begin{bmatrix} \exp{-k \dt} - 1 \end{bmatrix} $
+&
+$E_{rz} =  \begin{bmatrix} (\exp{-k \dt} - 1)\frac{1}{k} \end{bmatrix}$
+\end{tabular}
+
+We will choose an input set $\U = \{-0.2,0.0,0.2\}$.
+We have been modelling the noise with $\W = [\minf{\w},\msup{\w}]$.
+\begin{equation}
+\minf{\w} = \T{ \begin{bmatrix} -0.02&-0.15 \end{bmatrix} }
+\textbf{, }
+\msup{\w} = \T{ \begin{bmatrix}  0.02& 0.15 \end{bmatrix} }
+\end{equation}
+
+The input and noise sets are bounded. The position and the velocity are not coupled and the dynamic on the velocity is asymptotically stable.
+We can therefore do the reduction of the abstraction on the velocity. More over, the reduced system is monotonic.
+
+\subsection{Discretization of the environment}
+All the discretization used are uniform.
+
+For experiments over 1 axes, we will discretize the environment in position with a discretization step $\xd$. In the case of the raw double integrator model, the velocity subspace will be discretized every $\vd$ steps.
+
+For 2D environment, we will use the same discretization steps ($\xd$) for the 2 axis and for the 2 velocity subspaces ($\vd$).
+
+We will call $\Nobs$ the number of states of the discretized state space $\SSobs$.
+
+\begin{figure}
+\centering
+\begin{minipage}[b]{0.49\linewidth}
+\includegraphics[width=\linewidth]{grid_environment}
+\end{minipage}
+\begin{minipage}[b]{0.49\linewidth}
+\includegraphics[width=\linewidth]{state_space_repr}
+\end{minipage}
+\caption{Discretization of the 2D environment (left) and of the second integrator model (1D).}
+\end{figure}
+
+We will use the following notation:
+\begin{equation}
+\begin{split}
+\um = -0.2
+\textrm{, }
+\up = 0.2
+\end{split}
+\end{equation}

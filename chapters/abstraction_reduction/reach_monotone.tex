@@ -1,7 +1,6 @@
 \newcommand{\xinf}{\underline{\vect{x}}}%
 \newcommand{\xsup}{\overline{\vect{x}}}%
 \newcommand{\xinit}{\vect{x}_0}%
-\newcommand{\traj}{\varphi}%
 \newcommand{\xn}{\vect{x}_n}%
 \newcommand{\un}{\vect{u}_n}%
 \newcommand{\wn}{\vect{w}_n}%
@@ -24,17 +23,17 @@ S:
 \cite{liu2014abstraction} have been investigating boundedness property in order ignore one part of the abstraction.
 Really good introduction about hierarchical control approach, give references.
 
-In practice, the abstraction will be efficient if the invariant $\Xuinv$ is bounded.
-In order to have this property, we will make further assumption on the system $\Sunobs$:
-\begin{itemize}[noitemsep,nolistsep]
-\item the input set is bounded,
-\item the noise set is bounded,
-\item the system is asymptotically stable.
-\end{itemize}
-These assumptions are not a necessary theoretical conditions in order to perform these reduction, however if one of them is not fulfilled, the information lost during the abstraction might make the model uncontrollable.
-Most of the time, we will try to get ride of the temporary dynamics which are already stabilized.
+\comment{Try to justify the fact that the system definition for the linear system is different from the theory used before.}
 
-In light of this point, we adapt the definition of the system $S$:
+We will translate the boundedness assumption of $\Xunobs(\Pastuseq)$ by making further assumptions on the system $\Sunobs$:
+\begin{itemize}[noitemsep,nolistsep]
+\item the input set on $\SSunobs$ is bounded,
+\item the noise set on $\SSunobs$ is bounded,
+\item the system is asymptotically stable on the subspace $\SSunobs$.
+\end{itemize}
+These assumptions are not a necessary conditions in order to create the abstraction $\sysa$.
+
+Finally, we adopt the final definition of the system $S$:
 \begin{equation}
 S:
 \left\{
@@ -43,7 +42,9 @@ S:
 \begin{bmatrix} A_z & A_{zr}\\ 0 & A_r \end{bmatrix} \xn
 +\begin{bmatrix} B_z \\ B_r \end{bmatrix} \un
 +\begin{bmatrix} E_z\\ E_r \end{bmatrix} \wn\\
-\yn &= \xobs_n
+\yn &= \xobs_n \\
+\un &\in \U \\
+\wn &\in \W \\
 \end{aligned}
 \right.
 \end{equation}
@@ -64,36 +65,36 @@ with,
 \wunobs_n
 \end{bmatrix}
 \end{align*}
-
-% talk about the assumptions on the matrices
-Let $\Sunobs=(A_r,B_r,E_r)$ the subsystem of $S$, $\Uunobs$ and $\Wunobs$ the projection of $\Usys$ and $\Wsys$ on the input space and noise space of the system $\Sunobs$ respectively.
+where the system $\Sunobs=(A_r,B_r,E_r)$ is asymptotically stable, input set $\Uunobs$ and noise sets $\Wunobs$ (respective projection of $\U$ and $\W$ on $\SSunobs$) are bounded.
 
 This system definition might seems restrictive as we assume that the unobserved part of the system is independent of the observed part.
-However this structure is met in many mechanical system.
-Which make this model relevant in the case of robots control.
+However this structure is met in many mechanical system (mainly because of the Newton's second law of mechanic).
+This make this model relevant in the case of robot motion control.
 
-\section{Reached set}
+\section{Reachable set}
 The computation of the reached sets is a field in control theory on its own.
-So the reader might refer to the large literature about this field for more precise algorithms in order to find invariants and the reached sets.
+So the reader might refer to the large literature about it for more precise algorithms in order to find invariants and the reachable sets.
 
-In this part, we will present 2 methods to compute the reached sets.
-The first one will only be valid for monotone systems, even if this class is restrictive, it is possible to obtain a closed form solution for the problem which might be useful for further studies.
-The second one is based on ellipsoidal bounding methods which can be applied to a wider class of systems. 
+In this part, we will present 2 methods to compute the reachable sets.
+The first one will only be valid for monotone systems. Even if this subclass of dynamical systems is restrictive, it is possible to obtain closed form solutions for reachable sets which is useful for further studies of the reduced abstraction model.
+The second one is based on ellipsoidal bounding methods which can be applied to a wider class of systems.
+
 
 As a matter of readability, we will use the notation of \ref{lin_sys}, with the assumptions of the unobserved system (boundedness of input and noise sets and asymptotically stable).
 All these results will be then used for the unobserved system $\Sunobs$.
 
 \subsection{Monotone systems}
-In order to get a closed form solution on the reduction, we will investigate a subset of the linear systems: the \textit{monotone systems}.
+In order to get a closed form solution on the reduction, we will investigate a subset of the linear systems: the \textit{linear monotone systems}.
+
 
 Monotone systems are systems that keep a partial ordering relation $\mleq$ between 2 states while time passes.
-With this property, we can bound any bounded set by 2 vectors $\xinf$ and $\xsup$.
-For all the trajectories starting at $\xinit \in [\xinf,\xsup]$, we know that
+The partial ordering of the state space allow us to over approximate any bounded set with 2 vectors $\xinf$ and $\xsup$.
+More over, for any trajectory starting from $\xinit \in [\xinf,\xsup]$, we know that
 \begin{equation}
 \forall k \in \mathbb{N}, \traj(\xinit,k) \in [\traj(\xinf,k),\traj(\xsup,k)]
 \end{equation}
 
-In order to obtain a closed form solution of the abstraction reduction, we assume the subsystem $S$ is a monotone stable system and that the inputs and noise are bounded by a monotonic interval (if it is not the case, it is still possible to over approximate the bounds with a monotonic interval):
+In order to obtain a closed form solution of the abstraction reduction, we assume the subsystem $S$ is a monotone asymptotically stable system and that the inputs and noise are bounded by a monotonic interval (if it is not the case, it is still possible to over approximate the bounds with a monotonic interval):
 \begin{equation*}
 \U \subseteq \left [ \minf{\vu}, \msup{\vu} \right ]
 \textrm{, }
@@ -101,9 +102,8 @@ In order to obtain a closed form solution of the abstraction reduction, we assum
 \end{equation*}
 
 As we mentioned in section \ref{sec:abstraction}, the computation of the set $\X(\Pastuseq)$ are done in 2 steps: computation of the invariant and computation of the image of this invariant.
-We will take advantage of the monotonic structure by expressing all the set as monotone interval of the state space.
+We will take advantage of the monotonic structure by expressing all the sets as monotone interval of the state space.
 
-We would like to find all the reachable states of $S$.
 As the system $S$ is asymptotically stable, the matrix $I-A$ as eigenvalues strictly greater than $0$ and is invertible.
 We can define:
 \begin{equation}
@@ -118,15 +118,15 @@ So:
 \Xinv = \left[ \minf{\x}, \msup{\x} \right]
 \end{equation}
 
-Let $\traj(\x,U,W)$ the trajectory function of the system $S$ starting from $\x$
+Let $\traj(\x,U,W)$ the trajectory function of the system $S$ starting from $\x_0$
 applying the control sequence $U \in {\U}^k$
 with the noise sequence $W \in {\W}^k$ and $k \in \mathbb{N}$.
 As the system $S$ is monotone,
 \begin{equation}
-\forall \x \in \left [\minf{\x}, \msup{\x} \right ],
+\forall \x_0 \in \left [\minf{\x}, \msup{\x} \right ],
 \forall U \in {\U}^k,
 \forall W \in {\W}^k,
-\traj (\x,U,W)
+\traj (\x_0,U,W)
 \in \left[ \minf{\x}, \msup{\x} \right]
 \end{equation}
 
@@ -151,7 +151,7 @@ This can be summarized in the following property:
 %TODO -> TIKZ ADD SCHEMATICS ON MONOTONIC SYSTEMS
 
 \subsection{Extension to non monotonic systems}
-The monotonicity property is really convenient in order to perform the computations.
+The monotonicity property is really convenient in order to do the computations.
 However, this is a strong assumption on the system: any system that have a non pure real eigenvalues is not monotonic.
 
 In this part we will present an ellipsoidal bounding approach.

@@ -1,208 +1,3 @@
-\documentclass{article}
-
-\usepackage[english]{babel}
-\usepackage{import}
-\usepackage{enumitem}
-
-%% MATH
-\usepackage{amsmath, amsfonts, amsthm}
-\usepackage{nicefrac}
-\usepackage{breqn}
-\usepackage{tabularx}
-\usepackage{stmaryrd} % for llbracket and rrbracket
-\usepackage[ruled]{algorithm2e}
-
-% LTL temporal operator
-\DeclareFontFamily{U}{matha}{\hyphenchar\font45}
-\DeclareFontShape{U}{matha}{m}{n}{
-      <5> <6> <7> <8> <9> <10> gen * matha
-      <10.95> matha10 <12> <14.4> <17.28> <20.74> <24.88> matha12
-      }{}
-\DeclareSymbolFont{matha}{U}{matha}{m}{n}
-\DeclareMathSymbol{\vDash}{3}{matha}{'52}
-\DeclareMathSymbol{\nvDash}{3}{matha}{'50}
-
-\DeclareMathOperator*{\argmin}{arg\,min}
-\makeatletter
-\newcommand{\tuple}[1]{
-	\@tempcnta=0
-	\def\mylist{#1}
-	\@for\next:=\mylist\do{
-	\ifnum \@tempcnta = 0 \else ,\linebreak[1]\fi \next
-	\advance\@tempcnta\@ne}
-}
-\makeatother
-
-%\renewcommand{\splitatcommas}[1]{#1}
-
-\newcommand{\buchi}[0]{B\"uchi}
-
-%% LTL symbols defintion
-\usepackage{latexsym} % get the right \Diamond symbol
-\newcommand{\LTLalways}		{\ensuremath{\square}}
-\newcommand{\LTLeventually}	{\ensuremath{\Diamond}}
-\newcommand{\LTLuntil}		{\ensuremath{\mathsf{U}}}
-\newcommand{\LTLnext}		{\ensuremath{\bigcirc}}
-\newcommand{\LTLimply}			{\ensuremath{\rightarrow}}
-\newcommand{\true}			{\ensuremath{\top}}
-
-
-\newcommand{\outpost}{ \ensuremath{\overline{Post} } }
-\newcommand{\inpre}{ \ensuremath{\overline{Pre} } }
-
-
-\newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
-\newcommand{\leftint}{\left \llbracket}
-\newcommand{\rightint}{\right \rrbracket}
-
-
-%% GRAPHICS
-\usepackage{graphicx}
-\graphicspath{{./plots/}{./env/}}
-\usepackage[mode=buildnew]{standalone}
-\usepackage{epstopdf}
-
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
-\usepackage{pgfplots}
-\usepackage{subcaption}
-
-
-
-% DEFINITION/THEOREM ENVIRONMENTS
-\newcommand{\inlinedef}[1]{\textit{#1}}
-
-\newtheorem{theorem}{Theorem}
-\newtheorem{problem}{Problem}
-\newtheorem{olddefinition}{Definition}
-\newtheorem{property}{Property}
-\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
-\theoremstyle{named}
-\newtheorem*{namedtheorem}{Theorem}
-\newtheorem*{nameddefinition}{Definition}
-\newtheorem*{namedproperty}{Property}
-
-\newcommand{\thmsymbol}{\( \blacktriangle \)}
-\newcommand{\propsymbol}{\( \blacklozenge \)}
-
-\newenvironment{nameddef}[1]
-    {\begin{samepage}
-    \begin{nameddefinition}[#1]
-    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
-    }
-    {
-    \popQED % in order to pop it before (in case of itemize) just call it in an item
-    \end{nameddefinition} 
-    \end{samepage}
-    }
-\newenvironment{namedprop}[1]
-    {\begin{samepage}
-    \begin{namedproperty}[#1]
-    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
-    }
-    {
-    \popQED % in order to pop it before (in case of itemize) just call it in an item
-    \end{namedproperty} 
-    \end{samepage}
-    }
-\newenvironment{namedtheo}[1]
-    {\begin{samepage}
-    \begin{namedtheorem}[#1]
-    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
-    }
-    {
-    \popQED % in order to pop it before (in case of itemize) just call it in an item
-    \end{namedtheorem} 
-    \end{samepage}
-    }
-\newenvironment{prop}[0]
-    {\begin{samepage}
-    \begin{property}
-    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
-    }
-    {
-    \popQED % in order to pop it before (in case of itemize) just call it in an item
-    \end{property} 
-    \end{samepage}
-    }
-\newenvironment{definition}[0]
-    {\begin{samepage}
-    \begin{olddefinition}
-    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
-    }
-    {
-    \popQED % in order to pop it before (in case of itemize) just call it in an item
-    \end{olddefinition} 
-    \end{samepage}
-    }
-    
-    
-%% TRANSITION SYSTEM COMMANDS
-\usepackage[all]{xy}
-\usepackage{amssymb}
-\newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
-\newcommand{\transition}{
-  \ensuremath{ \xymatrix{\ar@{-|>}[r]&} }
-  }
-\newcommand{\labelledtransition}[1]{
-  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
-  }
-\newcommand{\systransition}[2]{
-  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#2}_{#1}&} }
-  }
-
-\newcommand{\Post}[2]{Post_{#2}^{#1}}
-\newcommand{\Reach}[2]{Reach^{#1}({#2})}
-\newcommand{\ReachSeq}[2]{Reach^{*#1}(#2)}
-
-\newcommand{\sysDef}[1]{(\)}
-  
-%% COMMENTS
-\newcommand{\comment}[1]{\textit{\textbf{#1}}}
-
-%% SUPER SCRIPT STUFF
-\makeatletter
-\newcommand\newsubcommand[3]{\newcommand#1{#2\sc@sub{#3}}}
-\def\sc@sub#1{\def\sc@thesub{#1}\@ifnextchar_{\sc@mergesubs}{_{\sc@thesub}}}
-\def\sc@mergesubs_#1{_{\sc@thesub#1}}
-
-\newcommand\newsupcommand[3]{\newcommand#1{#2\sc@sup{#3}}}
-\def\sc@sup#1{\def\sc@thesup{#1}\@ifnextchar^{\sc@mergesups}{^{\sc@thesup}}}
-\def\sc@mergesups^#1{^{\sc@thesup#1}}
-\makeatother
-
-\newcommand{\T}[1]{#1{}^\top}
-\newcommand{\proj}[1]{|_{#1}}
-
-
-\begin{document}
-\title{Error in partially observed abstractions}
-\author{Paul Rousse}
-\maketitle
-
-
-
-\newcommand{\mle}{\prec}
-\newcommand{\mleq}{\preceq}
-\newcommand{\minf}[1]{\underline{#1}}
-\newcommand{\msup}[1]{\overline{#1}}
-
-
-
-\newcommand{\x}{\vect{x}}%
-\renewcommand{\u}{\vect{u}}%
-\newcommand{\w}{\vect{w}}%
-
-\newcommand{\y}{\vect{y}}%
-\newcommand{\yk}{\vect{y}_k}%
-\newcommand{\ykn}{\vect{y}_{k+1}}%
-
-\newcommand{\xk}{\vect{x}_k}%
-\newcommand{\xkn}{\vect{x}_{k+1}}%
-
-\newcommand{\uk}{\vect{u}_k}%
-\newcommand{\wk}{\vect{w}_k}%
-
 \newcommand{\xo}{\vect{x}^o}%
 \newcommand{\xr}{\vect{x}^r}%
 
@@ -235,24 +30,35 @@
 \newcommand{\Wrinf}{\minf{W}^r}
 \newcommand{\Wrk}{W^r_k}
 
-\newcommand{\traj}{\varphi}
-
 \newcommand{\z}{\vect{z}}%
 \newcommand{\zk}{\z_k}%
 \newcommand{\zkn}{\z_{k+1}}%
+
+\newcommand{\xkn}{\x_{k+1}}%
+\newcommand{\xk}{\x_{k}}%
+\newcommand{\uk}{\u_{k}}%
+\newcommand{\wk}{\w_{k}}%
+\newcommand{\yk}{\y_{k}}%
+\newcommand{\ykn}{\y_{k+1}}%
 
 \newcommand{\Z}{\mathbf{z}}
 \newcommand{\Zk}{\Z_k}
 \newcommand{\Zkn}{\Z_{k+1}}
 \newcommand{\hk}{\vect{h}_{k}}
 \newcommand{\h}{\vect{h}}
-\newcommand{\abs}[1]{\left|#1\right|}
 \newcommand{\wnoise}{\msup{\sigma}}
 
 \newcommand{\size}{N}
 \newcommand{\norminf}[1]{\left\|#1\right\|_{\infty}}
 
-\section{System definition}
+\comment{Redo the computation with just one iteration, write the constraints, this will give a filter that is only dependant on the dynamic of the reduced system. which means that the admissible noises are only the one that are faster than the dynamic of the reduced system.}
+
+\subsection{Error sensitivity}
+As we do not observe $\xunobs$, the reduced abstraction is not sensible to the measurement error on $\xunobs$. More over, as $\xunobs$ does not have a direct impact on the measurement, the error on $\xunobs$ impact the observation as a cumulative error.
+
+During the reduction of the abstraction process, the admissible noise magnitude remain the same. However, the constraints are different as the error does not have any more a direct impact on the state but can be propagating.
+In this part, we will try to establish what are the new constraints that does apply on the noise.
+
 We will take the following system:
 
 \begin{equation}
@@ -274,8 +80,6 @@ And that the noise and the inputs are bounded:
 \w &\in [\minf{\w},\msup{\w}] \subset \mathbb{R}^{n_w}\\
 \end{aligned}
 \end{equation}
-
-\section{Abstraction reduction}
 
 The abstraction reduction is done in this way. First, we define the smallest invariant of the unobserved state:
 $$
@@ -370,14 +174,13 @@ $$
 \newcommand{\xuk}{\x^{U_k}_r}
 Let define the variable $\xuki$ and $\xuks$ (guess it from previous definition).
 
-\section{Admissible noise}
+\paragraph{Admissible noise computation}
 In the previous sections, we have been using a dynamical model to build an abstraction $S_a$. In this part, we will solve the opposite problem:  we would like to find all the admissible models that can be alternatively simulated by $S_a$.
 In our case, we will find all the admissible models with the same dynamic as the initial model $S$ but with a different noise set.
 
 \newcommand{\ANoise}{\Omega}
 \newcommand{\NoiseSet}{\mathcal{W}}
 \newcommand{\infseq}{\omega}
-\newcommand{\xa}{\x^a}
 
 \newcommand{\sykn}{\msup{\y}_{k+1}}%
 \newcommand{\iykn}{\minf{\y}_{k+1}}%
@@ -472,7 +275,9 @@ We can derive the same inequality with $\iykn$:
 \end{equation}
 
 \newcommand{\filter}{\mathcal{F}}
-Inequality \ref{borne_sup} and \ref{low_equi} can be seen as a filter $G$. Let $\zk=[\xr_{k-n},\wr_{k-n},\dots,\wr_{k-1}]$  defined by:
+\comment{I need to create a system that include all the behaviours of $\xr$ (without the input) and then create the filter with it.}
+\comment{I need to be carefull about the filter and the monotonie: the absolute value of a vector (in my case) is done element-wise.}
+Inequality \ref{borne_sup} and \ref{low_equi} can be seen as a filter $\filter$. Let $\zk=[\xr_{k-n},\wr_{k-n},\dots,\wr_{k-1}]$  defined by:
 \begin{equation}
 \filter:
 \left\{
@@ -499,7 +304,7 @@ I \\
 \textrm{, }
 K = \En
 \end{equation}
-with $I_\z$ the identity matrix of size $(n-2)\size$.
+with $I_\z$ the \comment{No, it is the identity matrix with an offset} identity matrix of size $(n-2)\size$.
 Let,
 \begin{align*}
 \msup{\h} &= H \msup{\z} + K \wrsup\\
@@ -509,4 +314,6 @@ Then \ref{upp_equi} and \ref{low_equi} are satisfied if the output of the filter
 
 By linearity of the filter and as $\abs{\cdot}$ is a norm, we know that every noise sequence inside the convex polyhedra defined by the points $W_F$ is an admissible noise.
 
-\end{document}
+Please note that the maximum constant noise remain unchanged. However, noises of higher frequencies can have greater magnitudes than the one modelled on the initial model. 
+
+\comment{Can I find an easier/usable expression for the filter?}

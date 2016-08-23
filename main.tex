@@ -1,8 +1,13 @@
-\documentclass{kthesis}
+\documentclass[electronic]{kthesis}
 
 \usepackage[english]{babel}
 \usepackage{import}
 \usepackage{enumitem}
+
+% copyright sign
+\usepackage{textcomp}
+\renewcommand{\copyright}{\textsuperscript{\textcopyright}}
+\newcommand{\trademark}{\textsuperscript{\texttrademark}}
 
 %% MATH
 \usepackage{amsmath, amsfonts, amsthm}
@@ -23,15 +28,17 @@
 \DeclareMathSymbol{\nvDash}{3}{matha}{'50}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
-
-\newcommand{\splitatcommas}[1]{%
-  \begingroup
-  \begingroup\lccode`~=`, \lowercase{\endgroup
-    \edef~{\mathchar\the\mathcode`, \penalty0 \noexpand\hspace{0pt plus 1em}}%
-  }\mathcode`,="8000 #1%
-  \endgroup
+\makeatletter
+\newcommand{\tuple}[1]{
+	\@tempcnta=0
+	\def\mylist{#1}
+	\@for\next:=\mylist\do{
+	\ifnum \@tempcnta = 0 \else ,\linebreak[1]\fi \next
+	\advance\@tempcnta\@ne}
 }
-\renewcommand{\splitatcommas}[1]{#1}
+\makeatother
+
+%\renewcommand{\splitatcommas}[1]{#1}
 
 \newcommand{\buchi}[0]{B\"uchi}
 
@@ -48,24 +55,23 @@
 \newcommand{\outpost}{ \ensuremath{\overline{Post} } }
 \newcommand{\inpre}{ \ensuremath{\overline{Pre} } }
 
-
+%% MATH COMMANDS
 \newcommand{\vect}[1]{\ensuremath{ \mathbf{#1}}}
 \newcommand{\leftint}{\left \llbracket}
 \newcommand{\rightint}{\right \rrbracket}
-
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\card}[1]{\left|#1\right|}
 
 %% GRAPHICS
 \usepackage{graphicx}
-\graphicspath{{./plots/}{./env/}}
+\graphicspath{{./plots/}{./env/}{./results/}}
 \usepackage[mode=buildnew]{standalone}
 \usepackage{epstopdf}
 
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
 \usepackage{pgfplots}
-\usepackage{subcaption}
-
-
+\usepgfplotslibrary{groupplots}
 
 % DEFINITION/THEOREM ENVIRONMENTS
 \newcommand{\inlinedef}[1]{\textit{#1}}
@@ -74,11 +80,11 @@
 \newtheorem{problem}{Problem}
 \newtheorem{olddefinition}{Definition}
 \newtheorem{property}{Property}
-\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{:\\}{.5em}{#1 \thmnote{(#3)}}
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{.}{.5em}{#1 \thmnumber{#2} \thmnote{(#3)}}
 \theoremstyle{named}
-\newtheorem*{namedtheorem}{Theorem}
-\newtheorem*{nameddefinition}{Definition}
-\newtheorem*{namedproperty}{Property}
+\newtheorem{namedtheorem}[theorem]{Theorem}
+\newtheorem{nameddefinition}[olddefinition]{Definition}
+\newtheorem{namedproperty}[property]{Property}
 
 \newcommand{\thmsymbol}{\( \blacktriangle \)}
 \newcommand{\propsymbol}{\( \blacklozenge \)}
@@ -135,7 +141,7 @@
     }
     
     
-%% TRANSITION SYSTEM
+%% TRANSITION SYSTEM COMMANDS
 \usepackage[all]{xy}
 \usepackage{amssymb}
 \newdir{|>}{-{\scriptscriptstyle{\blacktriangleright}}}
@@ -145,13 +151,40 @@
 \newcommand{\labelledtransition}[1]{
   \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
   }
+\newcommand{\systransition}[2]{
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#2}_{#1}&} }
+  }
 
+\newcommand{\Post}[2]{Post_{#2}^{#1}}
+\newcommand{\Reach}[2]{Reach^{#1}({#2})}
+\newcommand{\ReachSeq}[2]{Reach^{*#1}(#2)}
+
+\newcommand{\sysDef}[1]{(\)}
   
+%% COMMENTS
+\usepackage{color}
+\definecolor{colorcomment}{RGB}{100,0,250}
+\renewcommand{\comment}[1]{\textit{\textbf{\color{colorcomment} #1}}}
+
+%% SUPER SCRIPT STUFF
+\makeatletter
+\newcommand\newsubcommand[3]{\newcommand#1{#2\sc@sub{#3}}}
+\def\sc@sub#1{\def\sc@thesub{#1}\@ifnextchar_{\sc@mergesubs}{_{\sc@thesub}}}
+\def\sc@mergesubs_#1{_{\sc@thesub#1}}
+
+\newcommand\newsupcommand[3]{\newcommand#1{#2\sc@sup{#3}}}
+\def\sc@sup#1{\def\sc@thesup{#1}\@ifnextchar^{\sc@mergesups}{^{\sc@thesup}}}
+\def\sc@mergesups^#1{^{\sc@thesup#1}}
+\makeatother
+
+\newcommand{\T}[1]{#1{}^\top}
+\newcommand{\proj}[1]{|_{#1}}
+
+\renewcommand{\exp}[1]{e^{#1}}
 
 \begin{document}
 
 
-\newpage
 
 \title{The impossible master thesis}
 \subtitle{Will I finish it?}
@@ -164,14 +197,16 @@
 \publisher{}
 \examen{}
 
-%\frontmatter
+\frontmatter
 
-%\maketitle
+\maketitle
 
-%\mainmatter 
+\mainmatter 
 
-\chapter{Abstraction reduction}
+\newcommand{\SSunobs}{\mathfrak{X}^i}
+\newcommand{\SSobs}{\mathfrak{X}^o}
 \newcommand{\Ninputs}{\Delta n_u}%
+\newcommand{\y}{\vect{y}}%
 \newcommand{\x}{\vect{x}}%
 \newcommand{\xa}{\vect{x}^a}%
 \newcommand{\xobs}{\vect{x}^o}%
@@ -182,6 +217,7 @@
 \newcommand{\Sunobs}{\mathcal{S}^i}%
 \newcommand{\Xuinv}{{\mathcal{X}^i}}%
 \newcommand{\pastuseq}{\vect{u}_{n-\Ninputs},\dots,\vect{u}_{n-1}}%
+\newcommand{\pastuseqn}{\vect{u}_{n+1-\Ninputs},\dots,\vect{u}_{n}}%
 \newcommand{\Pastuseq}{U_n}%
 \newcommand{\sys}{\mathcal{S}}%
 \newcommand{\sysa}{\mathcal{S}_a}%
@@ -211,15 +247,53 @@
 \newcommand{\U}{\mathcal{U}}%
 \newcommand{\W}{\mathcal{W}}%
 \newcommand{\vu}{\vect{u}}%
+\renewcommand{\u}{\vect{u}}%
+\renewcommand{\U}{\mathcal{U}}%
 \newcommand{\w}{\vect{w}}%
 \newcommand{\s}{\vect{s}}%
 \newcommand{\st}{\vect{t}}%
-%\input{chapters/abstraction_reduction/abstraction.tex}
+%
+% Continuous model
+\newcommand{\traj}{\varphi}
+%
+% discretization of the abstraction
+\newcommand{\xd}{\x_d}
+\newcommand{\vd}{\vect{v}_d}
+\newcommand{\Nobs}{N^o} % number of states of the discretization of the state space \SSobs
+%
+\input{chapters/introduction.tex}
+
+\chapter{Abstraction reduction}
+\input{chapters/abstraction_reduction/abstraction.tex}
 \input{chapters/abstraction_reduction/reach_monotone.tex}
 \input{chapters/abstraction_reduction/discussion.tex}
+\input{chapters/abstraction_reduction/noise.tex}
+%
+%
+\chapter{Backward reachability algorithm}
+\input{chapters/algorithm/backward_reach_alg.tex}
+%
+\chapter{Escape time property}
+\input{chapters/escape_time/simpleescape.tex}
+%
+%
+\chapter{Model}
+\newcommand{\um}{\u_{-}}
+\newcommand{\up}{\u_{+}}
+\newcommand{\uo}{\vect{0}}
+\input{chapters/results/model.tex}
 
-%\chapter{Backward reachability algorithm}
-%\input{chapters/algorithm/backward_reach_alg.tex}
+\chapter{Simulations}
+\input{chapters/simulation/algorithm.tex}
+\input{chapters/simulation/abstraction.tex}
+\input{chapters/simulation/feasability.tex}
+\input{chapters/simulation/noise.tex}
+
+\chapter{Experiments}
+\input{chapters/results/setup.tex}
+\input{chapters/results/single1Dexperiments.tex}
+\input{chapters/results/single2Dexperiments.tex}
+\input{chapters/results/multiagentexperiments.tex}
 
 %\bibliographystyle{kthplain}
 %\bibliography{bibliography}{}
