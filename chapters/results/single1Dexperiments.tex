@@ -1,19 +1,15 @@
 \section{Single axis experiments}
-We have been doing the synthesis of controller using different reduction of the second integrator model, we will compare the results to the raw second integrator model.
-As we have seen in the previous parts, there is no need to test different values than the $\Delta n_u = 0$ and $\Delta n_u = 1$.
-The case $\Delta n_u = 0$ (mode without any memories) correspond to the case of the single integrator.
+The second integrator model and its reductions will be studied over a single axis.
+In order to compare the different abstractions and their sizes, we will find the smallest feasible solution for our controller synthesis problem.
+
+We will compare the abstraction reduction with the second integrator with velocity feedback model.
 
 \comment{Things to explains:
 \begin{itemize}
-\item How to choose the sampling time
-\item How to configure the model
 \item Speed profiles (add the velocity commands)
 \item Computation of the time
 \end{itemize}
 }
-
-For each of the models, the solution plans has been generated so that they have the less state as possible.
-
 
 \subsection{Second integrator model with velocity feedback}
 \begin{figure}[!ht]
@@ -32,17 +28,12 @@ For each of the models, the solution plans has been generated so that they have 
   \caption{Trajectory and velocity profile of the double integrator model. The agent is trying to achieve 'go infinity often to i and f'.}
 \end{figure}
 
-The model used is the "raw" second integrator model with velocity feedback.
-
 %% SELF LOOPS ON THE VELOCITY AXIS
-When creating the abstraction for such a model, the self loops are acceptable only for some controls and cell combinations. 
-If the velocity of the quad is positive and the reference velocity negative, any self loop on the velocity axis will "keep" the next velocity state to the same cell.
-This will create abstractions that are not controllable.
-\comment{Do a graph about it}
-
+The discretization of the state space is chosen to allow self loops during the steady states.
+Regardless of the escape time property for the second integrator model, the self loops are not acceptable during transient state. If the transient state evolution is not observed in the case of the second integrator then the abstraction will be stuck in the transient state which make the abstraction not controllable.
 \comment{plot the noise}
 
-The second integrator model manage to take in account the transient state that was hidden by the single integrator model: in $x\approx0.4$, the transient states is clearly going "backward", this show that this model is not usable with the single integrator model (which correspond to non reachability behaviours).
+In figure \ref{double_1D_vel}, the position of the agent at $x\approx0.4$ is clearly going backward. This show that this model is not usable with the single integrator model.
 
 \subsection{Model with $\Ninputs= 1$ memory}
 \begin{figure}[!ht]
@@ -56,21 +47,40 @@ The second integrator model manage to take in account the transient state that w
   		\includegraphics[width=\linewidth]{double_reduced_1D_vel}
 	  	\label{double_reduced_1D_vel}
   \end{minipage}
-  \caption{Trajectory and velocity profile of the double integrator reduced model. The agent is trying to achieve 'go infinity often to i and f'.}
+  \caption{Trajectory and velocity profile of the double integrator 1-reduced model. The agent is trying to achieve 'go infinity often to i and f'.}
 \end{figure}
 
 \begin{figure}[!ht]
   	\centering
 	\includestandalone[width=0.5\textwidth]{noise_plot}
   	\label{double_reduced_1D_noise}
-  	\caption{The admissible noise of the abstraction have highr magnitudes for the high frequencies. The first plot correspond to the trajectory of the quad, the second is a plot of the noise (plain line) with noise upper and lower bounds (in simple dashed lines) and the upper and lower noise bounds used in the model (double dashed line).}
+  	\caption{The admissible noise of the abstraction have higher magnitudes for the high frequencies. The first plot correspond to the trajectory of the quad, the second is a plot of the noise (plain line) with noise upper and lower bounds (in simple dashed lines) and the upper and lower noise bounds used in the model (double dashed line).}
 \end{figure}
 
+%% Justification that this model is relevant
+In our setup, the sampling time of model is ${\Delta t = 0.7s}$ and the timing constants of the reduced system is $\tau_r = {\nicefrac{1}{k} = 0.5s}$. This is relevant to use this reduction method as the internal dynamics of the quadricopter are close to the sampling time of the sampling time.
 
-In our setup, the sampling time of model is ${\Delta t = 1s}$ and the timing constants of the reduced system is $\tau_r = {\nicefrac{1}{k} = 0.7s}$. This make relevant to use this reduction method as the internal dynamic of the quadricopter are not vanished enough after a $\Delta t$.
+%% SELF LOOPS:
+% there is no self loops during the transiant state anymore
+% there are still there for the steady states
+% pourquoi mon model est controllqble ici et pas le second integrator
+Every transition in the FTS encapsulate the knowledge of $\Ninputs +1$ control actions ($\Ninputs$ from the state and 1 from the transition). This correspond to the knowledge of the previous $(\Ninputs +1)\dt$ of the input function. 
+In our models, the dynamics of the quadricopter are faster than $(\Ninputs +1)\dt = 1.4>0.5s$.
+So every transition is able to predict the state of the reduced system further than the time needed to vanished the transient state.
+This result in the suppression of all the self loops due to the transient states that were present in the second integrator model.
+The abstraction is smaller but as expressive (in term of controllability) than the second integrator model.
 
+%% NOISE
+% the noise is bigger than the modelled noise
+Figure \ref{double_reduced_1D_noise} show an admissible noise sequence.
+High frequencies of the noise can have a bigger magnitude than the modelled one. 
+In the case of the second integrator model, any noise sequence with higher frequency might bring the model to take a nonexistant transition.
 
-\subsection{Model with $\Ninputs= 1$ memory} \label{sec:single_int}
+%% Size of the abstraction
+
+%% Conclusion size of the abstraction
+
+\subsection{Model with $\Ninputs=0$ memory} \label{sec:single_int}
 \begin{figure}[!ht]
 	\begin{minipage}[b]{0.5\textwidth}
   		\centering
@@ -104,12 +114,7 @@ In our setup, the sampling time of model is ${\Delta t = 1s}$ and the timing con
 This model is equivalent to the single integrator model.
 We have been illustrating the advantages of self loops by doing one experiment with self loops and another experiment without self loops.
 The FTS created without self loops needs to have a much finer discretization of the state space.
-Whereas in the FTS with self loops the constraint on the minimal size of the state space discretization is only that the transient state on the velocity must counteract the effect of the noise.
-
-\newcommand{\reg}[1]{\textit{reg #1}}
-Other constraints apply on the sampling time: regions \reg{i} and \reg{f} needs to be reachable. If the sampling time is too high, the state might miss the target region.
-
-When using a sampling time close to the transient time of the system, the reduction needs to take in account more states that belong to the transient states. This result in an increase of the modelled noise in the first integrator model.
+Whereas in the FTS with self loops, the constraint on the minimal size of the state space discretization is only that the transient state on the velocity must counteract the effect of the noise.
 
 \subsection{Comparison of the two results}
 \begin{itemize}
@@ -129,38 +134,7 @@ Comparison to the double integrator case, show how the noise is evolving. Compar
 Please note that this model is less sensible to the noise on velocity as only the position is observed.
 We have been noticing that this model was much easier to use thanks to this property.
 
-\subsection{Experiments over 2 axes}
-The previous study show the link between the precision and the complexity of the abstraction that we used.
-In this part we will use the previous results in order to solve the following problem for different size of the environment:
-\begin{figure}
-	\center
-	\includestandalone[width=0.5\textwidth]{2D_env_problem}
-	\caption{Testing environment for the quadricopter.}
-	\label{fig:environment}
-\end{figure}
-
-\comment{Show the simulation, the runs and so on.}
-
-
-\subsection{Real case scenarios}
-
-\begin{figure}[!ht]
-  \centering
-  \includegraphics[width=0.9\linewidth]{real_case_scenarios}
-  \caption{A trajectory in the state space $(x,v)$.}
-\end{figure}
-
-We have been using the first integrator model in this case (this is the more relevant in the scenario of the wind power).
-
 \subsection{Discussion over the different models}
 See table \ref{comparaison_table}.
 
-\paragraph{Method:}
-the comparison the different abstractions does not make any sense.
-For example, in the second integrator abstraction, the discretization of the state space can be chosen to be the same than the reduced model, but we can always increase the precision over the velocity state.
-We need to find a method that does not depend on a wrong parametrization of the method. Maybe defined the way we have been choosing the different abstraction (optimization criteria)?
-So we need to use a standardized method in order to compare them.
-For example, the minimum controllable abstraction might be a good choice.
-
-There is no better abstraction, so we need to play with the parameters to show in which case the reduction is better than the original model.
 

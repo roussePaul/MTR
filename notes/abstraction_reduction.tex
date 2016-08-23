@@ -605,6 +605,33 @@ $|U|$ & $n_u$ & $n_u$\\
 $V_w$ &  & bigger \\
 \end{tabular}
 
+\section{Error sensibility}
+The fact that we reduce the observability function have some effect on the noise that are acceptable.
+To see that we will express the acceptable noise for the reduced system.
+
+Let the system
+\begin{align*}
+\vect{x}_{k+1} &= A \vect{x}_{k} + B \vect{u}_{k} + E \vect{w}_{k}\\
+\vect{y}_{k} &= C \vect{x}_k\\
+\vect{w}_k &\in \mathcal{W}
+\end{align*}
+
+For a sequence of control action and observation $[\vect{u}_0,\dots,\vect{u}_n]$ $[\vect{y}_0,\dots,\vect{y}_n]$, we would like to know what are the admissible noises $[\vect{y}_0,\dots,\vect{y}_n]$
+
+For $i \in \{ 0,1 \}$, let:
+$$Y_i = [\vect{y}_i^T,\dots,\vect{y}_{i+n-1}^T]^T $$
+$$U_i = [\vect{u}_i^T,\dots,\vect{u}_{i+n-1}^T]^T $$
+
+Thanks to the system definition, we have:
+\begin{align}\label{noise_set}
+Y_1 &=  C X_1 = C A X_0 + C B U_0 + C E W_0\\
+Y_0 &=  C X_0
+\end{align}
+
+For the reduced system, the matrix $C$ is the identity matrix. which means that the acceptable control set in a singleton in the set defined by \ref{noise_set}. However, in the case of the reducted system, the set of noise acceptable for an observed sequence is an hyperplan.
+
+This means that the reduced system is more robust to missmodelisation.
+
 \section{Notes for the future}
 Abstractions of asymptotically stable system present a disadvantage on the multiagent control side, for some controls, if the state does not evolve any more, the abstraction will take self loops.
 In term multi agent control this make the problem more complex as the control generation: self loops tend to create systems that are asynchronous with all the problems that might occurs because of this (basically one of the agent might be be stopped).
