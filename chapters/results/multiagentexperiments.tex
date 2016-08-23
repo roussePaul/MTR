@@ -1,2 +1,71 @@
 \section{Multi agent experiments}
+The complexity of the problem disallow us from using a more complex model (double integrator, 1 reduced double integrator) for multi agent scenarios.
+Therefore, the $N$ quadricopters will be modelled as a $2N$ dimensions single integrators.
+Figure \ref{fig:multi} show a run of the plan for few steps.
 
+As the complexity of the multi agent 
+
+\begin{figure}
+  \newcommand*\FigVSkip{0.5em}
+  \newcommand*\FigHSkip{0.1em}
+  \newsavebox\FigBox
+  \centering
+  % Top image is centered, so no need to get width
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi1}
+  \end{minipage} 
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi2}
+  \end{minipage} 
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi3}
+  \end{minipage} 
+  \\[\FigVSkip]%
+  % Top image is centered, so no need to get width
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi4}
+  \end{minipage} 
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi5}
+  \end{minipage} 
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi6}
+  \end{minipage} 
+  \\[\FigVSkip]%
+  % Top image is centered, so no need to get width
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi7}
+  \end{minipage} 
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi8}
+  \end{minipage} 
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi9}
+  \end{minipage} 
+  \\[\FigVSkip]%
+  % Top image is centered, so no need to get width
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi10}
+  \end{minipage} 
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi11}
+  \end{minipage} 
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{multi_ltl/multi12}
+  \end{minipage} 
+
+\caption{Run of the multiagent plan. Agent blue and red need to exchange position infinitely often. Cells in plain colors are the current state of the quadricopter. Cells in light color are the successors. Big blues arrows are the control action.}
+\label{fig:multi}
+\end{figure}

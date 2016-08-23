@@ -1,0 +1,104 @@
+% Author: Rasmus Pank Roulund
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
+\usepackage{tkz-fct}  
+
+
+\begin{document}
+
+\begin{tikzpicture}[scale=6.0]
+  
+\pgfplotstableread{env/double_reduced_2D.data}{\traj}
+\pgfplotstableread{env/double_reduced_2D_ltl.data}{\discrete}
+
+%\pgfplotstableread{double_reduced_2D.data}{\traj}
+%\pgfplotstableread{double_reduced_2D_ltl.data}{\discrete}
+
+
+\def\outsize{1.25}
+\draw[draw=none] (-\outsize,-\outsize) rectangle (\outsize,\outsize); 
+
+\def\L{0.6}
+
+\draw[fill=blue!30!white] (0,0) rectangle (\L,\L);
+\draw[fill=red!30!white] (-\L,-\L) rectangle (0.,0.);
+
+\def\xd{0.2}
+\def\yd{0.2}
+
+\def\xmax{\L}
+\def\xmin{-\L}
+\def\ymax{\L}
+\def\ymin{-\L}
+
+%%%%%%%%%%
+% GRID
+%%%%%%%%%%
+\pgfmathsetmacro\xs{\xmin+\xd}
+\pgfmathsetmacro\ys{\ymin+\yd}
+\foreach \x in {\xmin,\xs,...,\xmax} \draw (\x,\ymin) -- (\x,\ymax);
+\foreach \x in {\ymin,\ys,...,\ymax} \draw (\xmin,\x) -- (\xmax,\x);
+
+\draw[line width=0.8pt] (\xmin,\ymin) rectangle (\xmax,\xmax);
+
+\node[draw,anchor=north west] at (0,\L) {b};
+\node[draw,anchor=north west] at (-\L,0) {a};
+
+
+%%%%%%%%%%
+% axis
+%%%%%%%%%%
+\draw[->,line width=0.55pt] (0,0) -- (0,\ymax+0.1) node(yaxis) [above] {$x_2$};
+\draw[->,line width=0.55pt] (0,0) -- (\xmax+0.1,0) node(xaxis) [above] {$x_1$};
+
+
+%%%%%%%%%%
+%% Braces        
+%%%%%%%%%%
+%\draw[decorate,decoration={brace,amplitude=3pt,mirror}] (1.02,\xd) --node[anchor=west,inner sep=5pt] {$x_d$} (1.02,2*\xd); 
+%
+%\draw[decorate,decoration={brace,amplitude=3pt,mirror}] (-1.0,-1.02) --node[anchor=north,inner sep=7pt] {$N$ columns} (1.,-1.02); 
+%\draw[decorate,decoration={brace,amplitude=3pt}] (-1.02,-1.) --node[rotate=90,anchor=south,inner sep=7pt] {$N$ rows} (-1.02,1.); 
+
+%%%%%%%%%
+%% AGENT
+%%%%%%%%%
+%\coordinate (pt1) at (-0.23,-0.35);
+%\coordinate (pt2) at (0.13,-0.03);
+%\coordinate (w) at (0.21,0.21);
+%
+%\draw[mark=*,mark size=0.2,draw=none] plot coordinates {(pt1)} -- plot coordinates {(pt2)} ;
+%
+%\draw[->,shorten >=1pt]  (pt1) -- node[anchor=south east] {$\mathbf{u}_n$} (pt2) ;
+%\node[anchor=north east] at (pt1) {$\mathbf{x}_n$};
+%\node[anchor=north west] at (pt2) {$\mathbf{x}_{n+1}$};
+
+%\draw[draw,dashed] ($(pt2)-(w)$) rectangle ($(pt2)+(w)$) node[anchor=north east] {$\mathbf{w}$};
+
+%%%%%%%%%%%%%%%%%%
+%% SUCCESSORS
+%%%%%%%%%%%%%%%%%%
+\coordinate (e) at (0.01,0.01);
+
+\newcommand{\drawcell}[3]{
+\draw[fill=#3] ($(#1*\xd,#2*\yd)+(e) $) rectangle ($(#1*\xd,(#2*\yd) + (\xd,\yd)-(e)$);
+}
+
+%\drawcell{-1}{-1}{blue!30!green}
+
+\begin{axis}[
+axis lines = middle,
+x=1cm,y=1cm,
+axis lines=none,
+xshift=-0.21cm,yshift=-0.4456cm,
+line width=0.1pt]
+\addplot [blue] table [x={Y0},  y={Y1}] {\traj};
+\addplot [blue,mark=*,mark size=0.2,only marks] table [x={x},  y={y}] {\discrete};
+
+\end{axis}
+
+\end{tikzpicture}
+
+\end{document}

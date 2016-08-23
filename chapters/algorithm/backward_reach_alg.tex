@@ -18,7 +18,20 @@ For $X_1,\dots,X_n$ n sets and $Y \subset X_1 \times \dots \times X_n$, lets def
 
 \section{Introduction}
 
+In linear temporal logic, the goal set must be reached in finite time. For deterministic finite transition systems, solutions already verify this property: a solution is done in a finite sequence of state/transition, so in finite time as well.
+For non deterministic planning problems, this property restrict the set of solutions. A plan solution cannot have a cycle outside of the goal set. If there is a cycle that does not bring the state to the goal set, then there exist a run that infinitely loop on this cycle, and the goal set is not reached.
+
+Assuming that all transitions of a cycles will be taken in an infinite run (fairness property) can partially solve the issue.
+Some solutions came up with strong cyclic algorithm and fairness assumption on all cycles. The graph search algorithm take advantage of these cycles in order to find the plans.
+However, if this hypothesis can be justified in action planning and in verification in computer science, this assumption cannot be done in controller synthesis.
+A wrong control combination might lead to limit cycles or equilibrium that might not be escaped.
+
+In small and noisy environment, the only solution in order to find a controllable abstraction might be to discretize the state space as much as possible until the abstraction is free of any self loops. This come at a price of the complexity due to a heavy abstraction.
+
+The solution the that we brought is a strong cyclic algorithm with local fairness property. This means that the 
 This part is presenting the planning under strong fairness constraints.
+
+
 
 \cite{de2010generalized}
 \cite{patrizi2013fair}
@@ -71,10 +84,13 @@ Talk about other structure that might have been more relevant for your work (mor
 
 \subsection{Previous works}
 Non determinism model with LTL planning has been investigated mostly in the sensing non determinism or environment uncertainty.
-Many solutions in $\mu$-calculus formulation (generalized reactivity) has been investigated. However they perform well in an environment with low non determinism (complexity of the problem does not make it suitable for a motion planning problem).
+Many solutions in $\mu$-calculus formulation (generalized reactivity) has been investigated. However they perform well in an environment with low non determinism (the complexity of the problem does not make it suitable for a motion planning problem).
 
-Motion determinism is usually assumed in the model as LTL specifications are rather for high level task planning than for low level control.
-Some attempts using Markov decision process bring to good results at reducing the complexity and using LTL specifications on real robots. These models can then provide a probability of success of the LTL formula.
+As temporal logic is mostly used for high level control specifications, usually only the low level controller has to deal with the noise.
+That is why most of the motion planning problems with LTL specifications  assume that the motion of the robot is deterministic.
+Another reason lie in the state space explosion problem: relatively simple planning problems can result in an unrealistic needs of computing resources.
+
+Some attempts using Markov decision process bring good results at reducing the complexity and using LTL specifications on real robots. These models can then provide a success probability of the LTL formula. 
 
 In the motion planning community, the Fully Observed Non Deterministic problem  
 
@@ -86,11 +102,12 @@ In our case, the fairness property is not always met: a "wrong" combination of c
 Therefore checking the truth value of this property cannot be done globally but for each cycles of the plan that does not contain the goal set.
 As the number of cycles and control combination is high, checking the fairness property is not possible in practice. This will be done online.
 
-Talk about why they have been doing this? Deal with uncertainty about the environment.
 
+\comment{Talk about why they have been doing this? Deal with uncertainty about the environment.
 Why did you chose LTL?
 Why did you chose B\"uchi Automaton?
-Talk about other solutions that might have been smarter.
+Talk about other solutions that might have been smarter.}
+
 
 \subsection{Product automaton for nondeterministic system}
 
@@ -158,7 +175,7 @@ $\left \langle x_1,x_2 \right \rangle \in \delta'(\left \langle x_1',x_2' \right
 \end{nameddef}
 
 
-\subsection{LTL Planning under Strong Cyclic \\Fairness Constraints}
+\subsection{LTL Planning under Strong Cyclic Fairness Constraints}
 
 \cite{de2010generalized}
 \cite{patrizi2013fair}

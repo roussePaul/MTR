@@ -1,13 +1,15 @@
 \newcommand{\Cont}{\mathcal{C}}%
 %
-% Introduction of the necessity of reduction of an abstraction
-Graph search algorithm complexities are dependant on the size of the abstraction.
-These methods suffer from the state space explosion problem: the complexity of graph search algorithm have usually an exponential complexity in the size of the state space.
+Hereby we present an abstraction of a dynamical model (discrete or continuous time) obtained by extending the state with the knowledge of a finite time input sequence lastly applied to the system.
+We have successfully used this abstraction in order to control quadricopters. The transient states of the system make the control synthesis more complex in some situation (small environment, or noisy environment).
+More accurate models (second integrator with a small discretization of the state space) could be used with some drawbacks on the complexity and on the computation time.
+The creation of such an abstraction was a good alternative to solve the controller synthesis while keeping the complexity acceptable.
+
 
 % Property that needs to be verified by the abstraction
-Therefore it is of a great interest to design small abstractions for the controller synthesis.
-The new abstraction needs to verify alternating similarity relationship with the original abstraction.
+Controller synthesis methods based on abstraction aim at finding an abstraction of a system. If a property verified by the abstraction is a syfficient condition for the system to verify the property, then it is possible to use controller synthesis methds. Such a relation is the alternating simulation relationship.
 
+% "Reduction" term
 The term "reduction" will be justified later. But this does not always correspond to a reduction of the abstraction size (the set of all the input sequences might be larger than the size of the states dimensions that have be suppressed). However, the efficient utilizations of this method will correspond to a reduction of the state space size.
 
 \section{Related work}
