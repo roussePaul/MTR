@@ -1,4 +1,4 @@
-\section{Self loops}
+\section{Strong cyclic planner}
 %///////////////////////////////////////////////////////////
 %*** Self loops ***
 %	!! pb pas vraiment à propos de la réduction, plus à propos de l'algo
@@ -19,8 +19,10 @@
 \newcommand{\Ssl}{S_{sl}}
 \newcommand{\xdsl}{\xd^{sl}}
 \newcommand{\xdnosl}{\xd^{nosl}}
+
+\subsection{Self loops}
 In this part we intend to show how does the self loops can reduce the complexity of the formal controller synthesis.
-We will work with the 0-reduced model ($\Ninputs=0$) that can be treated as the single integrator model.
+We will work with the 0-input memory abstraction ($\Ninputs=0$) that can be treated as the single integrator model.
 
 Let $\Ssl$ the abstraction with self loops. And $\Snosl$ the abstraction without any self loops (except on null control inputs).
 The sampling time $\dt$ for the 2 models will be the same.

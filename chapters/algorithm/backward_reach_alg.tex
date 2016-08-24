@@ -43,7 +43,36 @@ This decomposition will be then used to create an algorithm that search for thes
 \cite{patrizi2013fair}
 By modelling the system in this way we are losing a lot of expressiveness power of the LTL. However, the complexity remain more or less the same than before 2EXPTIME-complete ($\mathcal{O}(2^{2^{n^k}})$) (\textit{not so sure about it, double check information}).
 }
-\section{Linear Temporal Logic}
+
+\subsection{Previous works}
+Non determinism model with LTL planning has been investigated mostly in the sensing non determinism or environment uncertainty.
+Many solutions in $\mu$-calculus formulation (generalized reactivity) has been investigated. However they perform well in an environment with low non determinism (the complexity of the problem does not make it suitable for a motion planning problem).
+
+As temporal logic is mostly used for high level control specifications, usually only the low level controller has to deal with the noise.
+That is why most of the motion planning problems with LTL specifications  assume that the motion of the robot is deterministic.
+Another reason lie in the state space explosion problem: relatively simple planning problems can result in an unrealistic needs of computing resources.
+
+Some attempts using Markov decision process bring good results at reducing the complexity and using LTL specifications on real robots. These models can then provide a success probability of the LTL formula. 
+
+In the motion planning community, the Fully Observed Non Deterministic problem  
+
+In a planning problem, a solution plan cannot have cycles that does not contain any goal nodes, otherwise the agent might loop infinitely on the same cycle without meeting the goal set. If the system is verify fairness property, then any plan even with cycles will solve the problem. Otherwise the planner have to avoid any cycles.
+In its simplest form, non deterministic cycles appear in system that contain self-loops. If the non determinism for the rest of the system is acquired, then by using a fragment of LTL formulas (without the next operator), a regular deterministic planning algorithm can solve the problem.
+
+For motion planning, the fairness property is verified for a set of nodes if the agent leave the set of nodes in a finite time.
+In our case, the fairness property is not always met: a "wrong" combination of controls can create an equilibrium point or a limit cycle.
+Therefore checking the truth value of this property cannot be done globally but for each cycles of the plan that does not contain the goal set.
+As the number of cycles and control combination is high, checking the fairness property is not possible in practice. This will be done online.
+
+
+\comment{Talk about why they have been doing this? Deal with uncertainty about the environment.
+Why did you chose LTL?
+Why did you chose B\"uchi Automaton?
+Talk about other solutions that might have been smarter.}
+
+\section{Preliminaries}
+
+\subsection{Linear Temporal Logic}
 Linear Temporal Logic (LTL) is specification language first introduced in \cite{pnueli1977temporal}. Since then it has been widely used in robotic motion and action planning thanks to its expressiveness.
 
 LTL property are defined inductively:
@@ -75,48 +104,8 @@ More details can be found in chapter 5 of \cite{principlemodelchecking}.
 
 All the power of such a language lie in the ability to transform a human writeable formula in a machine manipulable data. LTL formula can be translated to an automaton structure that can be easily manipulated with discrete models. The problem of path planning is then reduced to finding a path in graph.
 
-\subsection{Translation to \buchi{} automaton}
 
-Give theorem that show that every LTL formula can be translated in a \buchi{} automaton.
-
-Talk about what kind of LTL fragment can be translated in a deterministic \buchi{} automaton.
-Cite the complexity of such algorithms.
-
-Talk about other structure that might have been more relevant for your work (more deterministic), ex: Rabin automaton.
-
-\section{Reachability algorithm}
-
-\subsection{Previous works}
-Non determinism model with LTL planning has been investigated mostly in the sensing non determinism or environment uncertainty.
-Many solutions in $\mu$-calculus formulation (generalized reactivity) has been investigated. However they perform well in an environment with low non determinism (the complexity of the problem does not make it suitable for a motion planning problem).
-
-As temporal logic is mostly used for high level control specifications, usually only the low level controller has to deal with the noise.
-That is why most of the motion planning problems with LTL specifications  assume that the motion of the robot is deterministic.
-Another reason lie in the state space explosion problem: relatively simple planning problems can result in an unrealistic needs of computing resources.
-
-Some attempts using Markov decision process bring good results at reducing the complexity and using LTL specifications on real robots. These models can then provide a success probability of the LTL formula. 
-
-In the motion planning community, the Fully Observed Non Deterministic problem  
-
-In a planning problem, a solution plan cannot have cycles that does not contain any goal nodes, otherwise the agent might loop infinitely on the same cycle without meeting the goal set. If the system is verify fairness property, then any plan even with cycles will solve the problem. Otherwise the planner have to avoid any cycles.
-In its simplest form, non deterministic cycles appear in system that contain self-loops. If the non determinism for the rest of the system is acquired, then by using a fragment of LTL formulas (without the next operator), a regular deterministic planning algorithm can solve the problem.
-
-For motion planning, the fairness property is verified for a set of nodes if the agent leave the set of nodes in a finite time.
-In our case, the fairness property is not always met: a "wrong" combination of controls can create an equilibrium point or a limit cycle.
-Therefore checking the truth value of this property cannot be done globally but for each cycles of the plan that does not contain the goal set.
-As the number of cycles and control combination is high, checking the fairness property is not possible in practice. This will be done online.
-
-
-\comment{Talk about why they have been doing this? Deal with uncertainty about the environment.
-Why did you chose LTL?
-Why did you chose B\"uchi Automaton?
-Talk about other solutions that might have been smarter.}
-
-
-\subsection{Product automaton for nondeterministic system}
-
-The product automaton for an nondeterministic FTS is defined as follow:
-
+\subsection{Automaton}
 \begin{nameddef}{Finite Transition System}
 $\mathcal{T}_c = (X,X_0,U, \transition, Y,H)$
 where:
@@ -146,6 +135,23 @@ where:
 
 Nota: if $\forall q \in Q, \forall a \in 2^{AP}, | \delta(a,q) | \leq 1$, then $\mathcal{A}_{\varphi} = (Q, Q_0, 2^{AP}, \delta, \mathcal{F})$ is a \textit{Deterministic B\"uchi Automaton} (DBA).
 
+\begin{nameddef}{Product of 2 FTS}
+The product automaton $\mathcal{F}_p$ of 2 non deterministic FTS $\mathcal{F}_1$ and $\mathcal{F}_2$ is defined by
+$\mathcal{F}_p = \mathcal{F}_1 \otimes \mathcal{F}_2
+= (X',X_0',U',\delta',Y',H')$
+where
+$X' = X_1 \times X_2$ is the set of states,
+$X_0' = X_{10} \times X_{20}$ is the set of initial states,
+$U' = U_1 \times U_2$ the input set,
+$Y' = Y_1 \times Y_2$ the output set,
+$H': X_1,X_2 \rightarrow (H_1(X_1),H_2(X_2))$ the output map,
+$\delta' \subseteq X' \times U \times X'$
+is the transition relation defined by
+$\left \langle x_1,x_2 \right \rangle \in \delta'(\left \langle x_1',x_2' \right \rangle,\langle u_1,u_2 \rangle)$ iff $x_1 \labelledtransition{u_1} x_1'$ and $x_2 \labelledtransition{u_2} x_2'$.
+\end{nameddef}
+
+
+The product automaton for an nondeterministic FTS is defined as follow:
 \begin{nameddef}{Product of a NBA and a FTS}
 The product automaton $\mathcal{A}_p$ of the NBA $\mathcal{A}_\varphi$ and the non deterministic FTS $\mathcal{F}_c$ is defined by
 $\mathcal{A}_p = \mathcal{T}_c \otimes \mathcal{A}_\varphi
@@ -163,55 +169,19 @@ $$\forall h \in H(Post_u(x)),\exists y \in H^{-1}(h) \cap Post_u(x), \delta(q,L_
 
 Roughly speaking, a $u$-transition in the product automaton is valid iff for every observation of the successors of a $u$-transition of the FTS, there exists a valid transition in the B\"uchi Automaton.
 
-\begin{nameddef}{Product of 2 FTS}
-The product automaton $\mathcal{F}_p$ of 2 non deterministic FTS $\mathcal{F}_1$ and $\mathcal{F}_2$ is defined by
-$\mathcal{F}_p = \mathcal{F}_1 \otimes \mathcal{F}_2
-= (X',X_0',U',\delta',Y',H')$
-where
-$X' = X_1 \times X_2$ is the set of states,
-$X_0' = X_{10} \times X_{20}$ is the set of initial states,
-$U' = U_1 \times U_2$ the input set,
-$Y' = Y_1 \times Y_2$ the output set,
-$H': X_1,X_2 \rightarrow (H_1(X_1),H_2(X_2))$ the output map,
-$\delta' \subseteq X' \times U \times X'$
-is the transition relation defined by
-$\left \langle x_1,x_2 \right \rangle \in \delta'(\left \langle x_1',x_2' \right \rangle,\langle u_1,u_2 \rangle)$ iff $x_1 \labelledtransition{u_1} x_1'$ and $x_2 \labelledtransition{u_2} x_2'$.
-\end{nameddef}
 
 
-\subsection{LTL Planning under Strong Cyclic Fairness Constraints}
 
-\cite{de2010generalized}
-\cite{patrizi2013fair}
+\subsection{Translation to \buchi{} automaton}
 
-Fully Observable Non-Deterministic Planning:  FOND
+Give theorem that show that every LTL formula can be translated in a \buchi{} automaton.
 
-The guaranties that an nondeterministic planner must fulfil are:
-\begin{itemize}[noitemsep,nolistsep]
-\item \textbf{Completness.}
-\item \textbf{Soundness.} Every given solutions are correct
-\item \textbf{Correctness.} 
-\item \textbf{Fairness.}
-\end{itemize}
+Talk about what kind of LTL fragment can be translated in a deterministic \buchi{} automaton.
+Cite the complexity of such algorithms.
 
-For which LTL formula we will be able to find a solution if the solution exists?
+Talk about other structure that might have been more relevant for your work (more deterministic), ex: Rabin automaton.
 
-Unlike most of algorithms, the strong fairness property over inner loops of the product automaton are not fair for every combinations of controls.
-Finding a closed and proper solution for that plan is not a sufficient condition in our case. 
-We need to insure that every cycles in the final system (system composed of the plan and of the product automaton) does not deadlock the system.
 
-\subsection{Related work}
-How to deal with nondeterminism?
-Different approaches:
-\begin{itemize}
-\item general game formulation: GR(1) (however, the formulation does not fit to our needs): in \cite{de2010generalized} and \cite{Kissmann2009}, the strong fairness property is expressed thanks in a LTL formulation, however it presuppose a knowledge about cyclic actions fairness property, this is adapted to action planning where we know that if the action is infinitely repeated, then the action will success infinitely often. This does not really fit any motion planning non determinism where the fairness property depend on a control configuration over the cells. Using this kind of framework will force us to go through all the possible action combinations and determine which one is fair.
-\item Fixed point ($\mu$-calculus that is related to the GR formulation as well).
-\item \cite{fu2011simple} is solving the FOND problem in the case of strong fairness assumption. This assumption is global, this is not the case for us as some of some control configurations might be unfair. The fairness property is local in our case.
-\end{itemize}
-
-What I did is an adaptation of the \cite{fu2011simple} with a backward reachability algorithm.
-
-\subsection{Premilinaries}
 
 \subsubsection{Graph theory}
 Fully observed non deterministic: thats means that the B\"uchi automaton should be deterministic.
@@ -225,6 +195,7 @@ The directed graph $G = (V,E)$ is strongly connected iff for every nodes $u,v \i
 \begin{nameddef}{Fairness property}
 
 \end{nameddef}
+
 
 \subsection{Fix point algorithm}
 %% introduce the fixed point property, make a link between mu calculus
@@ -254,7 +225,35 @@ In our case, $S$ is the finite set and $On = \leftint 1,|S|\rightint$.
 In this case, the theorem ensure the existence and the finiteness of the least fixed point computation.
 Please note that if $a$ and $b$ are least fixed points of the monotonic functional $\tau$, then $a \subseteq b$ and $b \subseteq a$, which means that $a=b$, which means that the least fixed point is unique.
 
-\subsection{All non deterministic plans can be decomposed in strongly connected cycles}
+
+%\cite{de2010generalized}
+%\cite{patrizi2013fair}
+
+%Fully Observable Non-Deterministic Planning:  FOND
+%
+%The guaranties that an nondeterministic planner must fulfil are:
+%\begin{itemize}[noitemsep,nolistsep]
+%\item \textbf{Completness.}
+%\item \textbf{Soundness.} Every given solutions are correct
+%\item \textbf{Correctness.} 
+%\item \textbf{Fairness.}
+%\end{itemize}
+%
+
+
+%\subsection{Related work}
+%How to deal with nondeterminism?
+%Different approaches:
+%\begin{itemize}
+%\item general game formulation: GR(1) (however, the formulation does not fit to our needs): in \cite{de2010generalized} and \cite{Kissmann2009}, the strong fairness property is expressed thanks in a LTL formulation, however it presuppose a knowledge about cyclic actions fairness property, this is adapted to action planning where we know that if the action is infinitely repeated, then the action will success infinitely often. This does not really fit any motion planning non determinism where the fairness property depend on a control configuration over the cells. Using this kind of framework will force us to go through all the possible action combinations and determine which one is fair.
+%\item Fixed point ($\mu$-calculus that is related to the GR formulation as well).
+%\item \cite{fu2011simple} is solving the FOND problem in the case of strong fairness assumption. This assumption is global, this is not the case for us as some of some control configurations might be unfair. The fairness property is local in our case.
+%\end{itemize}
+%
+%What I did is an adaptation of the \cite{fu2011simple} with a backward reachability algorithm.
+
+
+\section{Decomposition in strongly connected cyclic components}
 
 \newcommand{\planningdomain}{\ensuremath{ \tuple{\langle S, S_0, \mathcal{A}, \gamma \rangle} }}
 
@@ -472,7 +471,7 @@ where $T_{escape}^{S_i}$ is the escape function of the system $S_i$.
 If the faster system $S_i$ escape the set of nodes $\mathcal{F}|_{S_i}$ in $T^{S_i}_{escape}(\mathcal{F})$, then the product system escape the set of nodes $\mathcal{F}$ in $T^{S_i}_{escape}(\mathcal{F})$.
 \end{proof}
 
-\subsection{Backward reachability algorithm}
+\section{Backward reachability algorithm}
 In the previous section we have seen that every plan can be decomposed in a strongly connected cyclic components.
 We also have established when modules of a valid plan needs to verify fairness property.
 In this section we will present the algorithm that use the previous observations in order to find a plan.
@@ -492,7 +491,7 @@ $$\forall n \in \mathcal{F}_p \mid \forall v \in Post_{u_n}(n), \exists w \in Po
 
 The function $Expand(Plan)$ is performing the BFS to find sets of nodes in $Q \setminus Plan$ and controls that verify $Post(F_p) \rightarrow Plan$.
 
-\textit{Here I must describe a bit more the construction of the plan:
+\comment{Here I must describe a bit more the construction of the plan:
 How do I add the $F_p$ sets, what transitions do I keep, which on do I get ride of...
 \begin{itemize}
 \item Escape function
@@ -543,8 +542,6 @@ Talk about the complexity of the algorithm.
 I need to do a tikz picture to show how the algorithm is working.
 
 \section{Discussion}
-In this part we will discuss when does this algorithm is efficient.
-
 \comment{Not so sure about it:}
 From our observations, it is possible to determine what is the biggest fixed point size for a specific systems.
 In the case of the single integrator model the maximum fixed point is equal to the maximum number of cells of the abstraction that can cover the set of successors for a chosen control.

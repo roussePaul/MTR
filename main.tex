@@ -50,6 +50,7 @@
 \newcommand{\LTLnext}		{\ensuremath{\bigcirc}}
 \newcommand{\LTLimply}			{\ensuremath{\rightarrow}}
 \newcommand{\true}			{\ensuremath{\top}}
+\renewcommand{\and}			{\ensuremath{\wedge}}
 
 
 \newcommand{\outpost}{ \ensuremath{\overline{Post} } }
@@ -164,7 +165,8 @@
 %% COMMENTS
 \usepackage{color}
 \definecolor{colorcomment}{RGB}{100,0,250}
-\renewcommand{\comment}[1]{\textit{\textbf{\color{colorcomment} #1}}}
+%\renewcommand{\comment}[1]{\textit{\textbf{\color{colorcomment} #1}}}
+\renewcommand{\comment}[1]{}
 
 %% SUPER SCRIPT STUFF
 \makeatletter
@@ -181,6 +183,7 @@
 \newcommand{\proj}[1]{|_{#1}}
 
 \renewcommand{\exp}[1]{e^{#1}}
+
 
 \begin{document}
 
@@ -201,7 +204,11 @@
 
 \maketitle
 
+\tableofcontents
+
 \mainmatter 
+
+
 
 \newcommand{\SSunobs}{\mathfrak{X}^i}
 \newcommand{\SSobs}{\mathfrak{X}^o}
@@ -263,11 +270,11 @@
 %
 \input{chapters/introduction.tex}
 
-\chapter{Abstraction reduction}
+\chapter{Abstraction with input-extended state}
 \input{chapters/abstraction_reduction/abstraction.tex}
 \input{chapters/abstraction_reduction/reach_monotone.tex}
-\input{chapters/abstraction_reduction/discussion.tex}
 \input{chapters/abstraction_reduction/noise.tex}
+\input{chapters/abstraction_reduction/discussion.tex}
 %
 %%
 \chapter{Backward reachability algorithm}
@@ -277,14 +284,12 @@
 \input{chapters/escape_time/simpleescape.tex}
 %
 %
-\chapter{Model}
+\chapter{Simulations}
+\input{chapters/simulation/intro.tex}
 \newcommand{\um}{\u_{-}}
 \newcommand{\up}{\u_{+}}
 \newcommand{\uo}{\vect{0}}
 \input{chapters/results/model.tex}
-
-\chapter{Simulations}
-\input{chapters/simulation/intro.tex}
 \input{chapters/simulation/algorithm.tex}
 \input{chapters/simulation/abstraction.tex}
 \input{chapters/simulation/feasability.tex}
@@ -296,7 +301,7 @@
 \input{chapters/results/single2Dexperiments.tex}
 \input{chapters/results/multiagentexperiments.tex}
 %
-%\bibliographystyle{kthplain}
-%\bibliography{bibliography}{}
+\bibliographystyle{kthplain}
+\bibliography{bibliography}{}
 
 \end{document}

@@ -51,12 +51,12 @@
 \newcommand{\size}{N}
 \newcommand{\norminf}[1]{\left\|#1\right\|_{\infty}}
 
-\comment{Redo the computation with just one iteration, write the constraints, this will give a filter that is only dependant on the dynamic of the reduced system. which means that the admissible noises are only the one that are faster than the dynamic of the reduced system.}
+\comment{Redo the computation with just one iteration, write the constraints, this will give a filter that is only dependant on the dynamic of the unobserved system. which means that the admissible noises are only the one that are faster than the dynamic of the unobserved system.}
 
-\subsection{Error sensitivity}
-As we do not observe $\xunobs$, the reduced abstraction is not sensible to the measurement error on $\xunobs$. More over, as $\xunobs$ does not have a direct impact on the measurement, the error on $\xunobs$ impact the observation as a cumulative error.
+\section{Error sensitivity}
+As we do not observe $\xunobs$, the input extended state abstraction is not sensible to the measurement error on $\xunobs$. More over, as $\xunobs$ does not have a direct impact on the measurement, the error on $\xunobs$ impact the observation as a cumulative error.
 
-During the reduction of the abstraction process, the admissible noise magnitude remain the same. However, the constraints are different as the error does not have any more a direct impact on the state but can be propagating.
+During the computation of the reachable sets, the admissible noise magnitude remain the same. However, the constraints are different as the error does not have anymore a direct impact on the state but can be propagating.
 In this part, we will try to establish what are the new constraints that does apply on the noise.
 
 We will take the following system:
@@ -81,7 +81,7 @@ And that the noise and the inputs are bounded:
 \end{aligned}
 \end{equation}
 
-The abstraction reduction is done in this way. First, we define the smallest invariant of the unobserved state:
+The input extended state abstraction is done in this way. First, we define the smallest invariant of the unobserved state:
 $$
 \Xrinv = [\xrinf,\xrsup]
 $$
@@ -277,7 +277,7 @@ We can derive the same inequality with $\iykn$:
 \newcommand{\filter}{\mathcal{F}}
 \comment{I need to create a system that include all the behaviours of $\xr$ (without the input) and then create the filter with it.}
 \comment{I need to be carefull about the filter and the monotonie: the absolute value of a vector (in my case) is done element-wise.}
-Inequality \ref{borne_sup} and \ref{low_equi} can be seen as a filter $\filter$. Let $\zk=[\xr_{k-n},\wr_{k-n},\dots,\wr_{k-1}]$  defined by:
+Inequality \ref{upp_equi} and \ref{low_equi} can be seen as a filter $\filter$. Let $\zk=[\xr_{k-n},\wr_{k-n},\dots,\wr_{k-1}]$  defined by:
 \begin{equation}
 \filter:
 \left\{

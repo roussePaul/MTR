@@ -1,8 +1,8 @@
 \section{Single axis experiments}
-The second integrator model and its reductions will be studied over a single axis.
+The second integrator model and its inputs-memory model will be studied over a single axis.
 In order to compare the different abstractions and their sizes, we will find the smallest feasible solution for our controller synthesis problem.
 
-We will compare the abstraction reduction with the second integrator with velocity feedback model.
+We will compare the input extended state abstraction with the direct abstraction of the model (without input extended state).
 
 \comment{Things to explains:
 \begin{itemize}
@@ -47,7 +47,7 @@ In figure \ref{double_1D_vel}, the position of the agent at $x\approx0.4$ is cle
   		\includegraphics[width=\linewidth]{double_reduced_1D_vel}
 	  	\label{double_reduced_1D_vel}
   \end{minipage}
-  \caption{Trajectory and velocity profile of the double integrator 1-reduced model. The agent is trying to achieve 'go infinity often to i and f'.}
+  \caption{Trajectory and velocity profile of the double integrator 1-input memory model. The agent is trying to achieve 'go infinity often to i and f'.}
 \end{figure}
 
 \begin{figure}[!ht]
@@ -58,7 +58,7 @@ In figure \ref{double_1D_vel}, the position of the agent at $x\approx0.4$ is cle
 \end{figure}
 
 %% Justification that this model is relevant
-In our setup, the sampling time of model is ${\Delta t = 0.7s}$ and the timing constants of the reduced system is $\tau_r = {\nicefrac{1}{k} = 0.5s}$. This is relevant to use this reduction method as the internal dynamics of the quadricopter are close to the sampling time of the sampling time.
+In our setup, the sampling time of model is ${\Delta t = 0.7s}$ and the timing constants of the unobserved system is $\tau_r = {\nicefrac{1}{k} = 0.5s}$. This is relevant to use this input memory model as the internal dynamics of the quadricopter are close to the sampling time of the sampling time.
 
 %% SELF LOOPS:
 % there is no self loops during the transiant state anymore
@@ -66,7 +66,7 @@ In our setup, the sampling time of model is ${\Delta t = 0.7s}$ and the timing c
 % pourquoi mon model est controllqble ici et pas le second integrator
 Every transition in the FTS encapsulate the knowledge of $\Ninputs +1$ control actions ($\Ninputs$ from the state and 1 from the transition). This correspond to the knowledge of the previous $(\Ninputs +1)\dt$ of the input function. 
 In our models, the dynamics of the quadricopter are faster than $(\Ninputs +1)\dt = 1.4>0.5s$.
-So every transition is able to predict the state of the reduced system further than the time needed to vanished the transient state.
+So every transition is able to predict the state of the unobserved system further than the time needed to vanished the transient state.
 This result in the suppression of all the self loops due to the transient states that were present in the second integrator model.
 The abstraction is smaller but as expressive (in term of controllability) than the second integrator model.
 
@@ -117,15 +117,17 @@ The FTS created without self loops needs to have a much finer discretization of 
 Whereas in the FTS with self loops, the constraint on the minimal size of the state space discretization is only that the transient state on the velocity must counteract the effect of the noise.
 
 \subsection{Comparison of the two results}
+\comment{
 \begin{itemize}
 \item compute the minimal number of states so that the model is usable (ie controllable)
 \item compute the branching factor, the precision etc...
 \item compute the amplitude of the noise in permanent state
 \end{itemize}
+}
 
 Try to do it for different $\Delta n_u$, show that it does decrease the complexity for $\Delta n_u = 1$. Talk about the case $\Delta n_u = 0$ which correspond to the single integrator case (see part \ref{sec:single_int}).
 
-Comparison to the double integrator case, show how the noise is evolving. Compare the size of the successors between the case where the discretization of the reduced state (velocity in this case) is lower than the steady state of the reduced state for a stable sequence. Basically, in one case, the size of the successors is growing (expansion of the successors) in the reduced approach, the size of the successors is reducing (but is bigger than the other one).
+Comparison to the double integrator case, show how the noise is evolving. Compare the size of the successors between the case where the discretization of the unobserved state (velocity in this case) is lower than the steady state of the unobserved state for a stable sequence. Basically, in one case, the size of the successors is growing (expansion of the successors) in the input memory approach, the size of the successors is reducing (but is bigger than the other one).
 
 
 \comment{Try to show the 2 abstractions on top of each other to visualize what happened after the reduction}.

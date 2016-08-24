@@ -1,4 +1,4 @@
-\section{Noise}
+\subsection{Noise}
 %///////////////////////////////////////////////////////////
 %*** Noise *** (abstr)
 %	%% presentation of what apply to our model:
@@ -20,13 +20,14 @@
 
 \comment{It would be nice to have a temporal interpretation of it instead of a discrete one (as I have been varying the sampling rate)}
 
-
-When the sampling time is much faster than the dynamic, the reachable are over approximated. This over approximation admit more noise (see figure \ref{fig:bode_gain}).
-The maximum static noise admissible is the same for all the model and is the same than the not reduced abstraction.
+In order to show how does the admissible noise behave according to the system, we have been plotting the bode diagram for several models (see figure \ref{fig:bode_gain}).
+When the sampling time is much faster than the dynamic (case $k=0.5$), the approximation of the reachable sets is worst than when the dynamic is faster than the discrete time (case $k=2.0$). This over approximation is necessary to admit all the possible noises. However, this over approximation make it possible to use noises of higher magnitude. These noise will likely be of high frequency.
+Please note that the maximum static noise admissible is the same for all the models and is the same than the second integrator abstraction without input extended state.
 
 \begin{figure}
 \includestandalone[width=\linewidth]{plots/bode_plots}
 \caption{Bode plots of the admissible noise for different models.}
+\label{fig:bode_gain}
 \end{figure}
 
 

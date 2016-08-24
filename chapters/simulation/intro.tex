@@ -1,11 +1,11 @@
 \section{Introduction}
-This part intend to discuss the strong cyclic algorithm and the abstraction reduction.
+This part intend to discuss the strong cyclic algorithm and the input extended state abstraction.
 
 The main drawback of the strong cyclic algorithm is the complexity.
 The number of possible cycles in a graph and the number of control combination can give an idea about the size of the solution sets that the algorithm have to go through.
 On the other hand, by allowing self loops inside the abstraction, we will see that it can create abstraction with a smaller state space.
 
-The abstraction reduction can be a good strategy in term of complexity and robustness to noise.
+The input extended state abstraction can be a good strategy in term of complexity and robustness to noise.
 By not observing a part of the state, the set of admissible noise is actually bigger than the one modelled.
 The set of admissible noise can be expressed as a convex polyhedra defined by an infinite number of sequences. In practice, high frequencies admissible noises can have bigger magnitudes and low frequencies will have a magnitude equal to the modelled noise magnitude.
 

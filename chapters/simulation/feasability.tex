@@ -1,4 +1,4 @@
-\section{Size of the environment}
+\subsection{Size of the environment}
 %///////////////////////////////////////////////////////////
 %*** State space discretization and sampling rate constraints for feasability ***
 %	- explain that there is no rules about it, it is specific to applications
@@ -17,18 +17,31 @@
 %	- conclude with a link between the size of the environment and the feasability
 %///////////////////////////////////////////////////////////
 %
-In this part we will compare the sizes of the uniform abstraction and the reduced abstraction.
+In this part we will compare the sizes of the uniform abstraction and the input extended state abstraction.
 In order to compare each of them we will first derive necessary constraints on the discretization and the sampling rate so that there exist a solution for the given problem.
 
-\section{Discretization constraints}
+\subsection{Discretization constraints}
 For all the abstractions, the state must reach each of the regions of interest without leaving the environment.
 
-\section{Feasability}
+\subsection{Feasability}
+%///////////////////////////////////////////////////////////
+%*** Feasability (abstr) ***
+%	- be clear in the introduction:
+%		. we use CPU time computation just to show that the complexity of the abstraction is growing up to a point where there is no solution
+%		  but this part intend to show when the abstraction is good at finding a solution
+%
+%	%% curve about the smallest env size models for each of them
+%		. explain why dbl1 is smaller (overlapp)
+%		. explain why there is a minimal length for feasability for each of the models
+%		. mention why this curve is important (usefull to choose the models)
+%///////////////////////////////////////////////////////////
+%
+
 \paragraph{Comparison for the second integrator model over 1 dimension:} in this paragraph, we are going to investigate when each model are better than each other.
 We will compare 3 different models:
 the second integrator model,
-the reduced model of the second integrator ($\Delta n_u = 1$)
-and the single integrator model (which is equivalent to the second integrator reduced model with $\Delta n_u = 0$).
+the input-memory model of the second integrator ($\Delta n_u = 1$)
+and the single integrator model (which is equivalent to the second integrator input-memory model with $\Delta n_u = 0$).
 In each cases, we will choose the optimal discretization. These tests are made in 1 dimension in order to be able to work with the 3 models (the complexity might be sometime too high for them).
 
 These study is supposed to give us a good inside in what to do.
@@ -36,11 +49,11 @@ These study is supposed to give us a good inside in what to do.
 I have been working on different models mainly because the size of the environment is  too small for using a single integrator.
 
 
-Figures \ref{fig:compare_cpu} and \ref{fig:compare_dt} show the comparison between the different models. We have been running algorithm to search for the smallest (in term of nodes) abstraction for different models: the second integrator with velocity feedback, the reduced model with $\Delta n_u = 1$ and $\Delta n_u = 0$.
-As we have seen in the previous sections, the reduction can hide the transient state of the intial model and reduce the size of the abstraction.
+Figures \ref{fig:compare_cpu} and \ref{fig:compare_dt} show the comparison between the different models. We have been running algorithm to search for the smallest (in term of nodes) abstraction for different models: the second integrator with velocity feedback, the input-memory model with $\Delta n_u = 1$ and $\Delta n_u = 0$.
+As we have seen in the previous sections, the input-memory can hide the transient state of the initial model and reduce the size of the abstraction.
 These results are showing this.
 When the size of the environment is too small, the transient state of the single integrator is making the all model uncontrollable and w are not able to find any solution to the problem.
-By adding some states to take in account the transient state, we can find a solution to the problem for $L<|u| \lambda$. Both the second integrator model and the 1-input reduced model are usable in this situation, however, the discretization of the velocity in the second integrator model most of the time is the "same" than the reduced model. So I believe that the reduced model is finding directly the optimal abstraction in this case.
+By adding some states to take in account the transient state, we can find a solution to the problem for $L<|u| \lambda$. Both the second integrator model and the 1-input memory models are usable in this situation, however, the discretization of the velocity in the second integrator model most of the time is the "same" than the input memory model. So I believe that the input memory model is finding directly the optimal abstraction in this case.
 On the 2 figures, the vertical lines correspond to limits where we were not able to find valid abstraction in these area. In the case of the single integrator without loops, it correspond to the limits where any decrease of the sampling time create self-loops,. For the single integrator with self-loops, it correspond to controllability issues. For 2 other models, it might be more complex to understand.
 
 \comment{I need to add the single integrator without self-loops in order to show when it is better to use it instead of the single integrator.}
@@ -172,11 +185,11 @@ legend style = {row sep=-4pt}]
 \draw [very thin,dashed] ({axis cs:0.66,0}|-{rel axis cs:0,1}) -- ({axis cs:0.66,0}|-{rel axis cs:0,0});
 
 \draw [<-]({axis cs:0.05,2}) -- ({axis cs:0.0837,2}) node[anchor=west] {double int};
-\draw [<->]({axis cs:0.0837,1}) -- ({axis cs:0.203,1}) node[anchor=west] {1-input reduced};
-\draw [->]({axis cs:0.203,0.5}) -- ({axis cs:0.403,0.5}) node[anchor=west] {0-input reduced} ;
-\draw [->]({axis cs:0.66,0.25}) -- ({axis cs:1.2,0.25}) node[anchor=mid west,align=left,text width=3.cm] {0-input reduced without self-loops} ;
+\draw [<->]({axis cs:0.0837,1}) -- ({axis cs:0.203,1}) node[anchor=west] {1-input memory};
+\draw [->]({axis cs:0.203,0.5}) -- ({axis cs:0.403,0.5}) node[anchor=west] {0-input memory} ;
+\draw [->]({axis cs:0.66,0.25}) -- ({axis cs:1.2,0.25}) node[anchor=mid west,align=left,text width=3.cm] {0-input memory without self-loops} ;
 
-\legend{$1^{st}$ int,$1^{st}$ int no sl,$2^{sd}$ int,$2^{sd}$ int reduced}
+\legend{$1^{st}$ int,$1^{st}$ int no sl,$2^{sd}$ int,$2^{sd}$ int input memory}
 \end{axis}
 \end{tikzpicture}
 \caption{Computation time of each models for different sizes of the environment}
@@ -201,14 +214,14 @@ legend style = {row sep=-4pt}]
 \addplot [black,mark=o] table [x={L}, y={dt}] {\datasimplenosl};
 \addplot [black,mark=x] table [x={L}, y={dt}] {\datadouble};
 \addplot [black,mark=+] table [x={L}, y={dt}] {\datadoublereduced};
-\legend{$1^{st}$ int,$1^{st}$ int no sl,$2^{sd}$ int,$2^{sd}$ int reduced}
+\legend{$1^{st}$ int,$1^{st}$ int no sl,$2^{sd}$ int,$2^{sd}$ int input memory}
 \end{axis}
 \end{tikzpicture}
-\caption{Complexity of the different abstractions for different size of the environment. Here the single integrator can be build as a double integrator reduced model with $\Delta n_u=0$.}
+\caption{Complexity of the different abstractions for different size of the environment. Here the single integrator can be build as a double integrator input memory model with $\Delta n_u=0$.}
 \label{fig:compare_dt}
 \end{figure}
 
-\section{Investigation of the state space discretization}
+\subsection{Investigation of the state space discretization}
 What are the constraints that does exists on the discretization of the state space?
 Many parts of my maser thesis will be justified by this.
 Therefore I need to have a clear approach about it.
@@ -310,19 +323,3 @@ legend pos=north west]
 \caption{Comparison of the complexity for the same number of nodes and the same number of edges but with or without self loops (note: the maximum size of the cycles is 2).}
 \label{fig:same_nbre_nodes}
 \end{figure}
-
-\section{Feasability}
-%///////////////////////////////////////////////////////////
-%*** Feasability (abstr) ***
-%	- be clear in the introduction:
-%		. we use CPU time computation just to show that the complexity of the abstraction is growing up to a point where there is no solution
-%		  but this part intend to show when the abstraction is good at finding a solution
-%
-%	%% curve about the smallest env size models for each of them
-%		. explain why dbl1 is smaller (overlapp)
-%		. explain why there is a minimal length for feasability for each of the models
-%		. mention why this curve is important (usefull to choose the models)
-%///////////////////////////////////////////////////////////
-%
-
-

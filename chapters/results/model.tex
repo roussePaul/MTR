@@ -25,19 +25,19 @@ k
 k \in \mathbb{R}_+^\star
 \end{equation*}
 
-We will study the effect of the reduction over the size of the abstraction. In the case of the second integrator, we will observe both the position and the velocity of the agent:
+Two models will be used. The first one is the "raw" abstraction (without any extended state) where we observe both the position and the velocity of the agent:
 \begin{equation}
 C_{dble} = \begin{bmatrix}
 1 & 0\\
 0 & 1
 \end{bmatrix}
 \end{equation}
-In the case of the reduced abstraction, only the position will be used:
+and the input extended state abstraction where only the position will be used:
 \begin{equation}
  C_r = \begin{bmatrix}
  1 & 0
  \end{bmatrix}
-\end{equation}
+\end{equation}.
 
 This system is monotonic (in fact it is cooperative ).
 
@@ -63,7 +63,7 @@ k \exp{-k \dt}
 E_d = Ad
 \end{equation*}
 
-We can then identify the different matrices used for the reduction of the abstraction:\\
+We can then identify the different matrices used for the computation of the input extended state abstraction:\\
 \begin{tabular}{lll}
 $A_r =  \begin{bmatrix} \exp{-k\dt} \end{bmatrix} $
 &
@@ -92,7 +92,7 @@ We have been modelling the noise with $\W = [\minf{\w},\msup{\w}]$.
 \end{equation}
 
 The input and noise sets are bounded. The position and the velocity are not coupled and the dynamic on the velocity is asymptotically stable.
-We can therefore do the reduction of the abstraction on the velocity. More over, the reduced system is monotonic.
+We can therefore compute the input extended state abstraction. More over, the unobserved system is monotonic.
 
 \subsection{Discretization of the environment}
 All the discretization used are uniform.

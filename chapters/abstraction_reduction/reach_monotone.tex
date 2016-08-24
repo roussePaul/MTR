@@ -76,7 +76,7 @@ The computation of the reached sets is a field in control theory on its own.
 So the reader might refer to the large literature about it for more precise algorithms in order to find invariants and the reachable sets.
 
 In this part, we will present 2 methods to compute the reachable sets.
-The first one will only be valid for monotone systems. Even if this subclass of dynamical systems is restrictive, it is possible to obtain closed form solutions for reachable sets which is useful for further studies of the reduced abstraction model.
+The first one will only be valid for monotone systems. Even if this subclass of dynamical systems is restrictive, it is possible to obtain closed form solutions for reachable sets which is useful for further studies of the input extended state abstraction model.
 The second one is based on ellipsoidal bounding methods which can be applied to a wider class of systems.
 
 
@@ -84,7 +84,7 @@ As a matter of readability, we will use the notation of \ref{lin_sys}, with the 
 All these results will be then used for the unobserved system $\Sunobs$.
 
 \subsection{Monotone systems}
-In order to get a closed form solution on the reduction, we will investigate a subset of the linear systems: the \textit{linear monotone systems}.
+In order to get a literal expression of the reachable sets, we will investigate a subset of the linear systems: the \textit{linear monotone systems}.
 
 
 Monotone systems are systems that keep a partial ordering relation $\mleq$ between 2 states while time passes.
@@ -94,7 +94,7 @@ More over, for any trajectory starting from $\xinit \in [\xinf,\xsup]$, we know 
 \forall k \in \mathbb{N}, \traj(\xinit,k) \in [\traj(\xinf,k),\traj(\xsup,k)]
 \end{equation}
 
-In order to obtain a closed form solution of the abstraction reduction, we assume the subsystem $S$ is a monotone asymptotically stable system and that the inputs and noise are bounded by a monotonic interval (if it is not the case, it is still possible to over approximate the bounds with a monotonic interval):
+In order to obtain a literal form of the input extended state abstraction, we assume the subsystem $S$ is a monotone asymptotically stable system and that the inputs and noise are bounded by a monotonic interval (if it is not the case, it is still possible to over approximate the bounds with a monotonic interval):
 \begin{equation*}
 \U \subseteq \left [ \minf{\vu}, \msup{\vu} \right ]
 \textrm{, }
@@ -130,7 +130,7 @@ As the system $S$ is monotone,
 \in \left[ \minf{\x}, \msup{\x} \right]
 \end{equation}
 
-If the initial state of the reduced system is in $\left[ \minf{\x}, \msup{\x} \right]$, then every trajectories will stay in this set.
+If the initial state of the unobserved system is in $\left[ \minf{\x}, \msup{\x} \right]$, then every trajectories will stay in this set.
 
 For $U \in \U^k$, let $\X(U)$ the subset of $\mathbb{R}^n$ defined by:
 \begin{equation}

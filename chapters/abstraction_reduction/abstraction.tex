@@ -1,23 +1,24 @@
 \newcommand{\Cont}{\mathcal{C}}%
+\section{Introduction}
 In abstraction of dynamical systems, the knowledge of the sequence of inputs applied to the plant might sometimes be preferable than the knowledge of the full state.
 %
 %The transient states of the system make the control synthesis more complex in some situation (small environment, or noisy environment).
 %More accurate models (second integrator with a small discretization of the state space) could be used with some drawbacks on the complexity and on the computation time.
-Hereby we present an abstraction of a dynamical model (discrete or continuous time) obtained by extending the state with the knowledge of a finite time input sequence lastly applied to the system.
-We have successfully used this abstraction in order to control quadricopters. Abstraction obtained with this reduction were a good alternative to solve the controller synthesis while keeping the complexity acceptable.
+Hereby we present an abstraction of a dynamical model (discrete or continuous time) obtained by extending the state with the knowledge of the finite time input sequence lastly applied to the system.
+We have successfully used this abstraction in order to control quadricopters. Abstraction obtained were a good alternative to solve the controller synthesis while keeping the complexity acceptable.
 
 
 % Property that needs to be verified by the abstraction
-Controller synthesis methods based on abstraction aim at finding an abstraction of a system. If a property verified by the abstraction is a syfficient condition for the system to verify the property, then it is possible to use controller synthesis methds. Such a relation is the alternating simulation relationship.
+Controller synthesis methods based on abstraction aim at finding an abstraction of a system. If a property verified by the abstraction is a sufficient condition for the system to verify the property, then it is possible to use controller synthesis methods. Such a relation is the alternating simulation relationship.
 
-% "Reduction" term
-The term "reduction" will be justified later. But this does not always correspond to a reduction of the abstraction size (the set of all the input sequences might be larger than the size of the states dimensions that have be suppressed). However, the efficient utilizations of this method will correspond to a reduction of the state space size.
 
 \section{Related work}
 Talk about formal verifications methods.
 
 The needs of discrete abstraction.
 
+
+\section{Preliminaries}
 %% MOVE THIS PART
 In \cite{tabuada2009verification}, the link between in hybrid systems is investigated. 
 \begin{nameddef}{System}\label{def:system}
@@ -33,12 +34,12 @@ where:
 \end{itemize}
 \end{nameddef}
 
+Such a definition of the system cover both discrete and continuous time case of dynamical systems. For the continuous time, the time is included as part of the set of inputs. Then a transition of the dynamical system from $\x$ to $\x' = \traj(t,\x,\u)$ will be written: $\x \systransition{S}{t,\u} \x'$. For the discrete case, a transition correspond to 1 timestep. The sets of states and of inputs does not have to verify any specific property, they can be infinite of finite sets.
+
 Note: in the future we will use a second equivalent notations for the transition relation $\systransition{S}{\u}$ of a system $S$: $\Post{S}{\u}$  defined for $\x \in X$ and $\u \in \U$ by:
 \begin{equation}
 \Post{S}{\u}(\x) = \{ \x \in X \mid \exists \x' \in X, \x \systransition{S}{\u} \x' \}
 \end{equation}
-
-\comment{This system can model both discrete and continuous systems, which make it a good candidate in order to deal with hybrid systems.}
 
 The alternating simulation relation between 2 systems is the link between discrete abstraction and the continuous representation of this system.
 For comoditiy, the definition of alternative simulation is rewritten here (\cite{tabuada2009verification}):
@@ -89,11 +90,8 @@ let $X(\Pastuseq) \subseteq X$ the set of all the states reached by a control se
 \end{equation}
 \end{definition}
 
-\section{Introduction}
-We will first introduce the abstraction used, then treat the case of dynamical systems, then with linear systems.
 
-
-\section{Abstraction reduction} \label{sec:abstraction}
+\section{Abstraction} \label{sec:abstraction}
 \comment{Questions: Which system to choose and when? Idea, I begin with the definition of the system to introduce the reached sets, give the property of alterning simulation relation for this type of system and then go for dynamical systems, talk about the reached sets.}%
 \comment{Define the reached sets.}%
 \comment{Do I want to talk about an abstraction or a system?}%
@@ -139,7 +137,7 @@ In our case, we will just guaranty the alternating simulation relation between $
 
 We will assume that the state $\x$ of the system $\sys$ can be decomposed in this way $\displaystyle\T{\x} = \T{[\T{\xobs},\T{\xunobs}]}$ where $\xobs \in Y$ can be observed and $\xunobs$ is an unobserved (internal) state.
 Lets call $\SSunobs$ the subspace of $\xunobs$ and $\SSobs$ the one of $\xobs$.
-The states of the reduced abstraction $\sysa$ will be expressed by $\xa_n = [\xobs_n,\Pastuseq]$ where $\Pastuseq = [\pastuseq]$ correspond to the $\Ninputs$ last control actions.
+The states of the input extended state abstraction $\sysa$ will be expressed by $\xa_n = [\xobs_n,\Pastuseq]$ where $\Pastuseq = [\pastuseq]$ correspond to the $\Ninputs$ last control actions.
 
 
 Lets define the set $\Xunobs(\Pastuseq) = \Reach{S}{\Pastuseq} \proj{\SSunobs}$
@@ -195,8 +193,6 @@ we have $(\x'_+,\xa_+) \in R$.
 \end{proof}
 
 \section{Dynamical systems}
-\comment{Add the dynamical representation of the system def.}
-
 As the definition \ref{def:system} of a system can be used in order to represent continuous and discrete dynamical systems.
 In this case, the computation of the sets $\Xunobs(\Pastuseq)$ is a reachability problem.
 It can be solved in 2 steps: find the smallest invariant $\Xuinv$ of $\sys$ dynamics on $\xunobs$; compute $\Xunobs(\Pastuseq)$ the image of $\Xuinv$ after applying a control sequence that terminate with $\Pastuseq$.
