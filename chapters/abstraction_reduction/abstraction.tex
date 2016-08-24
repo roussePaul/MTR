@@ -1,9 +1,10 @@
 \newcommand{\Cont}{\mathcal{C}}%
+In abstraction of dynamical systems, the knowledge of the sequence of inputs applied to the plant might sometimes be preferable than the knowledge of the full state.
 %
+%The transient states of the system make the control synthesis more complex in some situation (small environment, or noisy environment).
+%More accurate models (second integrator with a small discretization of the state space) could be used with some drawbacks on the complexity and on the computation time.
 Hereby we present an abstraction of a dynamical model (discrete or continuous time) obtained by extending the state with the knowledge of a finite time input sequence lastly applied to the system.
-We have successfully used this abstraction in order to control quadricopters. The transient states of the system make the control synthesis more complex in some situation (small environment, or noisy environment).
-More accurate models (second integrator with a small discretization of the state space) could be used with some drawbacks on the complexity and on the computation time.
-The creation of such an abstraction was a good alternative to solve the controller synthesis while keeping the complexity acceptable.
+We have successfully used this abstraction in order to control quadricopters. Abstraction obtained with this reduction were a good alternative to solve the controller synthesis while keeping the complexity acceptable.
 
 
 % Property that needs to be verified by the abstraction

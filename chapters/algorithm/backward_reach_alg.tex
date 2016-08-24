@@ -18,27 +18,31 @@ For $X_1,\dots,X_n$ n sets and $Y \subset X_1 \times \dots \times X_n$, lets def
 
 \section{Introduction}
 
-In linear temporal logic, the goal set must be reached in finite time. For deterministic finite transition systems, solutions already verify this property: a solution is done in a finite sequence of state/transition, so in finite time as well.
-For non deterministic planning problems, this property restrict the set of solutions. A plan solution cannot have a cycle outside of the goal set. If there is a cycle that does not bring the state to the goal set, then there exist a run that infinitely loop on this cycle, and the goal set is not reached.
+In linear temporal logic, the goal set must be reached in finite time. For a deterministic finite transition systems, the solutions already verify this property: a solution is done in a finite sequence of state/transition, so in finite time as well.
+For non deterministic planning problems, this property is not granted. A solution plan with a cycle outside of the goal set will have trajectories that loops infinitely.
 
-Assuming that all transitions of a cycles will be taken in an infinite run (fairness property) can partially solve the issue.
-Some solutions came up with strong cyclic algorithm and fairness assumption on all cycles. The graph search algorithm take advantage of these cycles in order to find the plans.
+% Strong cyclic planning
+Assuming that all transitions of a cycle will be taken in an infinite run (fairness property) can partially solve the issue.
+Strong cyclic algorithms find plans with cycles, the global fairness property ensure that the solution will reach the goal set in finite time.
 However, if this hypothesis can be justified in action planning and in verification in computer science, this assumption cannot be done in controller synthesis.
-A wrong control combination might lead to limit cycles or equilibrium that might not be escaped.
+A wrong control combination can lead to limit cycles or equilibrium that might not be escaped.
 
-In small and noisy environment, the only solution in order to find a controllable abstraction might be to discretize the state space as much as possible until the abstraction is free of any self loops. This come at a price of the complexity due to a heavy abstraction.
+The solution the that we brought is a strong cyclic algorithm with local fairness property. This means the assumption of fairness is not a global assumption any more and needs to be computed according to the cells shape of the state space discretization and to the control combinations
+This part is presenting the planning under strong fairness constraint.
 
-The solution the that we brought is a strong cyclic algorithm with local fairness property. This means that the 
-This part is presenting the planning under strong fairness constraints.
+I will first present a graph decomposition. This decomposition will be used to show that any plans of a non deterministic with local fairness property problem can be decomposed in a graph of strongly connected cyclic modules. If each of the modules are fair, all the runs will reached the goal set in finite time.
+This decomposition will be then used to create an algorithm that search for these solutions.
 
+%Lets consider a product automaton $\Pi_\varphi$ between a finite transition system $\mathcal{F}$ and a nondeterministic b\"uchi automaton $\mathcal{A}_\varphi$ obtained from a LTL property $\varphi$. Lets call $\widetilde{\Pi}_\varphi$ the finite transition system that have the same nodes, initial states and transitions than $\Pi_\varphi$.
+%
+%In the case that $\Pi_\varphi$ have cycles that does not contain any accepting nodes, it can happen that a run is in $\widetilde{\Pi}_\varphi$ but not in $\Pi_\varphi$.
+%This happen when the cycle "block" the system (the state will never escape the cycle). In order to suppress this behaviour, we have to detect which control sequence can block the system.
 
-
+\comment{
 \cite{de2010generalized}
 \cite{patrizi2013fair}
-
-
 By modelling the system in this way we are losing a lot of expressiveness power of the LTL. However, the complexity remain more or less the same than before 2EXPTIME-complete ($\mathcal{O}(2^{2^{n^k}})$) (\textit{not so sure about it, double check information}).
-
+}
 \section{Linear Temporal Logic}
 Linear Temporal Logic (LTL) is specification language first introduced in \cite{pnueli1977temporal}. Since then it has been widely used in robotic motion and action planning thanks to its expressiveness.
 
@@ -541,7 +545,7 @@ I need to do a tikz picture to show how the algorithm is working.
 \section{Discussion}
 In this part we will discuss when does this algorithm is efficient.
 
-\textit{Not so sure about it:}
+\comment{Not so sure about it:}
 From our observations, it is possible to determine what is the biggest fixed point size for a specific systems.
 In the case of the single integrator model the maximum fixed point is equal to the maximum number of cells of the abstraction that can cover the set of successors for a chosen control.
 This constraint reduce the size of possible solutions.

@@ -7,13 +7,9 @@ The Minkowski sum of $A,B \in X$ noted $A+B$ is the set $\left \{a+b \mid a \in 
 For $r>0$, let $\mathcal{B}(r) = \left \{ x \in \mathbb{R}^n \mid \left \| x \right \| \leq r \right \}$ the closed ball of radius $r$.
 
 \section{Introduction}
-Most of the attempts of considering the noise are using markov decision processes, this bring us to consider not any formal methods any more but statistical model checking methods. When the noise have an unbounded density repartition (every other states of the system can be reached from on state), formal method cannot be applied anymore because no parts of the system is deterministic. However, if the magnitude of the noise is bounded, and is the control action is higher than the noise action (system is controllable), we can use this determinism at our advantage. (cite Pierre Jean).
-To "see" (observe) the fact that the system is controlled, we must have a state space discretization that is actually smaller than the smallest displacement of the agent. This increase the state space representation. In this work we are using a property to take the noise in account (if $w<u$, ie the model is controllable).
-
-Lets consider a product automaton $\Pi_\varphi$ between a finite transition system $\mathcal{F}$ and a nondeterministic b\"uchi automaton $\mathcal{A}_\varphi$ obtained from a LTL property $\varphi$. Lets call $\widetilde{\Pi}_\varphi$ the finite transition system that have the same nodes, initial states and transitions than $\Pi_\varphi$.
-
-In the case that $\Pi_\varphi$ have cycles that does not contain any accepting nodes, it can happen that a run is in $\widetilde{\Pi}_\varphi$ but not in $\Pi_\varphi$.
-This happen when the cycle "block" the system (the state will never escape the cycle). In order to suppress this behaviour, we have to detect which control sequence can block the system.
+The escape time function used in the strong cyclic algorithm is giving whether or not the system will leave a set of cells in a finite time.
+This escape property must be deduced from the dynamical system, this is a complementary information for the abstraction.
+In this part we present one possible escape property for a monotone system.
 
 In the section \ref{sec_escape}, we will lever a practical criteria over control actions to check if the state of a system can escape a subset of the state space in a finite time.
 Then (section \ref{sec_ext_escape}) we will extend the criteria to the noisy case.
