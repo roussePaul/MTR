@@ -1,0 +1,83 @@
+\documentclass{article}
+
+\begin{document}
+%
+%Problem of my master thesis
+%
+%Description of the abstraction
+%Finite state controller
+
+\begin{abstract}
+%--- --- --- Intro --- --- ---
+% What is an abstraction
+%% finite representation of a complex system
+%#### Begin directely with a finite abstraction and controller synthesis, I do not need further theory that I will not use. Just talk about the abstraction
+%#### I need to begin with what I did: Formal methods applied to controller synthesis.
+%## Take it slowly
+%!!! Trop catégorique
+Formal controller synthesis methods intend to create controllers that verify properties for a given model. Most often, discrete abstractions of a continuous system are used in order to reduce the complexity of the problem.
+%% Trop general
+%As the model can be complex, it is often easier to use an abstraction of it.
+If a behavioural relationship is met, then a valid controller for the abstraction will be valid as well for the system.
+%% used later to generate finite state controller
+The finiteness of the abstraction allows us to use computer science tools to synthesize a finite state controller (graphs search and fixed point algorithms, temporal logics).
+%
+% Why do we do it
+%% automated framework
+These methods are also called automated in a sense that finite state controllers can be automatically generated from high level specifications once the lowlevel controller and the environment discretization are given.
+%% high level tasks (LTL specifications)
+
+%--- --- --- Abstraction --- --- ---
+% What abstraction did I use, How did I build it
+%% past input memory used to compute reachable sets, discretize in the frame of the reached sets, do not discretize unsuefull information
+In this work, we investigate abstractions with a state extended by $N$ memories of the last inputs.
+Under some conditions, we have noticed that the inputs knowledge might be preferable over the full state observation,
+%% only way to improve the reachibility property of the system is to discretize mores
+%% efficient way to remove transient states of a stable behaviour of the system
+%
+%% More robust models
+%
+it has improved controllability of the system while keeping a low complexity of the abstraction.
+
+% --- --- --- Algo --- --- ---
+% Non determinism
+%% why it is not cool to have self loops
+Resultant abstractions tends to create self-loops, this brought us to reconsider the planning algorithm but for non deterministic models.
+Common least fixed point methods for non deterministic models where not usable: any cycle compromise the finite time reachability property.
+%%% does not conserve the reachability properties (due to self loops)
+To overcome this, we have been using a strong cyclic planning algorithm with a fairness function. This function indicate if the system will escape a cycle in finite time or can loop indefinitely.
+%% how we can benefit from self loops (self loops make model smaller)
+% Strong cyclic algorithm
+
+% --- --- --- Experiements --- --- ---
+% SML
+%% Chosen model, double integrator
+This controller synthesis method with Linear Temporal Logic specifications has been successfully used and tested on single and multiple quadricopters scenarios in the Smart Mobility Lab of KTH.
+
+\end{abstract}
+%
+%Abstraction
+%Description of the abstraction that I did.
+%Abstraction for formal controller synthesis methods
+%reachable sets
+%for which models it is valid
+%Special cases of the monotone systems
+%Noise analysis?
+%Don't discretize more, discretize better
+%
+%Which information to consider
+%
+%Algorithm
+%Noise only considered in the case of fixed point algorithm (reachability)
+%Safety issues
+%show the advantages to consider non deterministic models.
+%for non deterministic models
+%motion planning algorithm, strong cyclic environment
+%
+%Experiments
+%How I have been applying it
+%Temporal logic
+%Quad
+%Multi agent control
+
+\end{document}
