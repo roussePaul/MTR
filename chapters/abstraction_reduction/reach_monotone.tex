@@ -27,14 +27,14 @@ Really good introduction about hierarchical control approach, give references.
 
 We will translate the boundedness assumption of $\Xunobs(\Pastuseq)$ by making further assumptions on the system $\Sunobs$:
 \begin{itemize}[noitemsep,nolistsep]
-\item the input set on $\SSunobs$ is bounded,
-\item the noise set on $\SSunobs$ is bounded,
+\item the image of the input set on $\SSunobs$ is bounded,
+\item the image of the noise set on $\SSunobs$ is bounded,
 \item the system is asymptotically stable on the subspace $\SSunobs$.
 \end{itemize}
 These assumptions are not a necessary conditions in order to create the abstraction $\sysa$.
 
-Finally, we adopt the final definition of the system $S$:
-\begin{equation}
+Finally, we adopt the following definition of the system $S$:
+\begin{equation} \label{lin_sys_decoupled}
 S:
 \left\{
 \begin{aligned}
@@ -68,8 +68,8 @@ with,
 where the system $\Sunobs=(A_r,B_r,E_r)$ is asymptotically stable, input set $\Uunobs$ and noise sets $\Wunobs$ (respective projection of $\U$ and $\W$ on $\SSunobs$) are bounded.
 
 This system definition might seems restrictive as we assume that the unobserved part of the system is independent of the observed part.
-However this structure is met in many mechanical system (mainly because of the Newton's second law of mechanic).
-This make this model relevant in the case of robot motion control.
+However, this structure is met in many mechanical systems (mainly because of the Newton's second law of mechanic).
+This make this model relevant especially in the case of robot motion planning.
 
 \section{Reachable set}
 The computation of the reached sets is a field in control theory on its own.
@@ -80,16 +80,16 @@ The first one will only be valid for monotone systems. Even if this subclass of 
 The second one is based on ellipsoidal bounding methods which can be applied to a wider class of systems.
 
 
-As a matter of readability, we will use the notation of \ref{lin_sys}, with the assumptions of the unobserved system (boundedness of input and noise sets and asymptotically stable).
+As the computation of the reachable sets is not dependant on the entire system according to the definition of the system \ref{lin_sys_decoupled}, we will adopt a simpler notation for this section.
+We will use the notation of \ref{lin_sys}, with the assumptions of the unobserved system (boundedness of input and noise sets and asymptotically stable).
 All these results will be then used for the unobserved system $\Sunobs$.
 
 \subsection{Monotone systems}
-In order to get a literal expression of the reachable sets, we will investigate a subset of the linear systems: the \textit{linear monotone systems}.
+In order to get a literal expression of the reachable sets, we have investigated a subset of the linear systems: the \textit{linear monotone systems}.
 
-
-Monotone systems are systems that keep a partial ordering relation $\mleq$ between 2 states while time passes.
-The partial ordering of the state space allow us to over approximate any bounded set with 2 vectors $\xinf$ and $\xsup$.
-More over, for any trajectory starting from $\xinit \in [\xinf,\xsup]$, we know that
+Monotone systems are systems that keep a partial ordering relation $\mleq$ between 2 trajectories while time passes.
+The partial ordering of the state space allow us to over approximate any bounded set $X$ with 2 vectors $\xinf$ and $\xsup$ so that $\forall \x \in X, \xinf \mleq \x \and \x \mleq \xsup$. We can define a segment of $\R^n$ by $[\xinf,\xsup] = \{\x \in \R^n \mid  \xinf \mleq \x \and \x \mleq \xsup\}$.
+More over, for any trajectory starting from $\xinit \in [\xinf,\xsup]$, we know that for a monotonic system:
 \begin{equation}
 \forall k \in \mathbb{N}, \traj(\xinit,k) \in [\traj(\xinf,k),\traj(\xsup,k)]
 \end{equation}
@@ -101,7 +101,7 @@ In order to obtain a literal form of the input extended state abstraction, we as
 \W \subseteq \left [ \minf{\w}, \msup{\w} \right ]
 \end{equation*}
 
-As we mentioned in section \ref{sec:abstraction}, the computation of the set $\X(\Pastuseq)$ are done in 2 steps: computation of the invariant and computation of the image of this invariant.
+As we mentioned in section \ref{sec:abstraction}, the computation of the set $\X(\Pastuseq)$ are done in 2 steps: computation of the invariant and computation of the image of this invariant after applying $\Pastuseq$.
 We will take advantage of the monotonic structure by expressing all the sets as monotone interval of the state space.
 
 As the system $S$ is asymptotically stable, the matrix $I-A$ as eigenvalues strictly greater than $0$ and is invertible.
@@ -112,7 +112,7 @@ We can define:
 \minf{\x} &= (I-A)^{-1} (B \minf{\vu} + E \minf{\w})\\
 \end{split}
 \end{equation}
-which correspond to the bounds of the least invariant set $\Xinv$ of the system.
+which correspond to the bounds of the smallest monotonic invariant set $\Xinv$ of the system.
 So:
 \begin{equation}
 \Xinv = \left[ \minf{\x}, \msup{\x} \right]

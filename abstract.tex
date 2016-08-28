@@ -1,25 +1,9 @@
 \documentclass{article}
 
 \begin{document}
-%
-%Problem of my master thesis
-%
-%Description of the abstraction
-%Finite state controller
 
 \begin{abstract}
-%--- --- --- Intro --- --- ---
-% What is an abstraction
-%% finite representation of a complex system
-%#### Begin directely with a finite abstraction and controller synthesis, I do not need further theory that I will not use. Just talk about the abstraction
-%#### I need to begin with what I did: Formal methods applied to controller synthesis.
-%## Take it slowly
-%!!! Trop catégorique
-% Temporal logic ~ high level specification 
-% Correctness
-% Tout doit apparaitre dans la premiere phrase
-% LTL formal controller synthesis
-Formal controller synthesis methods with temporal logic specifications try at the same time to guaranty the correctness of the high level properties with a system that might have complex behaviour.
+Formal controller synthesis methods with temporal logic specifications try at the same time to guarantee the correctness of the high level properties with a system that might have complex behaviour.
 Most often, discrete abstractions of a continuous system are used in order to reduce the size of the problem.
 %% Trop general
 If a behavioural relationship between the system and its abstraction is met, then a valid controller for the abstraction will be valid as well for the system.
@@ -39,25 +23,23 @@ These methods are automatic (the controller synthesis can be created automatical
 % S -> S'
 In this work, we investigate a system with a state extended by memories of the last inputs.
 % S' -> Sa
-These memories are then used to replace part of the state with computation of reachable sets.
+These memories are used to compute the reachable sets, this counteract the loss of information from a partial observation of the state.
 % Sa -> Sa'
-The final abstraction is obtained by a discretization the resulting state space.
+The final abstraction is obtained by a discretization of the resulting state space.
 % Sa' x C < S x C
-As the abstraction is alternatingly simulated by the extended system, a controller solution of problem for the abstraction is a solution for the extended system.
+As the abstraction is alternatingly simulated by the extended system, a controller solution of the problem for the abstraction is a solution for the extended system.
 % --- --- --- Algo --- --- ---
 % Non determinism
 %% why it is not cool to have self loops
 Specifications of the controller are given in Linear Temporal Logic formula (LTL).
-The product of the non deterministic automaton and the B\"uchi automaton of the LTL specification is used to find a finite state controller.
-To ensure the fairness property of the solution, we had to find plans without unfair cycles.
-We used a strong cyclic algorithm with a local fairness function
-that indicate if the system will escape a cycle in finite time or can loop indefinitely.
+The product of the non deterministic of the automaton and the B\"uchi automaton of the LTL specification is used to find a finite state controller.
+To ensure the fairness property of the solution, we look for plans without unfair cycles.
+We use a strong cyclic algorithm with a local fairness function that indicates if the system will escape a cycle in finite time or can loop indefinitely.
 %%% does not conserve the reachability properties (due to self loops)
 %To overcome this, we have been using a strong cyclic planning algorithm with a fairness function. This function indicate if the system will escape a cycle in finite time or can loop indefinitely.
 %% how we can benefit from self loops (self loops make model smaller)
 % Strong cyclic algorithm
 %
-In some cases, the state extension by input memories can counteract the loss of information from the partial observation of the state.
 %
 
 

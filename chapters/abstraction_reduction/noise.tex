@@ -51,16 +51,16 @@
 \newcommand{\size}{N}
 \newcommand{\norminf}[1]{\left\|#1\right\|_{\infty}}
 
-\comment{Redo the computation with just one iteration, write the constraints, this will give a filter that is only dependant on the dynamic of the unobserved system. which means that the admissible noises are only the one that are faster than the dynamic of the unobserved system.}
 
 \section{Error sensitivity}
-As we do not observe $\xunobs$, the input extended state abstraction is not sensible to the measurement error on $\xunobs$. More over, as $\xunobs$ does not have a direct impact on the measurement, the error on $\xunobs$ impact the observation as a cumulative error.
-
-During the computation of the reachable sets, the admissible noise magnitude remain the same. However, the constraints are different as the error does not have anymore a direct impact on the state but can be propagating.
-In this part, we will try to establish what are the new constraints that does apply on the noise.
+%
+\comment{Redo the computation with just one iteration, write the constraints, this will give a filter that is only dependant on the dynamic of the unobserved system. which means that the admissible noises are only the one that are faster than the dynamic of the unobserved system.}
+%
+As we do not observe $\xunobs$, the error on $\SSunobs$ does not have a direct effect on the input extended state abstraction.
+However, it does have an impact as the dynamics on $\SSunobs$ influence the one on $\SSobs$.
+In this part, we will see that the admissible noise set is actually bigger (in the sense of inclusion) than the initial noise set.
 
 We will take the following system:
-
 \begin{equation}
 \begin{aligned}
 \xkn &=

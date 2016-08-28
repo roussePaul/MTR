@@ -1,5 +1,7 @@
 \documentclass[electronic]{kthesis}
 
+\usepackage{showframe}
+
 \usepackage[english]{babel}
 \usepackage{import}
 \usepackage{enumitem}
@@ -161,12 +163,14 @@
 \newcommand{\ReachSeq}[2]{Reach^{*#1}(#2)}
 
 \newcommand{\sysDef}[1]{(\)}
+
+\newcommand{\altsim}{\preceq_{\mathcal{AS}}}
   
 %% COMMENTS
 \usepackage{color}
 \definecolor{colorcomment}{RGB}{100,0,250}
-%\renewcommand{\comment}[1]{\textit{\textbf{\color{colorcomment} #1}}}
-\renewcommand{\comment}[1]{}
+\renewcommand{\comment}[1]{\textit{\textbf{\color{colorcomment} #1}}}
+%\renewcommand{\comment}[1]{}
 
 %% SUPER SCRIPT STUFF
 \makeatletter
@@ -231,6 +235,7 @@
 \newcommand{\sysaU}{\mathcal{U}}%
 \newcommand{\sysA}{\mathcal{S}_A}%
 \newcommand{\sysB}{\mathcal{S}_B}%
+\newcommand{\sysC}{\mathcal{S}_C}%
 \newcommand{\Usys}{\mathcal{U}}%
 \newcommand{\Wsys}{\mathcal{W}}%
 \newcommand{\Uunobs}{{\mathcal{U}^i}}%
@@ -277,29 +282,29 @@
 \input{chapters/abstraction_reduction/discussion.tex}
 %
 %%
-\chapter{Backward reachability algorithm}
-\input{chapters/algorithm/backward_reach_alg.tex}
+%\chapter{Backward reachability algorithm}
+%\input{chapters/algorithm/backward_reach_alg.tex}
+%%
+%\chapter{Escape time property}
+%\input{chapters/escape_time/simpleescape.tex}
+%%
+%%
+%\chapter{Simulations}
+%\input{chapters/simulation/intro.tex}
+%\newcommand{\um}{\u_{-}}
+%\newcommand{\up}{\u_{+}}
+%\newcommand{\uo}{\vect{0}}
+%\input{chapters/results/model.tex}
+%\input{chapters/simulation/algorithm.tex}
+%\input{chapters/simulation/abstraction.tex}
+%\input{chapters/simulation/feasability.tex}
+%\input{chapters/simulation/noise.tex}
 %
-\chapter{Escape time property}
-\input{chapters/escape_time/simpleescape.tex}
-%
-%
-\chapter{Simulations}
-\input{chapters/simulation/intro.tex}
-\newcommand{\um}{\u_{-}}
-\newcommand{\up}{\u_{+}}
-\newcommand{\uo}{\vect{0}}
-\input{chapters/results/model.tex}
-\input{chapters/simulation/algorithm.tex}
-\input{chapters/simulation/abstraction.tex}
-\input{chapters/simulation/feasability.tex}
-\input{chapters/simulation/noise.tex}
-
-\chapter{Experiments}
-\input{chapters/results/setup.tex}
-\input{chapters/results/single1Dexperiments.tex}
-\input{chapters/results/single2Dexperiments.tex}
-\input{chapters/results/multiagentexperiments.tex}
+%\chapter{Experiments}
+%\input{chapters/results/setup.tex}
+%\input{chapters/results/single1Dexperiments.tex}
+%\input{chapters/results/single2Dexperiments.tex}
+%\input{chapters/results/multiagentexperiments.tex}
 %
 \bibliographystyle{kthplain}
 \bibliography{bibliography}{}
