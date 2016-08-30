@@ -141,6 +141,40 @@ The set $\bigcup_{i\in \llbracket 1,n^t \rrbracket} \mathcal{V}^t_i$ is a finite
 
 It follows that for any trajectories $(x,u)$ of the system $S'$ with controls chosen in $\mathcal{U}_t \subseteq \mathcal{U}$, $F( \bigcup_{i\in \llbracket 1,n^t \rrbracket} \mathcal{V}^t_i) \neq \emptyset$ implies that the state $x_k$ will escape $X_0$ in a finite time.
 
+\section{Monotone system extention}
+Let the monotone system defined by:
+\begin{equation}
+S:\left\{
+\begin{split}
+\x_{k+1} &= f(\x_k,\u_k,\w_k)\\
+\x_0 &\in X_0\\
+\u_k &\in \U\\
+\w_k &\in \W\\
+\end{split}
+\right.
+\end{equation}
+with $\U$ finite and bounded, and $\W$ bounded and closed.
+
+By creating the new system defined by:
+\begin{equation}
+S':\left\{
+\begin{split}
+\x_{k+1} &= \x_k + \u_k' + \w_k'\\
+\x_0 &\in X_0\\
+\u_k' &\in \U'\\
+\w_k' &\in \W'\\
+\end{split}
+\right.
+\end{equation}
+with 
+$$\U' = \{ g(\x,\u) \mid \u \in \U, \x \in X_0\}$$,
+$$g(\x,\u) = \frac{1}{2}(f(\x,\u_k,\minf{\w})+f(\x,\u_k,\msup{\w})) -\x$$
+and 
+$$\W' = \bigcup_{\x \in X_0,\u \in \U} [f(\x,\u,\minf{\w})-g(\x,\u),f(\x,\u,\msup{\w})-g(\x,\u)]$$.
+As $X_0$, $\U$ and $\W$ are bounded by assumption. And if we assume that $f(X_0,\U,\W)$ is a bounded set as well, then $\U'$ and $\W'$ are bounded. $\U$ is finite, so $\U'$ is finite as well. $\W$ and $\X_0$ are closed, the function $h(\x,\u) = f(\x,\u,\w) - g(\x,\u)$ is continuously differentiable on $X_0\times\U$, so the set $\W'$ is closed as well.
+
+Thanks to all these property, we can apply the previous results to the system $S'$. 
+We should also note that the system $S'$ is alternatingly simulated by the system $S$. All the behaviour of $S$ are included in the behaviours of $S'$. This means that if the system $S'$ escape $X_0$ in finite time, then the system $S$s escape the set $X_0$ in finite time as well.
 
 \section{Timing  information}\label{sec_timing}
 In this section, we will show how to use the previous results to get an upper bound of the escaping time of $S$ trajectories starting in $X_0$.

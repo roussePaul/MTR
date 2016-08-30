@@ -1,319 +1,216 @@
 \newcommand{\xo}{\vect{x}^o}%
 \newcommand{\xr}{\vect{x}^r}%
-
+%
 \newcommand{\Ao}{A_o}%
 \newcommand{\Ar}{A_r}%
 \newcommand{\Aro}{A_{ro}}%
-
+%
 \newcommand{\Bo}{B_o}%
 \newcommand{\Br}{B_r}%
-
+%
 \newcommand{\Eo}{E_o}%
 \newcommand{\Er}{E_r}%
 \newcommand{\Ero}{E_{ro}}%
-
+%
 \newcommand{\Xr}{X_r}%
-
+%
 \newcommand{\Xrinv}{\mathcal{X}_r}%
 \newcommand{\xrinf}{\minf{\x}_r}%
 \newcommand{\xrsup}{\msup{\x}_r}%
-
-
-\newcommand{\Wsup}{\msup{W}}
-\newcommand{\Winf}{\minf{W}}
-\newcommand{\Wk}{W_k}
-
-\renewcommand{\wr}{\vect{w}^r}
-\newcommand{\wrsup}{\msup{\vect{w}}^r}
-\newcommand{\wrinf}{\minf{\vect{w}}^r}
-\newcommand{\Wrsup}{\msup{W}^r}
-\newcommand{\Wrinf}{\minf{W}^r}
-\newcommand{\Wrk}{W^r_k}
-
+%
+%
+\newcommand{\Wsup}{\msup{W}}%
+\newcommand{\Winf}{\minf{W}}%
+\newcommand{\Wk}{W_k}%
+%
+\renewcommand{\wr}{\vect{w}^r}%
+\newcommand{\wrsup}{\msup{\vect{w}}^r}%
+\newcommand{\wrinf}{\minf{\vect{w}}^r}%
+\newcommand{\Wrsup}{\msup{W}^r}%
+\newcommand{\Wrinf}{\minf{W}^r}%
+\newcommand{\Wrk}{W^r_k}%
+%
 \newcommand{\z}{\vect{z}}%
 \newcommand{\zk}{\z_k}%
 \newcommand{\zkn}{\z_{k+1}}%
-
+%
 \newcommand{\xkn}{\x_{k+1}}%
 \newcommand{\xk}{\x_{k}}%
 \newcommand{\uk}{\u_{k}}%
 \newcommand{\wk}{\w_{k}}%
 \newcommand{\yk}{\y_{k}}%
 \newcommand{\ykn}{\y_{k+1}}%
-
-\newcommand{\Z}{\mathbf{z}}
-\newcommand{\Zk}{\Z_k}
-\newcommand{\Zkn}{\Z_{k+1}}
-\newcommand{\hk}{\vect{h}_{k}}
-\newcommand{\h}{\vect{h}}
-\newcommand{\wnoise}{\msup{\sigma}}
-
-\newcommand{\size}{N}
-\newcommand{\norminf}[1]{\left\|#1\right\|_{\infty}}
-
-
+%
+\newcommand{\Z}{\mathbf{z}}%
+\newcommand{\Zk}{\Z_k}%
+\newcommand{\Zkn}{\Z_{k+1}}%
+\newcommand{\hk}{\vect{h}_{k}}%
+\newcommand{\h}{\vect{h}}%
+\newcommand{\wnoise}{\msup{\sigma}}%
+%
+\newcommand{\size}{N}%
+\newcommand{\norminf}[1]{\left\|#1\right\|_{\infty}}%
+%
+\newcommand{\xui}{\minf{\x}^U_r}%
+\newcommand{\xus}{\msup{\x}^U_r}%
+\newcommand{\An}{\mathcal{A}^r_n}%
+\newcommand{\Bn}{\mathcal{B}^r_n}%
+\newcommand{\En}{\mathcal{E}^r_n}%
+\newcommand{\xuki}{\minf{\x}^{U_k}_r}%
+\newcommand{\xuks}{\msup{\x}^{U_k}_r}%
+\newcommand{\xuk}{\x^{U_k}_r}%
+%
+\newcommand{\ANoise}{\Omega}%
+\newcommand{\NoiseSet}{\mathcal{W}}%
+\newcommand{\infseq}{\omega}%
+%
+\newcommand{\sykn}{\msup{\y}_{k+1}}%
+\newcommand{\iykn}{\minf{\y}_{k+1}}%
+%
+\newcommand{\filter}{\mathcal{F}}%
+%
 \section{Error sensitivity}
 %
-\comment{Redo the computation with just one iteration, write the constraints, this will give a filter that is only dependant on the dynamic of the unobserved system. which means that the admissible noises are only the one that are faster than the dynamic of the unobserved system.}
-%
-As we do not observe $\xunobs$, the error on $\SSunobs$ does not have a direct effect on the input extended state abstraction.
-However, it does have an impact as the dynamics on $\SSunobs$ influence the one on $\SSobs$.
-In this part, we will see that the admissible noise set is actually bigger (in the sense of inclusion) than the initial noise set.
-
-We will take the following system:
-\begin{equation}
-\begin{aligned}
-\xkn &=
-\begin{bmatrix} \Ao&\Aro\\ 0& \Ar \end{bmatrix} \xk + 
-\begin{bmatrix} \Bo\\ \Br \end{bmatrix} \uk + 
-\begin{bmatrix} \Eo & \Ero \\ 0 & \Er \end{bmatrix} \wk
-\\
-\yk &= C\xk = \xo_k
-\end{aligned}
-\end{equation}
-
-We will suppose that the system is monotonic. 
-And that the noise and the inputs are bounded:
-\begin{equation}
-\begin{aligned}
-\u &\in [\minf{\u},\msup{\u}] \subset \mathbb{R}^{n_u}\\
-\w &\in [\minf{\w},\msup{\w}] \subset \mathbb{R}^{n_w}\\
-\end{aligned}
-\end{equation}
-
-The input extended state abstraction is done in this way. First, we define the smallest invariant of the unobserved state:
-$$
-\Xrinv = [\xrinf,\xrsup]
-$$
-where,
-$$
-\begin{aligned}
-\xrinf &= (I-A)^{-1} (\Br \minf{\u} + \Er \minf{\w})\\
-\xrsup &= (I-A)^{-1} (\Br \msup{\u} + \Er \msup{\w})
-\end{aligned}
-$$
-
-Lets now define analytically the set $\Xr(U)$ that correspond to the image of $\Xrinv$ after applying the control sequence $U = [u_0,\dots,u_{n-1}]$.
-Thanks to the monotonicity property, we have the following property:
-\newcommand{\xui}{\minf{\x}^U_r}
-\newcommand{\xus}{\msup{\x}^U_r}
-\newcommand{\xu}{\x^U_r}
-$$\Xr(U) = [\xui,\xus]$$
-where
-$$\xui = \traj (\xrinf,U,\Winf)
-\textrm{, }
-\xus = \traj (\xrsup,U,\Wsup)$$
-$$ \Winf = [\minf{\w},\dots,\minf{\w}]
-\textrm{, }
-\Wsup = [\msup{\w},\dots,\msup{\w}]$$
-so that $\Wsup$ and $\Winf$ are a sequence of $n$ elements.
-
-
-\newcommand{\An}{\mathcal{A}^r_n}
-\newcommand{\Bn}{\mathcal{B}^r_n}
-\newcommand{\En}{\mathcal{E}^r_n}
-\begin{align} \label{expr:xur}
-\xu &=
-\begin{bmatrix}
-A_r^n & A_r^{n-1} &\dots & A_r & I
-\end{bmatrix}
-\begin{bmatrix}
-\x_0 \\
-B_r \u_0 + E_r \w_0\\
-\vdots \\
-B_r \u_{n-1} + E_r \w_{n-1}\\
-\end{bmatrix}\\
-\xu &=
-\An
-\begin{bmatrix}
-\x_0 \\
-\Bn U + \En W
-\end{bmatrix}
-\end{align}
-
-where
-$$
-\An = 
-\begin{bmatrix}
-A_r^n & A_r^{n-1} &\dots & A_r & I
-\end{bmatrix}
-\textrm{, }
-\Bn =
-diag( 
-\begin{bmatrix}
-B_r &
-\dots &
-B_r
-\end{bmatrix})
-$$
-$$\textrm{ and }
-\En = 
-diag(\begin{bmatrix}
-E_r &
-\dots &
-E_r
-\end{bmatrix} )
-$$
-
-$$
-W = \begin{bmatrix}
-\w_0\\
-\vdots\\
-\w_{n-1}
-\end{bmatrix}
-\textrm{, }
-U = \begin{bmatrix}
-\u_0\\
-\vdots\\
-\u_{n-1}
-\end{bmatrix}
-$$
-
-\newcommand{\xuki}{\minf{\x}^{U_k}_r}
-\newcommand{\xuks}{\msup{\x}^{U_k}_r}
-\newcommand{\xuk}{\x^{U_k}_r}
-Let define the variable $\xuki$ and $\xuks$ (guess it from previous definition).
-
-\paragraph{Admissible noise computation}
 In the previous sections, we have been using a dynamical model to build an abstraction $S_a$. In this part, we will solve the opposite problem:  we would like to find all the admissible models that can be alternatively simulated by $S_a$.
 In our case, we will find all the admissible models with the same dynamic as the initial model $S$ but with a different noise set.
 
-\newcommand{\ANoise}{\Omega}
-\newcommand{\NoiseSet}{\mathcal{W}}
-\newcommand{\infseq}{\omega}
+As we do not observe $\xunobs$, the error on $\SSunobs$ does not have a direct effect on the input extended state abstraction.
+However, it does have an impact as the dynamics on $\SSunobs$ influence the one on $\SSobs$.
+In this part, we will see that the admissible noise set is actually bigger (in the sense of inclusion) than the noise set used for the modellisation.
 
-\newcommand{\sykn}{\msup{\y}_{k+1}}%
-\newcommand{\iykn}{\minf{\y}_{k+1}}%
-For a given sequence of noise, if the following condition is verified for every trajectory of the system at every timesteps, then the noise sequence is an admissible noise sequence for the system:
+We will consider the system definition \ref{lin_sys_decoupled} with noise sets and input sets 2 monotone sets expressed by:
+\begin{equation}
+\begin{aligned}
+\U &= [\minf{\u},\msup{\u}]\\
+\W &= [\minf{\w},\msup{\w}]\\
+\end{aligned}
+\end{equation}
+
+%% Explain what is the definition of an admissible noise
+A sequence of noise is admissible if it does not violate the transitions of the abstraction for any possible trajectory.
+In our case, this mean that for any sequence of noise, the observation of the next state must belong to the monotone interval of observations.
+This can be expressed in this way:
 \begin{equation} \label{valid_transition}
 \ykn \in [\iykn,\sykn]
 \end{equation}
 where 
 \begin{align*}
-\sykn &= C \msup{\xo}_{k+1} = 
+\sykn &= C \msup{\x}_{k+1} = 
 C A 
 \begin{bmatrix}
 \xo_{k} \\
-\xuks
+\xrsup
 \end{bmatrix}
 + C B \uk + C E \msup{\w}
 \\
-\iykn &= C \minf{\xo}_{k+1} 
+\iykn &= C \minf{\x}_{k+1} 
 = C A 
 \begin{bmatrix}
 \xo_{k} \\
-\xuki
+\xrinf
 \end{bmatrix}
 + C B \uk + C E \minf{\w}
 \\
-\ykn &= C \xo_{k+1}
+\ykn &= C \x_{k+1}
 = C A 
 \begin{bmatrix}
 \xo_{k} \\
-\xuk
+\xr
 \end{bmatrix}
 + C B \uk + C E \wk
 \end{align*}
 
-We will now use the inequalities \ref{valid_transition} to get a condition over $\Wk$:
-\begin{align*}
+We will now use the inequalities \ref{valid_transition} to get conditions over the noise:
+\begin{align}
 \ykn \mleq \sykn
 & \Leftrightarrow
-0 \mleq \sykn - \ykn \\
+0 \mleq \sykn - \ykn
+\nonumber \\
 & \Leftrightarrow
 0 \mleq
-C A \begin{bmatrix} 0 \\ \xuks-\xuk \end{bmatrix}
+C A \begin{bmatrix} 0 \\ \xrsup-\xr_k \end{bmatrix}
 + C E (\msup{\w} -\wk)
-\\
+\nonumber \\
 & \Leftrightarrow
 0 \mleq
-C A 
-\begin{bmatrix} 0 \\ \An \end{bmatrix} 
-\begin{bmatrix}
-\xrsup - \xr_{k-n}\ \\
-\En (\Wrsup - \Wrk)
-\end{bmatrix}
-+ C E (\msup{\w} -\wk)
-&& \textrm{see \ref{expr:xur}}
-\end{align*}
+\Aro ( \xrsup-\xr_k ) + C E (\msup{\w} -\wk)
+\label{equi_upp}
+\end{align}
+We would like to have a condition over the noise only. However, the process $\xr_k$ depend on the input $\uk$. Therefore, we will introduce the variable $\zk$ defined by:
+\begin{equation}
+\zkn = \Ar \zk + \Er \wk + \Br \msup{\u}
+\end{equation}
+Thanks to the monotone property and to $\uk \mleq \msup{\u}$, for any trajectory if $\x_0 \mleq \z_0$, then:
+\begin{equation}\label{process_ineq}
+\xk \mleq \zk
+\end{equation}
+Lets define $\zk^* = \zk + (\Ar-I)^{-1} \Br \msup{\u}$, for all $k\in \mathbb{N}$:
+\begin{equation}
+\zkn^* = \Ar \zk^* + \Er \wk
+\end{equation}
 
-We have the following equality:
-\begin{align*}
-C A \begin{bmatrix} 0 \\ \An \end{bmatrix} 
-& = \Aro \An
-\end{align*}
-
-So,
-\begin{equation}\label{upp_equi}
-\begin{split}
+Then by using the inequality \ref{process_ineq} and equivalence \ref{equi_upp}, we have the following implication:
+\begin{equation}
+\Aro (\zk^* - (\Ar-I)^{-1} \Br \msup{\u} ) + CE \wk 
+\mleq \Aro \xrsup + CE \msup{\w}
+\Rightarrow 
 \ykn \mleq \sykn
-& \Leftrightarrow
-0 \mleq
-\Aro \An
-\begin{bmatrix}
-\xrsup - \xr_{k-n} \\
-\En (\Wrsup - \Wrk)
-\end{bmatrix}
-+ C E (\msup{\w} -\wk)
-\end{split}
 \end{equation}
 
-We can derive the same inequality with $\iykn$:
-
-\begin{equation}\label{low_equi}
-\begin{split}
-\iykn \mleq \ykn
-& \Leftrightarrow
-0 \mleq
-\Aro \An
-\begin{bmatrix}
-\xr_{k-n} - \xrinf \\
-\En (\Wrk - \Wrinf)
-\end{bmatrix}
-+ C E (\wk - \minf{\w})
-\end{split}
+\newcommand{\sig}{\sigma}
+\newcommand{\ssup}{\msup{\sig}}
+\newcommand{\sinf}{\minf{\sig}}
+Finally, we have that:
+\begin{equation}
+\Aro \zk^* + CE \wk 
+\mleq 
+\ssup
+\Rightarrow 
+\ykn \mleq \sykn
+\label{impl_upp}
 \end{equation}
+with $\ssup = \Aro ( \xrsup + (\Ar-I)^{-1} \Br \msup{\u} ) + CE \msup{\w}$
 
-\newcommand{\filter}{\mathcal{F}}
-\comment{I need to create a system that include all the behaviours of $\xr$ (without the input) and then create the filter with it.}
-\comment{I need to be carefull about the filter and the monotonie: the absolute value of a vector (in my case) is done element-wise.}
-Inequality \ref{upp_equi} and \ref{low_equi} can be seen as a filter $\filter$. Let $\zk=[\xr_{k-n},\wr_{k-n},\dots,\wr_{k-1}]$  defined by:
+The same implication can be done with the lower bound of $\yk$:
+\begin{equation}
+\Aro \zk^* + CE \wk 
+\mleq 
+\sinf
+\Rightarrow 
+\ykn \mleq \sykn
+\label{impl_low}
+\end{equation}
+with $\sinf = \Aro ( \xrinf + (\Ar-I)^{-1} \Br \minf{\u} ) + CE \minf{\w}$
+
+We will express these 2 implications with a filter inequality.
+Let the following filter $\filter$:
 \begin{equation}
 \filter:
 \left\{
 \begin{split}
-\zkn &= F \zk + G \wk \\
-\hk &= H \zk + K \wk \\
+\zkn^* &= \Ar \zk^* + \Er \wk \\
+\hk &= \Aro \zk + CE \wk \\
 \end{split}
 \right.
 \end{equation}
-where
+Then implications \ref{impl_upp} and \ref{impl_low} are satisfied if the output of the filter $\filter$ is in $[\sinf,\ssup]$ for all the timesteps.
+The set $\W_a$ of noise sequences that verify:
 \begin{equation}
-F = \begin{bmatrix}
-A & E & 0\\
-0 & 0 & I_\z\\
-0 & 0 & 0 \\
-\end{bmatrix}
-\textrm{, }
-H = 
-\Aro \An
-\begin{bmatrix}
-I \\
-\En
-\end{bmatrix}
-\textrm{, }
-K = \En
+\forall k \in \mathbb{N}, \h_k \in [\sinf,\ssup]
 \end{equation}
-with $I_\z$ the \comment{No, it is the identity matrix with an offset} identity matrix of size $(n-2)\size$.
-Let,
-\begin{align*}
-\msup{\h} &= H \msup{\z} + K \wrsup\\
-\minf{\h} &= H \minf{\z} + K \wrinf
-\end{align*}
-Then \ref{upp_equi} and \ref{low_equi} are satisfied if the output of the filter $\filter$ is in $[\minf{\h},\msup{\h}]$ for all the timesteps.
+is a subset of the admissible noise sequences.
 
-By linearity of the filter and as $\abs{\cdot}$ is a norm, we know that every noise sequence inside the convex polyhedra defined by the points $W_F$ is an admissible noise.
 
-Please note that the maximum constant noise remain unchanged. However, noises of higher frequencies can have greater magnitudes than the one modelled on the initial model. 
+By linearity of the filter, we know that if the sequences $\{\wk^1\}_{k\in \mathbb{N}}$ and  $\{\wk^2\}_{k\in \mathbb{N}}$ are admissible, then the sequence defined by $\{a\wk^1 + b\wk^1\}_{k\in \mathbb{N}}$ with $a,b>0$ and $a+b = 1$ is an admissible noise sequence.
+Lets now consider the bode $G$ function of the filter $\filter$ and the set $\W'$ defined by:
+$$\W_G = 
+\{ 
+\{G(w) cos(w k + \phi)\}_{k \in \mathbb{N}} 
+\mid \phi \in [0,2\pi], w \in [0,2\pi] \}
+$$
+We have that the convex polyhedra defined by the set $\W_G$ is a subset of the admissible noise set.
+This result give us a practical criteria over the set of admissible noise sequences.
+It will also help us to understand some experiments.
 
-\comment{Can I find an easier/usable expression for the filter?}
+Please note that the maximum constant noise remains unchanged.
+However, noises of higher frequencies can have greater magnitudes than the one modelled initially. 

@@ -1,6 +1,6 @@
 \documentclass[electronic]{kthesis}
 
-\usepackage{showframe}
+%\usepackage{showframe}
 
 \usepackage[english]{babel}
 \usepackage{import}
@@ -72,9 +72,9 @@
 \usepackage{epstopdf}
 
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing,patterns}
 \usepackage{pgfplots}
-\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{groupplots,fillbetween}
 
 % DEFINITION/THEOREM ENVIRONMENTS
 \newcommand{\inlinedef}[1]{\textit{#1}}
@@ -281,30 +281,29 @@
 \input{chapters/abstraction_reduction/noise.tex}
 \input{chapters/abstraction_reduction/discussion.tex}
 %
-%%
-%\chapter{Backward reachability algorithm}
-%\input{chapters/algorithm/backward_reach_alg.tex}
-%%
-%\chapter{Escape time property}
-%\input{chapters/escape_time/simpleescape.tex}
-%%
-%%
-%\chapter{Simulations}
-%\input{chapters/simulation/intro.tex}
-%\newcommand{\um}{\u_{-}}
-%\newcommand{\up}{\u_{+}}
-%\newcommand{\uo}{\vect{0}}
-%\input{chapters/results/model.tex}
-%\input{chapters/simulation/algorithm.tex}
-%\input{chapters/simulation/abstraction.tex}
-%\input{chapters/simulation/feasability.tex}
-%\input{chapters/simulation/noise.tex}
+\chapter{Backward reachability algorithm}
+\input{chapters/algorithm/backward_reach_alg.tex}
 %
-%\chapter{Experiments}
-%\input{chapters/results/setup.tex}
-%\input{chapters/results/single1Dexperiments.tex}
-%\input{chapters/results/single2Dexperiments.tex}
-%\input{chapters/results/multiagentexperiments.tex}
+\chapter{Escape time property}
+\input{chapters/escape_time/simpleescape.tex}
+%
+%
+\chapter{Simulations}
+\input{chapters/simulation/intro.tex}
+\newcommand{\um}{\u_{-}}
+\newcommand{\up}{\u_{+}}
+\newcommand{\uo}{\vect{0}}
+\input{chapters/results/model.tex}
+\input{chapters/simulation/algorithm.tex}
+\input{chapters/simulation/abstraction.tex}
+\input{chapters/simulation/feasability.tex}
+\input{chapters/simulation/noise.tex}
+%
+\chapter{Experiments}
+\input{chapters/results/setup.tex}
+\input{chapters/results/single1Dexperiments.tex}
+\input{chapters/results/single2Dexperiments.tex}
+\input{chapters/results/multiagentexperiments.tex}
 %
 \bibliographystyle{kthplain}
 \bibliography{bibliography}{}

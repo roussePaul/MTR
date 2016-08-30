@@ -15,7 +15,7 @@
 %% ------------------
 
 % FTS
-\node (dyn_robot) 	[cell] {Dynamical robot model ${\dot{x} = f(x,u,w)}$};
+\node (dyn_robot) 	[cell] {Dynamical robot model ${\dot{\mathbf{x}} = f(\mathbf{x},\mathbf{u},\mathbf{w})}$};
 \node (env) 			[cell, below of=dyn_robot] {Environment\\ discretization};
 \node (fts) [cell, right of=env, xshift=2.5cm, yshift=1cm] {Finite \\Transition System};
 
@@ -54,14 +54,14 @@
 \draw [arrow] (plan.east) -- ++(0.75,0) -- ++(0,4.5) -- (controller.west);
 
 \node (speed_controller) [cell, below of=controller] {Speed controller\\ (PID feedback)};
-\draw [arrow] (controller) -- (speed_controller) node[pos=0.5, anchor=east] {$v_{ref}$};
+\draw [arrow] (controller) -- (speed_controller) node[pos=0.5, anchor=east] {$\mathbf{v}_{ref}$};
 
 \node (quad) [cell, below of=speed_controller] {Quadricopter};
 \draw [arrow] (speed_controller) -- (quad) node[align=center,pos=0.5, anchor=east] {$T_{ref},\varphi_{ref},$ \\$\theta_{ref},\dot{\psi}_{ref}$};
 
-\draw [arrow] (quad.east) -- ++(1,0) -- ++(0,2) node[align=center,pos=0.5, anchor=east] {$x,\dot{x}$} -- (speed_controller);
+\draw [arrow] (quad.east) -- ++(1,0) -- ++(0,2) node[align=center,pos=0.5, anchor=east] {$\mathbf{x},\dot{\mathbf{x}}$} -- (speed_controller);
 
-\draw [arrow] (quad.east) -- ++(2,0)  -- ++(0,4) node[align=center,pos=0.75, anchor=east] {$v$} -- (controller);
+\draw [arrow] (quad.east) -- ++(2,0)  -- ++(0,4) node[align=center,pos=0.75, anchor=east] {$\mathbf{x}$} -- (controller);
 
 
 \coordinate (online_box_pt1) at ($(controller.north west)$);
