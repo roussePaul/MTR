@@ -3,7 +3,7 @@ The complexity of the problem disallow us from using a more complex model (doubl
 Therefore, the $N$ quadricopters will be modelled as a $2N$ dimensions single integrators.
 
 The quadricopters have to verify the following LTL formula:
-$$ \varphi = (\LTLalways \neg out) \and (\LTLalways \LTLeventually a) \and (\LTLalways \LTLeventually b) \and \and (\LTLalways \neg collide)$$
+$$ \varphi = (\LTLalways \neg out) \and (\LTLalways \LTLeventually a) \and (\LTLalways \LTLeventually b) \and (\LTLalways \neg collide)$$
 where $out$ correspond to one quad or more outside of the environment, $a$ agent 1 in north-east and agent 2 in south-west, $b$ agent 1 in south-west and agent 2 in north-east and $collide$ if there is a collision (quads on the same cells).
 Figure \ref{fig:multi} show a run of the plan for few steps.
 

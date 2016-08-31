@@ -116,6 +116,32 @@ We will see that there is no alternating simulation relation between $S$ and $S'
 \label{proc_abstraction}
 \end{figure}
 
+\begin{figure}
+\newcommand{\sizepict}{0.23\textwidth}
+\begin{minipage}{\sizepict}
+\newcommand*{\showfullobs}{}
+\newcommand*{\showtransition}{}
+\includestandalone[width=\textwidth]{abstra_proc_plots}
+\end{minipage}
+\begin{minipage}{\sizepict}
+\newcommand*{\showext}{}
+\newcommand*{\showtransition}{}
+\includestandalone[width=\textwidth]{abstra_proc_plots}
+\end{minipage}
+\begin{minipage}{\sizepict}
+\newcommand*{\showinv}{}
+\newcommand*{\showunobstrans}{}
+\includestandalone[width=\textwidth]{abstra_proc_plots}
+\end{minipage}
+\begin{minipage}{\sizepict}
+\newcommand*{\showinv}{}
+\newcommand*{\showdiscr}{}
+\includestandalone[width=\textwidth]{abstra_proc_plots}
+\end{minipage}
+\caption{Steps to create the abstraction}
+\label{proc_abstraction_2}
+\end{figure}
+
 \subsection{$S \rightarrow S'$}
 Let the system $\sys = (\tuple{X,X_0,\U,\systransition{S}{},Y,H})$
 and the same system with a state extended by memories of the last $\Ninputs$ control actions applied to the system, $\sys'$ defined by
