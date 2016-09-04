@@ -180,8 +180,8 @@ We will now formalize the problem in term of LMI constraints.
 The noise and inputs sets will be model as centred ellipsoids:
 \begin{equation}
 \begin{aligned}
-\U &= \{ \vu \in \R^{n_u} \mid \vu^T R_u \vu < 1 \}\\
-\W &= \{ \w \in \R^{n_w} \mid \w^T R_w \w < 1 \}\\
+\U &= \{ \vu \in \R^{n_u} \mid \vu^T R_u \vu \leq 1 \}\\
+\W &= \{ \w \in \R^{n_w} \mid \w^T R_w \w \leq 1 \}\\
 \end{aligned}
 \end{equation}
 

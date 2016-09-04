@@ -15,7 +15,7 @@
 %% ------------------
 
 % FTS
-\node (dyn_robot) 	[cell] {Dynamical robot model ${\dot{\mathbf{x}} = f(\mathbf{x},\mathbf{u},\mathbf{w})}$};
+\node (dyn_robot) 	[cell] {Abstraction of the robot};
 \node (env) 			[cell, below of=dyn_robot] {Environment\\ discretization};
 \node (fts) [cell, right of=env, xshift=2.5cm, yshift=1cm] {Finite \\Transition System};
 

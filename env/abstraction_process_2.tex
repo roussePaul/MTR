@@ -1,0 +1,69 @@
+% Author: Rasmus Pank Roulund
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows,positioning,patterns,calc,fit,intersections}
+\usepackage{standalone}
+
+\usepackage{pgfplots}
+\usepackage{relsize}
+\usepackage{amssymb}
+
+
+ 
+\begin{document}
+
+\begin{tikzpicture}[node distance = 2cm]
+
+\tikzstyle{cell} = [rectangle, minimum width=3cm, minimum height=1cm,text centered, draw=black, text width=3cm,on grid,auto,xshift=3cm]
+\tikzstyle{info} = [rectangle, minimum width=3cm, minimum height=3cm,text centered, draw=none, text width=3cm,on grid,auto,above]
+\tikzstyle{labels} = [rectangle,text centered, draw=none,on grid,auto]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+%% ------------------
+%% -- OFFLINE PART --
+%% ------------------
+
+% FTS
+\node (dyn_robot) 	[cell] {Dynamical robot model ${\dot{x} = f(x,u,w)}$};
+\node (ext_sys) 			[cell, right of=dyn_robot] {Extended system with N memories of the inputs};
+\node (ext_abstr) 			[cell, right of=ext_sys] {Extended abstraction with N memories of the inputs};
+\node (abstr) 			[cell, right of=ext_abstr] {Final abstraction};
+
+\node (s) 			[labels,above of=dyn_robot] {$S$};
+\node (sp) 			[labels, above of=ext_sys] {$S'$};
+\node (sa) 			[labels, above of=ext_abstr] {$S_a$};
+\node (sap) 			[labels, above of=abstr] {$S_a'$};
+
+
+\draw [arrow] (dyn_robot) -- node[info]{extend state with N memories} (ext_sys);
+\draw [arrow] (ext_sys) -- node[info]{remove the observation of some states} (ext_abstr);
+\draw [arrow] (ext_abstr) -- node[info]{discretize the state space and the input space} (abstr);
+
+\newcommand{\boxsize}{5cm}
+\newcommand{\boxshift}{4cm}
+
+\node (plots) [labels, below of=s,yshift=-\boxshift] {
+	\newcommand*{\showfullobs}{}
+	\newcommand*{\showtransition}{}
+	\includestandalone[width=\boxsize]{abstra_proc_plots}};
+	
+\node (plotsp) [labels, below of=sp,yshift=-\boxshift] {
+	\newcommand*{\showext}{}
+	\newcommand*{\showtransition}{}
+	\includestandalone[width=\boxsize]{abstra_proc_plots}};
+	
+\node (plotsa) [labels, below of=sa,yshift=-\boxshift] {
+	\newcommand*{\showinv}{}
+	\newcommand*{\showunobstrans}{}
+	\includestandalone[width=\boxsize]{abstra_proc_plots}};
+	
+\node (plotsap) [labels, below of=sap,yshift=-\boxshift] {
+	\newcommand*{\showinv}{}
+	\newcommand*{\showdiscr}{}
+	\includestandalone[width=\boxsize]{abstra_proc_plots}};
+
+
+
+\end{tikzpicture}
+
+\end{document}

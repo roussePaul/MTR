@@ -15,6 +15,8 @@ In the section \ref{sec_escape}, we will lever a practical criteria over control
 Then (section \ref{sec_ext_escape}) we will extend the criteria to the noisy case.
 And finally (section \ref{sec_timing}) we will integrate the notion of escaping time to use this criteria in frameworks with time constraints such as Metric Interval Temporal Logic (MITL).
 
+\comment{Explain that this is only for the dynamical systems, other systems can be obtained by composition of systems. The escape might be also an assumption of the system (we know that the camera needs to have 5 seconds max of movie).}
+
 \section{Escaping proof}\label{sec_escape}
 In this section we will derive a condition over the control sequence of a first integrator system to check if the system can escape a bounded subset of the state space in a finite time.
 
@@ -174,7 +176,7 @@ $$\W' = \bigcup_{\x \in X_0,\u \in \U} [f(\x,\u,\minf{\w})-g(\x,\u),f(\x,\u,\msu
 As $X_0$, $\U$ and $\W$ are bounded by assumption. And if we assume that $f(X_0,\U,\W)$ is a bounded set as well, then $\U'$ and $\W'$ are bounded. $\U$ is finite, so $\U'$ is finite as well. $\W$ and $\X_0$ are closed, the function $h(\x,\u) = f(\x,\u,\w) - g(\x,\u)$ is continuously differentiable on $X_0\times\U$, so the set $\W'$ is closed as well.
 
 Thanks to all these property, we can apply the previous results to the system $S'$. 
-We should also note that the system $S'$ is alternatingly simulated by the system $S$. All the behaviour of $S$ are included in the behaviours of $S'$. This means that if the system $S'$ escape $X_0$ in finite time, then the system $S$s escape the set $X_0$ in finite time as well.
+We should also note that the system $S'$ is alternatingly simulated by the system $S$. All the behaviour of $S$ are included in the behaviours of $S'$. This means that if the system $S'$ escape $X_0$ in finite time, then the system $S$ escape the set $X_0$ in finite time as well.
 
 \section{Timing  information}\label{sec_timing}
 In this section, we will show how to use the previous results to get an upper bound of the escaping time of $S$ trajectories starting in $X_0$.
@@ -232,3 +234,11 @@ As $F(\mathcal{U}_t) \neq \emptyset$, for all trajectories $(x,u)$ with controls
 \end{equation}
 we have $x_T = x_0 + T \, \bar{u}$. $\bar{u}$ is an element of $C_{\mathcal{U}_t}$ so $\left \| \bar{u} \right \| \geq \left \| u_m \right \|$, and by definition $\left \| x_0 - x_T \right \| \leq \left \| X_0 \right \|$, therefore $T \leq T_ {escape}$.
 \end{proof}
+
+\section{Conclusion}
+\comment{How efficient is this model? It is the worst case scenario of the state (a rough upper bound that might be not).}
+
+\comment{can we use other escape time property?}
+
+\comment{Say something about MITL?}
+pouet

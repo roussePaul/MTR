@@ -13,6 +13,7 @@
 
 %% MATH
 \usepackage{amsmath, amsfonts, amsthm, amssymb}
+%%%!!!!!!!!! I might have to remove amssymb as in the LTL temporal operator section of this part I just load the Dash symbols !!!!!!! (this package is actually colliding with an other one but I dont remember which one).
 \usepackage{nicefrac}
 \usepackage{breqn}
 \usepackage{tabularx}
@@ -275,33 +276,33 @@
 \newcommand{\Nobs}{N^o} % number of states of the discretization of the state space \SSobs
 %
 \newcommand{\dt}{dT}%
+
+\input{chapters/introduction.tex}
+
+\chapter{Abstraction with input-extended state}
+\input{chapters/abstraction_reduction/abstraction.tex}
+\input{chapters/abstraction_reduction/reach_monotone.tex}
+\input{chapters/abstraction_reduction/noise.tex}
+\input{chapters/abstraction_reduction/discussion.tex}
 %
-%\input{chapters/introduction.tex}
+\chapter{Backward reachability algorithm}
+\input{chapters/algorithm/backward_reach_alg.tex}
 %
-%\chapter{Abstraction with input-extended state}
-%\input{chapters/abstraction_reduction/abstraction.tex}
-%\input{chapters/abstraction_reduction/reach_monotone.tex}
-%\input{chapters/abstraction_reduction/noise.tex}
-%\input{chapters/abstraction_reduction/discussion.tex}
-%%
-%\chapter{Backward reachability algorithm}
-%\input{chapters/algorithm/backward_reach_alg.tex}
-%%
-%\chapter{Escape time property}
-%\input{chapters/escape_time/simpleescape.tex}
-%%
-%%
-%\chapter{Simulations}
-%\input{chapters/simulation/intro.tex}
-%\newcommand{\um}{\u_{-}}
-%\newcommand{\up}{\u_{+}}
-%\newcommand{\uo}{\vect{0}}
-%\input{chapters/results/model.tex}
-%\input{chapters/simulation/algorithm.tex}
-%\input{chapters/simulation/abstraction.tex}
-%\input{chapters/simulation/feasability.tex}
-%\input{chapters/simulation/noise.tex}
+\chapter{Escape time property}
+\input{chapters/escape_time/simpleescape.tex}
 %
+%
+\chapter{Simulations}
+\input{chapters/simulation/intro.tex}
+\newcommand{\um}{\u_{-}}
+\newcommand{\up}{\u_{+}}
+\newcommand{\uo}{\vect{0}}
+\input{chapters/results/model.tex}
+\input{chapters/simulation/algorithm.tex}
+\input{chapters/simulation/abstraction.tex}
+\input{chapters/simulation/feasability.tex}
+\input{chapters/simulation/noise.tex}
+
 \chapter{Experiments}
 \input{chapters/results/setup.tex}
 \input{chapters/results/single1Dexperiments.tex}

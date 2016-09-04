@@ -15,11 +15,8 @@ We will see later that it can bring to improvement of the size of the abstractio
 \centering
 \begin{minipage}[b]{0.49\textwidth}
 	\includegraphics[width=\textwidth]{chapters/abstraction_reduction/overlapp_disc.eps}
-\end{minipage}	
-\begin{minipage}[b]{0.49\textwidth}
-	\includegraphics[width=\textwidth]{chapters/abstraction_reduction/overlapp_disc2.eps}
-\end{minipage}	
-\caption{For the abstraction on the right, the reached sets overlapps. The equivalent discretization of the state space on the left create an abstraction of 72 symbols for 4 symbols in the case of the input extended abstraction.}
+\end{minipage}
+\caption{The reached sets overlapps. The equivalent discretization of the state space on the left create an abstraction of 7 symbols for 4 symbols in the case of the input extended abstraction.}
 \label{fig:overlapp}
 \end{figure}
 
@@ -35,8 +32,10 @@ In term multi agent control this make the problem more complex as the control ge
 %We will see that in some case it produce smaller abstraction.
 
 
-\subsection{Reachability/Controllability}
-Reachable sets are computed with the invariant set. As the invariant set is an over approximation of the state, it is always possible to find a discretization of the unobserved subspace that create less successors than the estimation of the state.
+\subsection{Reachability}
+Reachable sets are computed with the invariant set. As the invariant set is an over approximation of the state,
+\comment{less precise, volume successor bigger...}
+ it is always possible to find a discretization of the unobserved subspace that create less successors than the estimation of the state.
 This might results in an abstraction that is unusable whatever the number of memories we are using or the sampling rate of the model.
 
 %\subsection{Notes}
@@ -45,3 +44,5 @@ This might results in an abstraction that is unusable whatever the number of mem
 %Self loops hide any time information (that is why I have been working on the time information chapter).
 %
 %In the case of the reduction of the abstraction.
+
+\section{Conclusion}

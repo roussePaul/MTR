@@ -1,5 +1,5 @@
 % Author: Rasmus Pank Roulund
-\documentclass{standalone}
+\documentclass[tikz]{standalone}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows,positioning,calc,fit,patterns,intersections}
 \usepackage{pgfplots}
@@ -12,6 +12,7 @@
 \newcommand*{\showext}{}
 \newcommand*{\showtransition}{}
 \newcommand*{\showunobstrans}{}
+
 
 \begin{document}
 
@@ -159,7 +160,7 @@
 
 
 \ifdefined\showtransition
-\node[elli=-60:0.25cm and 0.8cm,fill=none,line width=0.1pt] (ell) at (axis cs:-0.3,0.3) {};
+\node[elli=-60:0.25cm and 0.6cm,fill=none,line width=0.1pt] (ell) at (axis cs:-0.3,0.3) {};
 
 \draw [->] (xn) to [out=160,in=-100] node[anchor=north east,pos=0.3,inner sep=0pt]{\tiny $u_{\scalebox{0.7}{n}}$} (ell.south east);
 \fi

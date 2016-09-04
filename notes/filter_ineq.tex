@@ -1,0 +1,62 @@
+\documentclass{article}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+%%%!!!!!!!!! I might have to remove amssymb as in the LTL temporal operator section of this part I just load the Dash symbols !!!!!!! (this package is actually colliding with an other one but I dont remember which one).
+\usepackage{nicefrac}
+\usepackage{breqn}
+\usepackage{tabularx}
+\usepackage{stmaryrd} % for llbracket and rrbracket
+\usepackage[ruled]{algorithm2e}
+
+
+\begin{document}
+
+
+\newcommand{\R}{\mathbb{R}}			% R
+\newcommand{\N}{\mathbb{N}}			% N
+\newcommand{\Z}{\mathbb{Z}}			% Z
+
+\newcommand{\Rw}{\mathbb{R}^w}
+
+\newcommand{\seq}[1]{\{#1_n\}_{n\in \Z}}					%{xn}Z sequence
+
+\renewcommand{\exp}[1]{e^{#1}}							%E exponential
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\fourier}{\mathcal{F}}	%F fourier
+\newcommand{\ifourier}{\mathcal{F}^{-1}}	%F fourier
+
+\newcommand{\Xc}{\mathcal{X}_c}
+\newcommand{\Xf}{\mathcal{X}_c^f}
+
+
+\newcommand{\Lo}{\mathcal{L}_1}
+
+
+Let $\Rw$ the set of all infinite sequences with values in $\R$.
+Let $\Xc$ a subset of $\Rw$ defined for $c \in \R^+$ by :
+$$\Xc = \{ \seq{x} \in \Rw \mid \abs{x_n} \leq c \}$$
+
+Lets define the Fourier transform $\fourier$ for a sequence $\seq{x} \in \Rw$:
+$$
+c_w = \sum_{n=-\infty}^{\infty} x_n  \exp{-i w n}
+$$
+
+Let the set $\Xf$ defined for $c$ by:
+$$\Xf = \{ \ifourier\{c\} \mid c \in \Lo, \frac{1}{2\pi} \int_{w=0}^{2\pi} \abs{c_w} dw \leq c \}$$
+
+We would like to show:
+$$
+\Xc = \Xf
+$$
+
+\newcommand{\ewn}{\exp{-i w n}}
+
+\begin{proof}
+$\Rightarrow$:
+\begin{align*}
+\seq{x} \in \Xc &\Rightarrow \forall n\in \Z, \abs{x_n} \leq c\\
+& \Rightarrow \forall n\in \Z, \abs{ x_n \ewn } \leq c\\
+\end{align*}
+\end{proof}
+
+\end{document}

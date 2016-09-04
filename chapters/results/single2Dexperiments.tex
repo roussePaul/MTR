@@ -1,12 +1,19 @@
 \section{Experiments over 2 axes}
-\comment{Description of the environment, property to verify, LTL stuff and so on.}
 
-\comment{Say that I will not talk about the noise as we have already talked about before.}
+
+% Model
+Models used for experiments in a 2D environment are just the concatenation of the previous models: 2 double integrator with velocity feedback.
+Each of the dynamics over the different axis are decoupled.
+The previous results apply for each axis, this being said, we will not talk about the noise.
+%Description of the environment, property to verify, LTL stuff and so on.
+The environment used to do the tests is described in figure \ref{fig:environment}. We will try to verify the formula $ \varphi = (\LTLalways \neg out) \and (\LTLalways \LTLeventually a) \and (\LTLalways \LTLeventually b)$. 
+
+The size of the models is squared in comparison to the 1D models.
+We have been able to find plan solutions for the 1 and 0 input memory extended state abstraction, however the raw abstraction was too complex to find a solution in a decent time.
+\comment{size of the fixed points}
 
 \comment{I have to compare the sizes of the abstractions.}
 
-The previous study show the link between the precision and the complexity of the abstraction that we used.
-In this part we will use the previous results in order to solve the following problem for different size of the environment.
 \begin{figure}
 	\center
 	\includestandalone[width=0.5\textwidth]{2D_env_problem}
@@ -28,7 +35,6 @@ See figure \ref{fig:double_reduce_2D}.
 
 \subsection{$\Ninputs = 0$ input memory model}
 See figure \ref{fig:double_reduce_2D}.
-
 
 \subsection{Real case scenarios}
 See figure \ref{fig:real_case}.

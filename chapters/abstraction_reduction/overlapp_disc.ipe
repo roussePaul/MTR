@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70107" creator="Ipe 7.2.3">
-<info created="D:20160810183255" modified="D:20160904124438"/>
+<info created="D:20160812092005" modified="D:20160904191657"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -254,51 +254,139 @@ h
 <page>
 <layer name="alpha"/>
 <layer name="beta"/>
-<view layers="alpha" active="alpha"/>
-<path layer="alpha" matrix="1 0 0 1 4.43912 0.798127" stroke="black">
-160 544
-144 384
-336 432
-320 496
-256 528 u
+<layer name="gamma"/>
+<view layers="alpha gamma" active="gamma"/>
+<path layer="alpha" matrix="0.75 0 0 0.75 96 128" stroke="black" pen="heavier">
+128 768 m
+128 512 l
+384 512 l
+384 768 l
+h
 </path>
-<text matrix="1 0 0 1 -1.61294 4.83883" transformations="translations" pos="288 512" stroke="black" type="label" width="11.882" height="8.23" depth="0" valign="baseline">$\mathcal{X}^i
-$</text>
-<path stroke="black">
-240 496
-304 464
-240 432
-240 432 u
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" pen="heavier">
+224 736 m
+224 688 l
+160 688 l
+160 736 l
+h
 </path>
-<text matrix="1 0 0 1 -48 -16" transformations="translations" pos="256 464" stroke="black" type="label" width="32.326" height="8.231" depth="2.49" valign="baseline">$X^i(U_n)$</text>
-<path stroke="black">
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" pen="heavier">
+176 704 m
+176 640 l
+256 640 l
+256 704 l
+h
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" pen="heavier">
+160 544 m
+160 656 l
+208 656 l
+208 544 l
+h
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" pen="heavier">
+192 592 m
+192 560 l
+368 560 l
+368 592 l
+h
+</path>
+<path layer="beta" matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+192 560 m
+128 560 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+192 560 m
+192 512 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+368 560 m
+384 560 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+368 592 m
+384 592 l
+384 592 l
+384 592 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+368 560 m
+368 512 l
+368 512 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+368 592 m
+368 768 l
+368 768 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+192 592 m
+128 592 l
+128 592 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+192 592 m
+192 768 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+160 656 m
+128 656 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+208 656 m
+384 656 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+224 768 m
+224 512 l
+224 512 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+256 768 m
+256 512 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+160 768 m
+160 512 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+128 688 m
+384 688 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+128 736 m
+384 736 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+176 768 m
+176 512 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+128 544 m
+384 544 l
+</path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
 208 512 m
-256 512
-224 480
-240 464
-256 464
-256 464
-256 464 c
+208 768 l
 </path>
-<use name="mark/disk(sx)" pos="208 512" size="normal" stroke="black"/>
-<use name="mark/disk(sx)" pos="233.768 483.078" size="normal" stroke="black"/>
-<use name="mark/disk(sx)" pos="239.292 493.568" size="normal" stroke="black"/>
-<use matrix="1 0 0 1 6.0521 -0.14924" name="mark/disk(sx)" pos="249.968 464.118" size="normal" stroke="black"/>
-<text matrix="1 0 0 1 1.59916 3.34996" transformations="translations" pos="207.912 512.246" stroke="black" type="label" width="10.163" height="8.233" depth="2.47" valign="baseline">$x^i_0$</text>
-<text transformations="translations" pos="244.053 493.146" stroke="black" type="label" width="10.163" height="8.233" depth="2.47" valign="baseline">$x^i_1$</text>
-<text transformations="translations" pos="222.368 482.573" stroke="black" type="label" width="10.163" height="8.233" depth="2.47" valign="baseline">$x^i_2$</text>
-<text matrix="1 0 0 1 -3.46235 9.37648" transformations="translations" pos="256.777 461.604" stroke="black" type="label" width="10.163" height="8.233" depth="2.47" valign="baseline">$x^i_3$</text>
-<path layer="beta" stroke="black" cap="1">
-107.849 481.497 m
-107.849 481.497 l
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+128 704 m
+384 704 l
+384 704 l
 </path>
-<path matrix="1 0 0 1 -4 -4" stroke="red">
-256 456 m
-268 460
-264 476
-248 464
-252 456
-256 456 c
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+176 640 m
+128 640 l
 </path>
+<path matrix="0.75 0 0 0.75 96 128" stroke="black" dash="dashed">
+256 640 m
+384 640 l
+384 640 l
+</path>
+<text layer="gamma" matrix="1 0 0 1 -80.7266 -28.543" transformations="translations" pos="400 720" stroke="black" type="label" width="11.882" height="8.23" depth="0" valign="baseline">$\mathcal{X}^i$</text>
+<text transformations="translations" pos="328 560" stroke="black" type="label" width="31.373" height="8.231" depth="2.49" valign="baseline">$X^i(U_1)$</text>
+<text matrix="1 0 0 1 0 -8" transformations="translations" pos="224 672" stroke="black" type="label" width="31.373" height="8.231" depth="2.49" valign="baseline">$X^i(U_2)$</text>
+<text transformations="translations" pos="248 632" stroke="black" type="label" width="31.373" height="8.231" depth="2.49" valign="baseline">$X^i(U_3)$</text>
+<text matrix="1 0 0 1 -5.46484 -14.6172" transformations="translations" pos="224 600" stroke="black" type="label" width="31.373" height="8.231" depth="2.49" valign="baseline">$X^i(U_4)$</text>
 </page>
 </ipe>
