@@ -1,6 +1,31 @@
-\section{Introduction}
+\section*{Introduction}
+
+High level motion planning of robots has always been a complex problem. They needs to integrate both the local and the global information.
+The local information can take different form.
+The constraints that the robot needs to verify (collision avoidance with objects or with other robots), the dynamics of the robot (which usually correspond to the low level controller task). These sub parts are actually closer to control theory applied to continuous systems and the main concerns will be about stability, robustness, speed...
+The global information might be path that the robot need to follow, action that it needs to do. Contrary to the local information, this part is closer to the "intelligence" of the robot, tools that are used are usually closer to computer science tools (graphs, algorithm).
+
+One of the trickiest step is to manage to combine the different parts in one theoretically-valid model.
+The dynamical system and the high level planner are usually represented with different mathematical objects (analytical formulation and graph representation respectively).
+One approach might be to approximate the dynamics of the 
+system and express the high level specifications in a common discrete approach. If the approximation is good enough, then we might found a solution for the problem.
+
+In this thesis we have been working on motion planning for quadricopters. As we have said before the work is divided in 2 steps:
+\begin{itemize}
+\item Creation of the abstraction: the abstraction must be a discrete time model with a finite state space. If the abstraction is conserving the behaviour of the dynamical system, then it can be used by the high level planner.
+\item High level planning: the high level planning use the abstraction found previously and a given temporal specification to find a high level plan for the dynamical system.
+\end{itemize}
+
+The abstraction is meant to be a simpler model of the dynamical system. The abstraction encapsulate less information than the original system. The main objective of this step is to remove as much information as possible to reduce the complexity of the problem. However, if the abstraction is too rough, the high level planner might not be able to find a solution.
+There is interest at selecting the information that is the most meaningful. In this thesis, we have been studying an abstraction that is using memories of the last sequence of inputs applied to the system. These strategy has been profitable compared to raw discretization of the dynamical system state space.
 
 
+High level specifications in robotic can be expressed thanks to temporal logic frameworks: they allow us to specify property in time that the robot will have to fulfil such as: "(go to the kitchen infinitely often) and (if you are in the kitchen then take an apple and bring it to the living room) and (never go to the bedroom)" with this formula, we clearly see that the time is involved (succession of action for taking the apple) as well as the robot actions.
+These frameworks intend to give a formal, flexible, expressive, human-and-machine-understandable language. These can be used as interface between the human and the algorithm that will try to bring the robot to verify this formula.
+In this work, we have been using Linear Temporal Logic. This branch of temporal logic has been studied for almost 50 years now and arrived in industrial worlds (in slightly different shape).
+These formula have an equivalent finite graph structure that can be later used to generate the high level plan.
+
+The report will be organized as follow: first we will present the input extended abstraction of the system, then the non deterministic planning algorithm followed by a chapter about the escape time property (that will ensure the finiteness of the plan solutions), then the simulation and the real experiment results.
 
 \comment{
 One of the justification of my model is that we can accept some noise and still find a controller. In my case, I have been using a really simple controller. But in a real case scenario, it would be better to use pwa controller that produce smoother trajectories.
