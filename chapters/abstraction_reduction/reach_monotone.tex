@@ -20,8 +20,8 @@ S:
 \right.
 \end{equation}
 
-\cite{liu2014abstraction} have been investigating boundedness property in order ignore one part of the abstraction.
-Really good introduction about hierarchical control approach, give references.
+\comment{\cite{liu2014abstraction} have been investigating boundedness property in order ignore one part of the abstraction.
+Really good introduction about hierarchical control approach, give references.}
 
 \comment{Try to justify the fact that the system definition for the linear system is different from the theory used before.}
 
@@ -31,7 +31,7 @@ We will translate the boundedness assumption of $\Xunobs(\Pastuseq)$ by making f
 \item the image of the noise set on $\SSunobs$ is bounded,
 \item the system is asymptotically stable on the subspace $\SSunobs$.
 \end{itemize}
-These assumptions are not a necessary conditions in order to create the abstraction $\sysa$.
+These assumptions are not a necessary conditions in order to create the abstraction $\sysa$. However, we will work with them anyway because it is simpler.
 
 Finally, we adopt the following definition of the system $S$:
 \begin{equation} \label{lin_sys_decoupled}
@@ -72,11 +72,11 @@ However, this structure is met in many mechanical systems (mainly because of the
 This make this model relevant especially in the case of robot motion planning.
 
 \section{Reachable set}
-The computation of the reached sets is a field in control theory on its own.
+The computation of the reachable sets of a dynamical system is a field in control theory on its own.
 So the reader might refer to the large literature about it for more precise algorithms in order to find invariants and the reachable sets.
 
 In this part, we will present 2 methods to compute the reachable sets.
-The first one will only be valid for monotone systems. Even if this subclass of dynamical systems is restrictive, it is possible to obtain closed form solutions for reachable sets which is useful for further studies of the input extended state abstraction model.
+The first one will only be valid for monotone systems. Even if this subclass of dynamical systems is restrictive, it is possible to obtain closed form (ie analytical) solutions for reachable sets which is useful for further studies of the input extended state abstraction model.
 The second one is based on ellipsoidal bounding methods which can be applied to a wider class of systems.
 
 

@@ -20,9 +20,10 @@
 
 \comment{It would be nice to have a temporal interpretation of it instead of a discrete one (as I have been varying the sampling rate)}
 
-In order to show how does the admissible noise behave according to the system, we have been plotting the bode diagram for several models (see figure \ref{fig:bode_gain}).
-When the sampling time is much faster than the dynamic (case $k=0.5$), the approximation of the reachable sets is worst than when the dynamic is faster than the discrete time (case $k=2.0$). This over approximation is necessary to admit all the possible noises. However, this over approximation make it possible to use noises of higher magnitude. These noise will likely be of high frequency.
-Please note that the maximum static noise admissible is the same for all the models and is the same than the second integrator abstraction without input extended state.
+In order to show how the admissible noise behave according to the system, we have been plotting the bode diagram for several models (see figure \ref{fig:bode_gain}).
+When the gain $k$ decrease, the dynamics tends to become slower than the sampling time.
+As the noise on the unobserved system impact the observed system through the dynamic of the unobserved system, high frequency tend to be more damped when the dynamics of the unobserved system are slower.
+Please note that the maximum static noise ($f=0Hz$) admissible is the same for all the models and is the same than the second integrator abstraction without input extended state.
 
 \begin{figure}
 \includestandalone[width=0.5\textwidth]{plots/bode_plots}

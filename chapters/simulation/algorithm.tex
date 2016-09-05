@@ -21,7 +21,7 @@
 \newcommand{\xdnosl}{\xd^{nosl}}
 
 \subsection{Self loops}
-In this part we intend to show how does the self loops can reduce the complexity of the formal controller synthesis.
+In this part we intend to show how the self loops can reduce the complexity of the formal controller synthesis.
 We will work with the 0-input memory abstraction ($\Ninputs=0$) that can be treated as the single integrator model.
 
 Let $\Ssl$ the abstraction with self loops. And $\Snosl$ the abstraction without any self loops (except on null control inputs).
@@ -50,7 +50,7 @@ In the case of the abstraction $\Snosl$, as the number of cells needed to find a
 %///////////////////////////////////////////////////////////
 %
 The real drawback of strong cyclic planning method lie in the search of a fair control combination. Lets try to see what are the limitation of the algorithm.
-In the previous experiments, we have been investigating cases where the maximal fixed point size is equal to 2. However, this complexity is increasing exponentially in the number of controls in $\U$ and in the number of possible successors (the number of combinations of controls for a set of $n$ nodes is equal to $|\U|^n$).
+In the previous experiments, we have been investigating cases where the maximal fixed point size was equal to 2. However, this complexity is increasing exponentially in the number of controls in $\U$ and in the number of possible successors (the number of combinations of controls for a set of $n$ nodes is equal to $|\U|^n$).
 
 The current implementation of our algorithm is not able to deal with computation of fixed point bigger that 9 (which corresponds in our model where $|\U|= 9$ to $|\U|^9 \approx 3.8e8$ possible fixed points configurations).
 We have been running a test (see figure \ref{fig:cycle_sizes}) with increasing number of successors. 

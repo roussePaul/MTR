@@ -21,9 +21,9 @@ We will see later that it can bring to improvement of the size of the abstractio
 \end{figure}
 
 
-Self loops -not cool for multi agent task, lose the time information.
+\comment{Self loops -not cool for multi agent task, lose the time information.
 Abstractions of asymptotically stable system present a disadvantage on the multiagent control side, for some controls, if the state does not evolve any more, the abstraction will take self loops.
-In term multi agent control this make the problem more complex as the control generation: self loops tend to create systems that are asynchronous with all the problems that might occurs because of this (basically one of the agent might be be stopped).
+In term multi agent control this make the problem more complex as the control generation: self loops tend to create systems that are asynchronous with all the problems that might occurs because of this (basically one of the agent might be be stopped).}
 
 %size of invariants in the 
 
@@ -33,10 +33,7 @@ In term multi agent control this make the problem more complex as the control ge
 
 
 \subsection{Reachability}
-Reachable sets are computed with the invariant set. As the invariant set is an over approximation of the state,
-\comment{less precise, volume successor bigger...}
- it is always possible to find a discretization of the unobserved subspace that create less successors than the estimation of the state.
-This might results in an abstraction that is unusable whatever the number of memories we are using or the sampling rate of the model.
+Reachable sets are computed with the invariant set. As the invariant set is an over approximation of the state, this abstraction is not conservative. This means that for a given problem, it might exist a controller solution for the system $S'$ but no solution for the system $S_a$ (regardless of the memory number).
 
 %\subsection{Notes}
 %Self loops are not desirable.

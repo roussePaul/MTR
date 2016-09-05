@@ -39,10 +39,8 @@ and the input extended state abstraction where only the position will be used:
  \end{bmatrix}
 \end{equation}.
 
-This system is monotonic (in fact it is cooperative ).
 
 As we will work on models with different sampling rates, the assumptions will be verified for the continuous system.
-
 The discrete system sampled at $\dt$ is expressed by:
 \begin{equation}
 \x_{k+1} = A_d \x_k + B_d \u_k + E_d \w_k
@@ -94,12 +92,9 @@ The input and noise sets are bounded. The position and the velocity are not coup
 We can therefore compute the input extended state abstraction. More over, the unobserved system is monotonic.
 
 \subsection{Discretization of the environment}
-All the discretization used are uniform.
-
+All the discretization that will be used are uniform discretization of the observed state space.
 For experiments over 1 axes, we will discretize the environment in position with a discretization step $\xd$. In the case of the raw double integrator model, the velocity subspace will be discretized every $\vd$ steps.
-
 For 2D environment, we will use the same discretization steps ($\xd$) for the 2 axis and for the 2 velocity subspaces ($\vd$).
-
 We will call $\Nobs$ the number of states of the discretized state space $\SSobs$.
 
 \begin{figure}

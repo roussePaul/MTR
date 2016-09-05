@@ -231,7 +231,7 @@ Try to be as theoretical as possible.
  
 
 In this section we will try to understand what are the constraints that apply on the discretization of the state space.
-Our main goal i to verify an LTL formula over the state space. For a given discrete model of the robot, we will say that the discretization of the state space is valid if we are able to find a controller that verify the formula.
+Our main goal is to verify an LTL formula over the state space. For a given discrete model of the robot, we will say that the discretization of the state space is valid if we are able to find a controller that verify the formula.
 The main problem about the discretization is that it will depend on the LTL formula that we would like to verify. For example if we need to verify the formula $\Diamond \square a$, then the region $a$ must be discretized enough in order that it exist a controller (a finite state controller) that make this region attractive.
 Here I am questioning the feasibility of the LTL formula in the discretization.
 
@@ -279,7 +279,7 @@ See figure \ref{fig:comp_loops}.
     \begin{minipage}[b]{0.49\textwidth}
 		\includestandalone[width=\textwidth]{single_int_self_loops_less_node}        		\caption{Number of nodes}
     \end{minipage}
-    \caption{Comparaison of anstraction with self loops and abstraction without self loops. For the same model, when the noise increase, the model with loops does not need a finer discretization.}
+    \caption{Comparaison of abstraction with self loops and abstraction without self loops. For the same model, when the noise increase, the model with loops does not need a finer discretization.}
     \label{fig:comp_loops}
 \end{figure}
 
