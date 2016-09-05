@@ -1,0 +1,62 @@
+% Author: Rasmus Pank Roulund
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing,shapes}
+
+\newcommand\drawcontrol[3]{%
+    \draw[control] ($(#1*\xd,#2*\xd)+(xc)$) -- ++(#3);
+}
+
+\def\framenbre{0}
+
+\begin{document}
+
+
+\begin{tikzpicture}[node distance = 4cm, auto]
+
+	\tikzstyle{cell} = [draw,text width=3cm]
+	\tikzstyle{trans} = [->]
+	\tikzstyle{hide} = [draw=none,text opacity=0]
+	
+	\tikzstyle{prod} = [draw,minimum height=0.5cm,minimum width=0.5cm]
+
+	\newcommand{\slide}[2]{
+	\ifnum\framenbre>#1
+	#2
+	\fi}
+    % Place nodes
+    
+    \node [cell] (model) {Model of the robot};
+    \node [cell,below of = model] (spec) {High level specifications};
+    \node [cell,right of = model,yshift=-2cm,xshift = 13cm] (controller) {Controller};
+    
+	\slide{0}{
+    \node [cell,right of = spec] (buchi) {B\"uchi Automaton};
+    \draw[trans] (spec) -- (buchi);
+	}
+	
+	\slide{1}{
+    \node [cell,right of = model] (fts) {Abstraction (FTS)};
+    \draw[trans] (model) -- (fts);
+	}
+	
+	\slide{2}{
+    \node [cross out,draw=black,prod,right of = fts,yshift=-2cm,xshift=-1.38cm] (product) {};
+    \node [draw=black,prod,right of = fts,yshift=-2cm,xshift=-1.38cm] (product) {};
+    \draw[trans] (fts.east) -- ++(1cm,0cm) -- (product.north);
+    \draw[trans] (buchi.east) -- ++(1cm,0cm) -- (product.south);
+    \node [cell,right of = product,yshift=0cm,xshift=-1.5cm] (productaut) {Product Automaton};
+    \draw[trans] (product) -- (productaut);
+	}
+	
+	\slide{3}{
+    \node [cell,right of = productaut] (algo) {Planning algorithm};
+    \draw[trans] (productaut) -- (algo);
+	}
+	
+	\slide{4}{
+    \draw[trans] (algo) -- (controller);
+	}
+\end{tikzpicture}
+
+\end{document}

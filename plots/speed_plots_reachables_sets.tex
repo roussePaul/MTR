@@ -3,12 +3,20 @@
 \usepackage{tikz,pgfplots}
 \usepgfplotslibrary{fillbetween}
 \usetikzlibrary{patterns}
+\usepackage{pgfplotstable} % For \pgfplotstableread
 
    
 
 \begin{document} 
 \begin{tikzpicture}
 
+
+	\pgfplotstableread{plots/speed_reduce.data}{\speed}
+	\pgfplotstableread{plots/speed_reduce_ltl.data}{\discrete}
+    \begin{axis}[thick,smooth,no markers,
+      	xlabel={$t$ ($s$)},
+  		ylabel={$v$ ($m.s^{-1}$)}]
+  		
 % defining the new dimensions and parameters
 \newlength{\hatchspread}
 \newlength{\hatchthickness}
@@ -42,9 +50,8 @@
 %    \pgfsetdash{{1pt}{1pt}}{0pt}% dashing cannot work correctly in all situation this way
     \pgfusepath{stroke}
    }
-	\pgfplotstableread{plots/speed_reduce.data}{\speed}
-	\pgfplotstableread{plots/speed_reduce_ltl.data}{\discrete}
-    \begin{axis}[thick,smooth,no markers]
+  		
+  		
     \newcommand{\hs}{5pt}
     \newcommand{\al}{20}
     \newcommand{\op}{30}
