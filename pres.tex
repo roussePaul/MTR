@@ -3,7 +3,7 @@
 
 \usetheme{KTHprofile}
 
-\title{Mutli agent control with LTL specifications and abstraction with input memories}
+\title{Multi agent control with LTL specifications and abstraction with input memories}
 \subtitle{Master thesis 2016}
 \author{Paul Rousse}
 \institute{Automatic Departement}
@@ -76,7 +76,7 @@
 
 
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, arrows, decorations.pathreplacing,patterns}
+\usetikzlibrary{shapes.geometric, arrows,automata, positioning, calc, fit, arrows, decorations.pathreplacing,patterns}
 \usepackage{pgfplots}
 \usepgfplotslibrary{groupplots,fillbetween}
 \usepackage{relsize}
@@ -114,7 +114,7 @@
 
 \newcommand{\SSunobs}{\mathfrak{X}^i}
 \newcommand{\SSobs}{\mathfrak{X}^o}
-\newcommand{\Ninputs}{\Delta n_u}%
+\newcommand{\Ninputs}{N}%
 \newcommand{\y}{\vect{y}}%
 \newcommand{\x}{\vect{x}}%
 \newcommand{\xa}{\vect{x}^a}%
@@ -173,12 +173,12 @@
 %
 \newcommand{\dt}{dT}%
 
+\newcommand{\red}[1]{ {\color[rgb]{1,0,0}{#1}} }
 \begin{document}
 
 \begin{frame}
 \titlepage
 \end{frame}
-
 
 %% INTRO
 \section{Introduction}
@@ -191,24 +191,44 @@
 \frametitle{Wind turbine maintenance scenario}
 
 \begin{figure}
-\begin{minipage}{0.2\textwidth}
+\begin{minipage}{0.32\textwidth}
 \centering
 \includegraphics[width=\textwidth]{aerowork}
 \end{minipage}
 \hspace*{\fill}%
-\begin{minipage}{0.5\textwidth}
+\begin{minipage}{0.35\textwidth}
 \centering
-\includegraphics[width=\textwidth]{windturbine}
+\includegraphics[width=\textwidth]{inspectionquad}
 \end{minipage}
 \end{figure}
 
+\only<1>{
+
+\begin{figure}
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{defect}
+\end{minipage}
+\hspace*{\fill}%
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{repair}
+\end{minipage}
+\end{figure}
+}
+\only<2->{
 \begin{itemize}
 \item Motion and task specifications
 \item Safety requirements (avoid collision, stay inside a safety area)
 \end{itemize}
-
+}
+\only<3>{
+\begin{itemize}
+\item[$\Rightarrow$] Linear Temporal Logic (LTL)
+\item[$\Rightarrow$] formal controller synthesis
+\end{itemize}
+}
 \end{frame}
-
 
 \begin{frame}
 \frametitle{Outline}
@@ -222,6 +242,7 @@
 
 \newcommand{\planframe}[1]{
 \begin{frame}
+\frametitle{Recap}
 \begin{figure}
 \def\framenbre{#1}
 \includestandalone[width=\textwidth]{diagram_pres}
@@ -229,7 +250,6 @@
 \end{frame}
 }
 
-\planframe{0}
 
 \subsection{Temporal logic}
 %info: first you talk about how you will give this specifications (to say that they will be given in a automaton form, this justify the fact that we try to find an abstractino of the system in the form of a finite transition system)
@@ -246,11 +266,15 @@ a \mid
 \LTLnext \varphi \mid
 \varphi_1 \LTLuntil \varphi_2$$
 \end{block}
+
+Temporal operators:
+\begin{itemize}
+\item $\LTLnext$ next
+\item $\LTLuntil$ until
+\item $\LTLalways$ always
+\item $\LTLeventually$ eventually
+\end{itemize}
 \pause
-
-\begin{block}{\buchi{} Automaton}
-
-\end{block}
 
 \begin{figure}
 \begin{minipage}{0.45\textwidth}
@@ -258,14 +282,52 @@ $\varphi = \LTLalways \LTLeventually a$
 \end{minipage}
 {\LARGE$\Rightarrow$}%
 \begin{minipage}{0.45\textwidth}
-\hspace*{1cm}
-\includegraphics[width=1.5cm]{buchi}
+$\sigma_1 = 111a111a\overline{111a}$\\
+\red{$\sigma_2 = 111a111a111\overline{1}$}\\
+\red{$\sigma_3 = 11111111111\overline{1}$}\\
 \end{minipage}
 \end{figure}
 
 \end{frame}
 
-\planframe{1}
+\begin{frame}
+\frametitle{\buchi{} Automaton}
+
+\begin{block}{Nondeterministic B\"{u}chi Automaton}
+$\mathcal{A}_{\varphi} = (Q, Q_0, 2^{AP}, \delta, \mathcal{F})$
+where:
+\begin{itemize}
+\item $Q$ finite set of states;
+\item $Q_0 \subset Q$ a set of initial states;
+\item $2^{AP}$ the alphabet;
+\item $\delta: Q \times 2^{AP} \times Q$ a transition relation ;
+\item $\mathcal{F} \subseteq Q$ set of accepting states.\popQED
+\end{itemize}
+\end{block}
+
+\only<2>{
+$$\sigma = l_1,l_2,l_3,... \rightarrow q_0,q_1,q_2,...$$}
+
+\only<3>{
+Acceptance condition: $Inf(\{q_0,q_1,q_2,...\}) \cap \mathcal{F} \neq \emptyset$
+}
+
+\only<4>{
+\begin{figure}
+\begin{minipage}{0.45\textwidth}
+$\sigma_1=111a111a\overline{111a}$\\
+\red{$\sigma_2=111a111a111\overline{1}$}\\
+\red{$\sigma_3=11111111111\overline{1}$}\\
+\end{minipage}
+{\LARGE$\Rightarrow$}%
+\begin{minipage}{0.45\textwidth}
+\includegraphics[width=1.2cm]{buchi}
+\end{minipage}
+\end{figure}
+}
+
+\end{frame}
+
 
 \subsection{Abstraction}
 % abstractions methods (unfiorm discretization)
@@ -280,6 +342,21 @@ $\varphi = \LTLalways \LTLeventually a$
   \caption{Model of the robot}
 \end{minipage}
 {\LARGE$\rightarrow$}%
+%
+\only<1>{
+\begin{minipage}{.45\textwidth}
+$\mathcal{T}_c = (X,X_0,\U, Post_{\u},H)$
+\begin{itemize}
+\item $X$ states
+\item $X_0 \subseteq X$ initial states
+\item $U$ input set
+\item $Post_{\u} \subseteq X \times U \times X$ transition relation
+\item $H:X \rightarrow Y$ output map
+\end{itemize}
+\end{minipage}%
+}%
+%
+\only<2>{
 \begin{minipage}{.45\textwidth}
   \centering
 \tikzstyle{nodestyle} = [draw,circle]
@@ -308,27 +385,50 @@ $\varphi = \LTLalways \LTLeventually a$
 }
 \caption{Finite Transition System}
 \end{minipage}
+}
+
 \end{figure}
 
 \end{frame}
 
 
-\planframe{2}
 
 \subsection{Controller synthesis}
 
 \begin{frame}
 \frametitle{Controller synthesis}
 
-\begin{block}{Solution plan}
-Every path in the product automaton going infinitely often to the goal set verify the LTL formula and the dynamical system behavior.
+\only<1>{
+\begin{block}{Product of a NBA and a FTS}
+$\mathcal{A}_p = \mathcal{T}_c \otimes \mathcal{A}_\varphi
+= (Q',Q_0',\delta',\mathcal{F}')$
+\begin{itemize}
+\item $Q' = X \times Q$ is the set of states,
+\item $Q_0' = X_0 \times Q_0$ is the set of initial states,
+\item $\mathcal{F}' = X \times \mathcal{F}$ the acceptance set,
+\item $\delta' \subseteq Q' \times U \times Q'$
+is the transition relation defined by
+$\left \langle x',q' \right \rangle \in \delta'(\left \langle x,q \right \rangle ,u)$
+iff $x' \in Post_u(x)$, $q' \in \delta(q,L_c(x'))$ and 
+$$\forall h \in H(Post_u(x)),\exists y \in H^{-1}(h) \cap Post_u(x), \delta(q,L_c(y)) \neq \emptyset$$
+\end{itemize}
 \end{block}
+}
 
-$\Rightarrow$ Controller =  $\{(q_1,u_1),(q_2,u_2), \dots, (q_n,u_n)\}$
+\only<2->{
+Use your favourite graph search algorithm (Depth/Breadth First Search, Fixed points...)
+\begin{figure}
+\includestandalone[width=0.7\textwidth]{plan_alg}
+\end{figure}
+}
 
+\pause
+$\Rightarrow$ Controller =  $\{( (q_1,n_1),u_1),((q_2,n_2),u_2), \dots, ((q_n,n_n),u_n)\}$
 \end{frame}
 
-
+\planframe{0}
+\planframe{1}
+\planframe{2}
 \planframe{3}
 \planframe{5}
 
@@ -346,17 +446,47 @@ $\Rightarrow$ Controller =  $\{(q_1,u_1),(q_2,u_2), \dots, (q_n,u_n)\}$
 \newcommand{\vv}{\mathbf{v}}
 \begin{frame}
 \frametitle{State extended abstraction}
-Dynamical system: $(\x^o,\x^i) 
-\systransition{S}{\u}
- (\x^o_+,\x^i_+)$
- 
-Abstraction: $(\x^o,\u_{n - \Ninputs},...,\u_{n-1}) 
-\systransition{S_a}{\u}
- (\x^o_+,\u_{n+1-\Ninputs},...,\u_{n-1},\u)$
+Dynamical system: 
+\begin{itemize}
+\item state: $(\x^{obs},\x^{unobs})$
+\item transition: $(\x^{obs},\x^{unobs}) \systransition{S}{\u} (\x^{obs}_+,\x^{unobs}_+)$
+\end{itemize}
+
 \pause
+Abstraction:
+\begin{itemize}
+\item $(\x^{obs},\u_{n - \Ninputs},...,\u_{n-1})$
+\item transition:
+$(\x^{obs},\u_{n - \Ninputs},...,\u_{n-1}) 
+\systransition{S_a}{\u}
+ (\x^{obs}_+,\u_{n+1-\Ninputs},...,\u_{n-1},\u)$
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{State extended abstraction}
+
+\newcommand{\pictsize}{0.5\textwidth}
+	
+\only<1>{
 \begin{figure}
 \includestandalone[width=\textwidth]{abstraction_process_2}
 \end{figure}
+}
+
+\only<2>{
+\begin{figure}
+	\newcommand*{\showinv}{}
+	\newcommand*{\showunobstrans}{}
+	\includestandalone[width=\pictsize]{abstra_proc_plots}
+\end{figure}}
+	
+\only<3>{
+\begin{figure}
+\includestandalone[width=\textwidth]{abstraction_process_2}
+\end{figure}
+}
 \end{frame}
 
 \begin{frame}
@@ -367,7 +497,7 @@ Abstraction: $(\x^o,\u_{n - \Ninputs},...,\u_{n-1})
 \includestandalone[width=\linewidth]{state_space_repr}
 \end{minipage}
 \begin{minipage}{0.4\textwidth}
-\includestandalone[width=\textwidth]{feasible_models}
+\includestandalone[width=\textwidth]{feasible_models_2}
 \end{minipage}
 \end{figure}
 
@@ -384,8 +514,6 @@ Abstraction: $(\x^o,\u_{n - \Ninputs},...,\u_{n-1})
 \only<2->{
 \begin{itemize}
 \item more conservative (the information is selected more wisely)
-\pause
-\item less reachable
 \end{itemize}
 }
 \end{frame}
@@ -406,49 +534,56 @@ Abstraction: $(\x^o,\u_{n - \Ninputs},...,\u_{n-1})
 \caption{Abstraction}
 \end{minipage}
 \end{figure}
-
-\end{frame}
+\end{frame}	
 
 \begin{frame}
 \frametitle{Admissible noise}
 
-$\mathcal{W}_a = \{ \{\w_n\}_{n\in\mathbb{N}}  \mid \mathcal{L}_1(G \ast G_{\w} ) \leq \sigma \}$
+$\mathcal{W}_a = \{ \{\w_n\}_{n\in\mathbb{N}}  \mid \mathcal{L}_1(G^{unobs} \ast G_{\w} ) \leq \sigma \}$
 
 $\mathcal{W} \subset \mathcal{W}_a$
 
 \begin{figure}
 \begin{minipage}{0.45\textwidth}
 \centering
-\includestandalone[width=\textwidth]{bode_plots}
+\includestandalone[width=\textwidth]{bode_plots_2}
 \end{minipage}
 \begin{minipage}{0.45\textwidth}
 \centering
-\includestandalone[width=\textwidth]{speed_plots_reachables_sets}
+\includestandalone[width=\textwidth]{speed_plots_reachables_sets_2}
 \end{minipage}
 \end{figure}
 
 \end{frame}
 
+\section{Planner}
 %% ALGORITHM
 % explain what was the trouble (take in account non determinism of the model)
 \begin{frame}
 \frametitle{Path planning algorithm}
 
-Planning domain:
+Planner specifications:
 \begin{itemize}
 \pause
 \item Non deterministic FTS
 \pause
 \item Self-loops and cycles
+\pause 
+\item go to the goal set in finite time
 \end{itemize}
 
-Classic algorithms:
-\begin{itemize}
 \pause
-\item
+\vspace*{0.5cm}
+$\Rightarrow$ Strong cyclic planner with local fairness property
+
 \pause
-\item Self-loops and cycles
-\end{itemize}
+\vspace*{0.5cm}
+Escape time property in the cycle $\mathcal{C}$: 
+$\forall \{\x_k\}_k \in \mathcal{X}^*,
+\x_0 \in \mathcal{C} \Rightarrow
+\exists k\in \mathbb{N},
+\x_{k} \notin \mathcal{C}$
+
 
 \end{frame}
 
@@ -459,9 +594,10 @@ Classic algorithms:
 \only<#1>{%
 \def\framenbre{#2}%
 \includestandalone[width=0.5\textwidth]{plan_decomposition_beamer}%
-}}
+}%
+}
 \begin{frame}
-\frametitle{Plan decomposition - $\varphi = \LTLeventually G$}
+\frametitle{Backward Reachability Algorithm - $\varphi = \LTLeventually \LTLalways G$}
 \begin{figure}
 \onlyframe{1}{2}%
 \onlyframe{2}{3}%
@@ -472,17 +608,12 @@ Classic algorithms:
 \end{figure}
 
 \end{frame}
+
 % say that you have created a backward reachability alogirthm that go through the solution and check if the controller configuration is fair
 
 
-%% EXPERIMENTS
-% show the video of the multi agent experiment
-\begin{frame}
-\frametitle{Experiments}
-\end{frame}
 
-
-
+\section{Experiments}
 \begin{frame}
 \frametitle{Multi agent experiment}
 \begin{itemize}
@@ -500,15 +631,23 @@ Classic algorithms:
     \includegraphics[width=\linewidth]{multi_ltl/multi12}
   \end{minipage} 
 \end{figure}
+
+\pause
+The video !
 \end{frame}
 
-
-\begin{frame}
-\frametitle{Multi agent experiment - the video}
-\end{frame}
-
+\section{Conclusion}
 %% CONCLUSION
 % sum up rapidely what you have done
 % say what could be done
+
+\begin{frame}
+\frametitle{Tack s\r{a} mycket!}
+
+Tack s\r{a} mycket!
+
+Du kan fr\r{a}ga vad du vill, jag ska svara (bara om det \"ar m\"ojligt).
+
+\end{frame}
 
 \end{document}

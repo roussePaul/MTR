@@ -5,10 +5,8 @@
 %This depends on the type of inputs (discrete, continuous), the number of dimension of inputs, the dimension of the suppressed subspace of the state space and the initial discretization of it.
 
 \subsection{Covering/Overlap in the state space}
-When we replace the knowledge of part of the state by the estimation of the state based on inputs, there can be no equivalent discretization of the state space.
-Mainly because 2 input sequences can produce reached sets that overlaps.
-These overlap (see \ref{fig:overlapp}) cannot happened in discretization of the state space without any memory (the state is supposed to belong to one and only one observation).
-
+Ones should notes that the discretization of the state space in the case of the state extended abstraction might not have any equivalent with the same complexity (in term of number of symbols).
+If we project the discretization on the original state space of the system,  the cells might overlaps.
 We will see later that it can bring to improvement of the size of the abstraction in practice.
 
 \begin{figure}
@@ -20,26 +18,19 @@ We will see later that it can bring to improvement of the size of the abstractio
 \label{fig:overlapp}
 \end{figure}
 
-
-\comment{Self loops -not cool for multi agent task, lose the time information.
-Abstractions of asymptotically stable system present a disadvantage on the multiagent control side, for some controls, if the state does not evolve any more, the abstraction will take self loops.
-In term multi agent control this make the problem more complex as the control generation: self loops tend to create systems that are asynchronous with all the problems that might occurs because of this (basically one of the agent might be be stopped).}
-
-%size of invariants in the 
-
-%TODO GRAPH TO SHOW IT (I can also do it for the second integrator)
-
-%We will see that in some case it produce smaller abstraction.
-
-
 \subsection{Reachability}
 Reachable sets are computed with the invariant set. As the invariant set is an over approximation of the state, this abstraction is not conservative. This means that for a given problem, it might exist a controller solution for the system $S'$ but no solution for the system $S_a$ (regardless of the memory number).
 
-%\subsection{Notes}
-%Self loops are not desirable.
-%
-%Self loops hide any time information (that is why I have been working on the time information chapter).
-%
-%In the case of the reduction of the abstraction.
-
 \section{Conclusion}
+We have been creating an abstraction that is using input memories to replace the unobserved part of the state.
+Experiments will show that this strategy might be interesting especially in case of systems with slow transient states (compared to the sampling time of the system).
+
+The non observation of part of the state and the computation of the reachable sets in the linear monotone system case brought us to a bigger set of admissible noise sequences.
+This will be particularly helpful to explain why this abstraction was more robust to mismodelling of the noise during experiments.
+
+The size of the abstraction will depend on the number of memories and on the discretization of the state space and input space. These parameters are decided according to the given specifications. Therefore, it is not possible to infer when the extended abstraction might lead to more conservative abstraction than direct discretization of the state space.
+Only simulations and experimentations on a specific problem will bring some results.
+
+For most of the computation, the monotonic property has been used in order get analytical expressions.
+It resulted in models that are really restrictive (any linear systems with non real eigenvalue is not monotonic). However, it was suitable in the case of the quadricopter.
+Moreover, we have been choosing them mainly to simplify the computations. Ones should be able to extend this work easily to more complex models (by using numerical over approximation of the reachable set for example).

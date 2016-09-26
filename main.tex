@@ -27,8 +27,8 @@
       <10.95> matha10 <12> <14.4> <17.28> <20.74> <24.88> matha12
       }{}
 \DeclareSymbolFont{matha}{U}{matha}{m}{n}
-\DeclareMathSymbol{\vDash}{3}{matha}{'52}
-\DeclareMathSymbol{\nvDash}{3}{matha}{'50}
+\DeclareMathSymbol{\vDash}{3}{matha}{'50}
+\DeclareMathSymbol{\nvDash}{3}{matha}{'52}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \makeatletter
@@ -41,6 +41,8 @@
 }
 \makeatother
 
+\newcommand{\systuple}[1]{\langle\tuple{#1}\rangle}
+
 %\renewcommand{\splitatcommas}[1]{#1}
 
 \newcommand{\buchi}[0]{B\"uchi}
@@ -51,7 +53,7 @@
 \newcommand{\LTLeventually}	{\ensuremath{\Diamond}}
 \newcommand{\LTLuntil}		{\ensuremath{\mathsf{U}}}
 \newcommand{\LTLnext}		{\ensuremath{\bigcirc}}
-\newcommand{\LTLimply}			{\ensuremath{\rightarrow}}
+\newcommand{\LTLimply}			{\ensuremath{\Rightarrow}}
 \newcommand{\true}			{\ensuremath{\top}}
 \renewcommand{\and}			{\ensuremath{\wedge}}
 
@@ -94,16 +96,16 @@
 \newcommand{\thmsymbol}{\( \blacktriangle \)}
 \newcommand{\propsymbol}{\( \blacklozenge \)}
 
-\newenvironment{nameddef}[1]
-    {\begin{samepage}
-    \begin{nameddefinition}[#1]
-    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}
-    }
-    {
+\newenvironment{nameddef}[1]%
+    {\begin{samepage}%
+    \begin{nameddefinition}[#1]%
+    \renewcommand{\qedsymbol}{\thmsymbol}\pushQED{\qed}%
+    }%
+    {%
     \popQED % in order to pop it before (in case of itemize) just call it in an item
-    \end{nameddefinition} 
-    \end{samepage}
-    }
+    \end{nameddefinition}%
+    \end{samepage}%
+    }%
 \newenvironment{namedprop}[1]
     {\begin{samepage}
     \begin{namedproperty}[#1]
@@ -124,16 +126,16 @@
     \end{namedtheorem} 
     \end{samepage}
     }
-\newenvironment{prop}[0]
-    {\begin{samepage}
-    \begin{property}
-    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}
-    }
-    {
+\newenvironment{prop}[0]%
+    {\begin{samepage}%
+    \begin{property}%
+    \renewcommand{\qedsymbol}{\propsymbol}\pushQED{\qed}%
+    }%
+    {%
     \popQED % in order to pop it before (in case of itemize) just call it in an item
-    \end{property} 
-    \end{samepage}
-    }
+    \end{property}%
+    \end{samepage}%
+    }%
 \newenvironment{definition}[0]
     {\begin{samepage}
     \begin{olddefinition}
@@ -156,8 +158,13 @@
 \newcommand{\labelledtransition}[1]{
   \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#1}&} }
   }
+%\newcommand{\systransition}[2]{%
+%  \ensuremath{
+%  \xymatrix{\ar@<-.5ex>@{-|>}[r]^{\scalebox{0.4}{$#1,#2$}}&}%
+%  	}%
+%  }%
 \newcommand{\systransition}[2]{
-  \ensuremath{ \xymatrix{\ar@{-|>}[r]^{#2}_{#1}&} }
+  \ensuremath{ \xymatrix{\ar@{-|>}[r]|{\scalebox{0.5}{$#1,#2$}}&} }
   }
 
 \newcommand{\Post}[2]{Post_{#2}^{#1}}

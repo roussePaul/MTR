@@ -2,6 +2,7 @@
 \begin{tabular}{ll}
 FTS:& Finite Transition System\\
 LTL:& Linear Temporal Logic\\
+BA: & B\"uchi Automaton\\
 DBA:& Deterministic B\"uchi Automaton\\
 NBA:& Nondeterministic B\"uchi Automaton\\
 BFS:& Breadth First Search\\
@@ -15,10 +16,34 @@ For a node $x \in V$, $Post(x)$ and $Pre(x)$ correspond respectively to the set 
 For a set of nodes, we define $X \subseteq V$, $Post(X) = \bigcup_{x \in X} Post(x)$, $\outpost(X) = Post(X) \setminus X$, $Pre(X) = \bigcup_{x \in X} Pre(x)$ and $\inpre(X) = Pre(X) \setminus X$.
 
 For $X_1,\dots,X_n$ n sets and $Y \subset X_1 \times \dots \times X_n$, lets define the projection of $Y$ on $X_i$ with $Y|_{X_i} = \{x_i \mid (x_1,\dots,x_n) \in Y\}$.
+The powerset of $X$ will be denoted $2^X$.
+$\leftint a,b \rightint$ denote the segment of $\mathbb{N}$ between $a$ and $b$.
+
+For a finite set $X$, and $Y \subseteq 2^X$, we define $\tilde{Y} = \bigcup_{y\in Y} y \subseteq X$.
 
 \section{Introduction}
+\newcommand{\Aphi}{\mathcal{A}_\varphi}%
+\newcommand{\Fts}{\mathcal{F}}%
+When the discretization of the state space and of the input space is finite the previously computed abstraction result in a Finite Transition System (FTS) $\Fts$. This FTS is meant to be used with the Linear Temporal Logic (LTL) specifications in order to synthesize a controller. This chapter details the controller synthesis algorithm.
 
-In linear temporal logic, the goal set must be reached in finite time. For a deterministic finite transition systems, the solutions already verify this property: a solution is done in a finite sequence of state/transition, so in finite time as well.
+As the final FTS is usually non deterministic, we have been using a slightly modified backward reachability algorithm that is using the maximal time of travel of the agent in order to prove the actual LTL fairness.
+
+LTL formula can associate to an infinite sequence of observations a truth or a false value. These formulas have first been introduced in computer science fields for verifications purposes and yet attract interest of the control community to express high level specifications easily.
+The power of such a language rely in its expressiveness and the ability to translate these formulas into a formal mathematical object that is easily manipulable: the \buchi{} Automaton.
+
+LTL formulas can be translated in a \buchi{} Automaton that have a finite number of transition bringing graph theory into the field of verification.
+Any sequence of observation that is part of the language of an LTL formula $\varphi$ will verify a so called acceptance condition of the corresponding \buchi{} Automaton $\Aphi$.
+Adding the previously found abstraction, the system and its specifications are now expressible within the same class of object: finite state machines.
+One can compose them into a \textit{Product Automaton} that encapsulate both the behaviour of the system and the formula specifications into a single automaton.
+Every path verifying the acceptance condition in the Product Automaton respect both transitions in $\Fts$ (ie the dynamic of the system) and the acceptance condition $\Aphi$ (ie the formula $\varphi$).
+
+The finiteness of the Product Automaton allow us to us graph search algorithm to generate controllers that force the system to verify the LTL formula.
+
+In our case, the $\Fts$ is not deterministic and might have self-loops, this brought some more challenges in order to generate the controller out of it.
+In this chapter, we will first introduce the necessary definitions, then detail the product of $\Fts$ and $\Aphi$, and finish with the description of the a slightly modified backward reachability algorithm that can work with deterministic FTS.
+
+\subsection{Related work}
+In linear temporal logic, the accepting set must be reached in finite time (fairness property). For a deterministic finite transition systems, the solutions already verify this property: a solution is done in a finite sequence of state/transition, so in finite time as well.
 For non deterministic planning problems, this property is not granted. A solution plan with a cycle outside of the goal set will have trajectories that loops infinitely.
 
 % Strong cyclic planning
@@ -44,10 +69,9 @@ This decomposition will be then used to create an algorithm that search for thes
 By modelling the system in this way we are losing a lot of expressiveness power of the LTL. However, the complexity remain more or less the same than before 2EXPTIME-complete ($\mathcal{O}(2^{2^{n^k}})$) (\textit{not so sure about it, double check information}).
 }
 
-\subsection{Previous works}
 Non determinism model with LTL planning has been investigated mostly in the sensing non determinism or environment uncertainty.
 Many solutions in $\mu$-calculus formulation (generalized reactivity) has been investigated. However they perform well in an environment with low non determinism (the complexity of the problem does not make it suitable for a motion planning problem).
-
+ho alt
 As temporal logic is mostly used for high level control specifications, usually only the low level controller has to deal with the noise.
 That is why most of the motion planning problems with LTL specifications  assume that the motion of the robot is deterministic.
 Another reason lie in the state space explosion problem: relatively simple planning problems can result in an unrealistic needs of computing resources.
@@ -70,25 +94,49 @@ Why did you chose LTL?
 Why did you chose B\"uchi Automaton?
 Talk about other solutions that might have been smarter.}
 
+
+%\cite{de2010generalized}
+%\cite{patrizi2013fair}
+%Fully Observable Non-Deterministic Planning:  FOND
+%
+%The guaranties that an nondeterministic planner must fulfil are:
+%\begin{itemize}[noitemsep,nolistsep]
+%\item \textbf{Completness.}
+%\item \textbf{Soundness.} Every given solutions are correct
+%\item \textbf{Correctness.} 
+%\item \textbf{Fairness.}
+%\end{itemize}
+%
+%\subsection{Related work}
+%How to deal with nondeterminism?
+%Different approaches:
+%\begin{itemize}
+%\item general game formulation: GR(1) (however, the formulation does not fit to our needs): in \cite{de2010generalized} and \cite{Kissmann2009}, the strong fairness property is expressed thanks in a LTL formulation, however it presuppose a knowledge about cyclic actions fairness property, this is adapted to action planning where we know that if the action is infinitely repeated, then the action will success infinitely often. This does not really fit any motion planning non determinism where the fairness property depend on a control configuration over the cells. Using this kind of framework will force us to go through all the possible action combinations and determine which one is fair.
+%\item Fixed point ($\mu$-calculus that is related to the GR formulation as well).
+%\item \cite{fu2011simple} is solving the FOND problem in the case of strong fairness assumption. This assumption is global, this is not the case for us as some of some control configurations might be unfair. The fairness property is local in our case.
+%\end{itemize}
+%
+%What I did is an adaptation of the \cite{fu2011simple} with a backward reachability algorithm.
+
 \section{Preliminaries}
-
 \subsection{Linear Temporal Logic}
-Linear Temporal Logic (LTL) is specification language first introduced in \cite{pnueli1977temporal}. Since then it has been widely used in robot motion and action planning.
-LTL property are defined inductively:
-
-$$ \varphi ::= 
+\newcommand{\AP}{\mathrm{AP}}
+LTL is a specification language first introduced in \cite{pnueli1977temporal}. Since then it has been widely used in robot motion and action planning mainly for its expressiveness and mathematical equivalent representation in \buchi{} Automaton.
+LTL property are defined inductively with :
+\begin{equation}
+\varphi ::= 
 \true \mid 
 a \mid 
 \varphi_1 \land \varphi_1 \mid
 \lnot \varphi \mid
 \LTLnext \varphi \mid
-\varphi_1 \LTLuntil \varphi_2$$
-
-where $\true$ is the symbol defined by $\true = a\lor \lnot a$, $a$ is a predicate (that depend on the state on the robot), $\varphi_1$ and $\varphi_2$ are LTL formulas.
-\comment{define each symbol inside it.}
-
+\varphi_1 \LTLuntil \varphi_2
+\end{equation}
+where $\true$ is the symbol defined by $\true = a\lor \lnot a$, $a \in \AP$ is a predicate (that will depend on the state on the robot), $\AP$ a set of predicates, $\varphi_1$ and $\varphi_2$ are LTL formulas, $\lnot$ is the not operator defined by $a = \lnot \lnot a$, $\LTLnext$ is the next operator and $\LTLuntil$ is the until operator.
+The truth of an LTL formula is defined in this way:
 \begin{nameddef}{LTL property}
-The truth of an LTL property $\varphi$ is defined by:
+The sequence of observation $\sigma = S_0 S_1 S_2 ...$, with $S_k \in 2^{\AP}$ a set of observed labels for $k=0,1,2,...$, satisfy the LTL formula $\varphi$ iff $(\sigma,0) \vDash \varphi$ where $\vDash$ is defined recursively by: 
+
 \begin{tabular}[b]{rcl}
 $(\sigma,k) \vDash a$ & $\leftrightarrow$ & $a \in S_k$\\
 $(\sigma,k) \vDash \lnot \varphi$ & $\leftrightarrow$ &  $(\sigma,k) \nvDash  \varphi$ \\
@@ -104,24 +152,26 @@ More details can be found in chapter 5 of \cite{principlemodelchecking}.
 
 All the power of such a language lie in the ability to transform a human writeable formula in a machine manipulable data. LTL formula can be translated to an automaton structure that can be easily manipulated with discrete models. The problem of path planning is then reduced to finding a path in graph.
 
-
 \subsection{Automaton}
 Every LTL formula can be translated in a Nondeterministic \buchi{} Automaton:
 \begin{nameddef}{Nondeterministic B\"{u}chi Automaton}
-$\mathcal{A}_{\varphi} = (Q, Q_0, 2^{AP}, \delta, \mathcal{F})$
+$\mathcal{A}_{\varphi} = (Q, Q_0, 2^{AP}, \delta, \mathcal{Q})$
 where:
 \begin{itemize}[noitemsep,nolistsep,topsep=0pt,after=\relax]
 \item $Q$ finite set of states;
-\item $Q_0 \subset Q$ a set of initial states;
+\item $Q_0 \subseteq Q$ a set of initial states;
 \item $2^{AP}$ the alphabet;
 \item $\delta: Q \times 2^{AP} \times Q$ a transition relation ;
-\item $\mathcal{F}$ set of accepting states.\popQED
+\item $\mathcal{Q}$ set of accepting states.\popQED
 \end{itemize}
 \end{nameddef}
-It should be noted that a trace with elements in $2^{AP}$ verify the LTL formula if there is corresponding sequence of states of the NBA that infinitely goes to the accepted set $\mathcal{F}$.
+It should be noted that a trace with elements in $2^{AP}$ verify the LTL formula if there is corresponding sequence of states of the NBA that infinitely goes to the accepted set $\mathcal{Q}$.
 
-Nota: if $\forall q \in Q, \forall a \in 2^{AP}, | \delta(a,q) | \leq 1$, then $\mathcal{A}_{\varphi} = (Q, Q_0, 2^{AP}, \delta, \mathcal{F})$ is a \textit{Deterministic B\"uchi Automaton} (DBA).
+Nota: if $\forall q \in Q, \forall a \in 2^{AP}, | \delta(a,q) | \leq 1$, then $\mathcal{A}_{\varphi} = (Q, Q_0, 2^{AP}, \delta, \mathcal{Q})$ is a \textit{Deterministic B\"uchi Automaton} (DBA).
 
+The FTS will be defined as a system (see defintion \label{def:system}) with a finite set of transition (in practice this imply that the set of states is finite as well). Also the same notation as in defintion \label{def:system} will be used.
+
+When it comes to multi-agent control, 2 methods can give us the FTS, either the dynamical models are concatenated and then the FTS is computed using abstraction methods. Either the 2 FTS are computed separately and the final FTS is then obtained by computing the product of the 2 FTS:
 \begin{nameddef}{Product of 2 FTS}
 The product automaton $\mathcal{F}_p$ of 2 non deterministic FTS $\mathcal{F}_1$ and $\mathcal{F}_2$ is defined by
 $\mathcal{F}_p = \mathcal{F}_1 \otimes \mathcal{F}_2
@@ -134,54 +184,32 @@ $Y' = Y_1 \times Y_2$ the output set,
 $H': X_1,X_2 \rightarrow (H_1(X_1),H_2(X_2))$ the output map,
 $\delta' \subseteq X' \times U \times X'$
 is the transition relation defined by
-$\left \langle x_1,x_2 \right \rangle \in \delta'(\left \langle x_1',x_2' \right \rangle,\langle u_1,u_2 \rangle)$ iff $x_1 \labelledtransition{u_1} x_1'$ and $x_2 \labelledtransition{u_2} x_2'$.
+$\left \langle x_1,x_2 \right \rangle \in \delta'(\left \langle x_1',x_2' \right \rangle,\langle u_1,u_2 \rangle)$ iff $x_1 \systransition{\mathcal{F}_1}{u_1} x_1'$ and $x_2 \systransition{\mathcal{F}_2}{u_2} x_2'$.
 \end{nameddef}
+This is a synchronous product as every transition of the product correspond to a transition in each of the models.
 
-
+\newcommand{\Aprod}{\mathcal{A}_p}
+We would like to force the system to verify an LTL formula. We will assume that the observation function of the FTS is in the following form: $H:X \rightarrow 2^{AP}$ and $Y = 2^{AP}$.
 The product automaton for an nondeterministic FTS is defined as follow:
 \begin{nameddef}{Product of a NBA and a FTS}
-The product automaton $\mathcal{A}_p$ of the NBA $\mathcal{A}_\varphi$ and the non deterministic FTS $\mathcal{F}_c$ is defined by
-$\mathcal{A}_p = \mathcal{T}_c \otimes \mathcal{A}_\varphi
-= (Q',Q_0',\delta',\mathcal{F}')$
+The product automaton $\Aprod$ of the NBA $\Aphi$ and the non deterministic FTS $\mathcal{F}_c$ is defined by
+$\Aprod = \mathcal{F}_c \otimes \Aphi
+= (Q',Q_0',\delta',\mathcal{Q}')$
 where
 $Q' = X \times Q$ is the set of states,
 $Q_0' = X_0 \times Q_0$ is the set of initial states,
-$\mathcal{F}' = X \times \mathcal{F}$ the acceptance set,
+$\mathcal{Q}' = X \times \mathcal{Q}$ the acceptance set,
 $\delta' \subseteq Q' \times U \times Q'$
 is the transition relation defined by
 $\left \langle x',q' \right \rangle \in \delta'(\left \langle x,q \right \rangle ,u)$
-iff $x' \in Post_u(x)$, $q' \in \delta(q,L_c(x'))$ and 
-$$\forall h \in H(Post_u(x)),\exists y \in H^{-1}(h) \cap Post_u(x), \delta(q,L_c(y)) \neq \emptyset$$
+iff $x' \in Post_u(x)$, $q' \in \delta(q,H(x'))$ and 
+$\forall y \in Post_u(x), \delta(q,H(y)) \neq \emptyset$.
 \end{nameddef}
+Roughly speaking, a $u$-transition in the product automaton is valid iff for every possible next observation of a $u$-transition in the FTS, it exists a valid transition in the B\"uchi Automaton.
 
-Roughly speaking, a $u$-transition in the product automaton is valid iff for every observation of the successors of a $u$-transition of the FTS, there exists a valid transition in the B\"uchi Automaton.
-
-
-Now, if we find a plan that force the product system of the FTS and the NBA to go infinitely often to the accepted set, then the FTS verify the LTL formula.
-
-\comment{Add a paragraph on reduction of the models (remove infeasible solutions).}
-
-\subsection{Translation to \buchi{} automaton}
-\comment{Give theorem that show that every LTL formula can be translated in a \buchi{} automaton.}
-
-\comment{Talk about what kind of LTL fragment can be translated in a deterministic \buchi{} automaton.
-Cite the complexity of such algorithms.}
-
-\comment{Talk about other structure that might have been more relevant for your work (more deterministic), ex: Rabin automaton.}
-
-\subsubsection{Graph theory}
-\comment{Fully observed non deterministic: thats means that the B\"uchi automaton should be deterministic.}
-
-\begin{nameddef}{Strong connectivity}
-The directed graph $G = (V,E)$ is strongly connected iff for every nodes $u,v \in V$ there exists a path from $u$ to $v$.
-\end{nameddef}
-
-
-%% FAIRNESS PROPERTY
-\begin{nameddef}{Fairness property}
-A system is said to be fair if it reach the goal set in finite time.
-\end{nameddef}
-
+Every path in the product automaton that infinitely goes to the acceptance set verifies the LTL formula $\varphi$ and takes only valid transitions of the FTS (so it respect the model of the system).
+So now, if we find a plan that force the product automaton to go infinitely often to the accepted set, then the controlled system will verify the LTL formula.
+It is important to note that the acceptance set must be reached in a finite time otherwise the LTL formula is not verified.
 
 \subsection{Fix point algorithm}
 %% introduce the fixed point property, make a link between mu calculus
@@ -192,117 +220,71 @@ A system is said to be fair if it reach the goal set in finite time.
 % definition of a monotonic fonction t: 2^S -> 2^S
 % theorem tarski-knaster for the fixed point of a monotonic function -> existence of the least fixed point
 % include the finitness directely inside the theorem, or as a note
-In the next parts we will use operations over sets of nodes in the graph. In order to find subset of nodes where property are verified, we will use fixed point computation.
+In the next parts, we will use operations over sets of nodes in the graph. In order to find subset of nodes where properties are verified, we will use fixed point computation.
 
 Let the graph $(S,E)$, a functional $\tau$ is a function over powersets of $S$: $\tau: 2^S \rightarrow 2^S$. We say that $b$ is a \inlinedef{fixed point} of the functional $\tau$ if $\tau(b) = b$.
 The functional $\tau: 2^S \rightarrow 2^S$ is  \inlinedef{monotonic} iff $\forall a,b \in 2^S, a \subseteq b, \tau(a) \subseteq \tau(b)$.
 In \cite{tarski}, it is shown that for a monotonic functional $\tau$, the set of fixed points has a least and greatest element denoted by $\mu \tau$ and $\nu \tau$ respectively:
-
 \begin{namedtheo}{Tarski-Knaster}\label{th:tarski}
 Let $\tau:2^S \rightarrow 2^S$ a monotonic functional:
-\begin{itemize}
+\begin{itemize}[noitemsep,nolistsep]
 \item $\mu \tau = \bigcap \{b \subseteq S \mid \tau(b) \subseteq b\} = \bigcup_{\alpha \in On} \tau^{\alpha}(\emptyset)$
 \item $\nu \tau = \bigcup \{b \subseteq S \mid b \subseteq \tau(b) \} = \bigcap_{\alpha \in On} \tau^{\alpha}(S)$
 \end{itemize}
 where $\tau^{\alpha}$ is the $\alpha^{th}$ composition of $\tau$ and $On$ the class of ordinals.
 \end{namedtheo}
-In our case, $S$ is the finite set and $On = \leftint 1,|S|\rightint$. 
-In this case, the theorem ensure the existence and the finiteness of the least fixed point computation.
+In our case, $S$ will be a finite set and $On = \leftint 1,|S|\rightint$. 
+Therefore the theorem ensure the existence and the finiteness of the least fixed point computation.
 Please note that if $a$ and $b$ are least fixed points of the monotonic functional $\tau$, then $a \subseteq b$ and $b \subseteq a$, which means that $a=b$, which means that the least fixed point is unique.
 
-
-%\cite{de2010generalized}
-%\cite{patrizi2013fair}
-
-%Fully Observable Non-Deterministic Planning:  FOND
-%
-%The guaranties that an nondeterministic planner must fulfil are:
-%\begin{itemize}[noitemsep,nolistsep]
-%\item \textbf{Completness.}
-%\item \textbf{Soundness.} Every given solutions are correct
-%\item \textbf{Correctness.} 
-%\item \textbf{Fairness.}
-%\end{itemize}
-%
-
-
-%\subsection{Related work}
-%How to deal with nondeterminism?
-%Different approaches:
-%\begin{itemize}
-%\item general game formulation: GR(1) (however, the formulation does not fit to our needs): in \cite{de2010generalized} and \cite{Kissmann2009}, the strong fairness property is expressed thanks in a LTL formulation, however it presuppose a knowledge about cyclic actions fairness property, this is adapted to action planning where we know that if the action is infinitely repeated, then the action will success infinitely often. This does not really fit any motion planning non determinism where the fairness property depend on a control configuration over the cells. Using this kind of framework will force us to go through all the possible action combinations and determine which one is fair.
-%\item Fixed point ($\mu$-calculus that is related to the GR formulation as well).
-%\item \cite{fu2011simple} is solving the FOND problem in the case of strong fairness assumption. This assumption is global, this is not the case for us as some of some control configurations might be unfair. The fairness property is local in our case.
-%\end{itemize}
-%
-%What I did is an adaptation of the \cite{fu2011simple} with a backward reachability algorithm.
-
-
 \section{Decomposition in strongly connected cyclic components}
-
-\newcommand{\planningdomain}{\ensuremath{ \tuple{\langle S, S_0, \mathcal{A}, \gamma \rangle} }}
-
-\newcommand{\controller}{\ensuremath{\tuple{ \langle C, c_0, \Gamma, \Lambda, \delta, \Omega \rangle}}}
-
-\newcommand{\planningproblem}{\ensuremath{\tuple{ \langle \mathcal{D}, G \rangle}}}
-
+\newcommand{\planningdomain}{\ensuremath{ \tuple{\langle S, S_0, \mathcal{A}, \gamma \rangle} }}%
+%
+\newcommand{\controller}{\ensuremath{\tuple{ \langle C, c_0, \Gamma, \Lambda, \delta, \Omega \rangle}}}%
+%
+\newcommand{\planningproblem}{\ensuremath{\tuple{ \langle \mathcal{D}, G \rangle}}}%
+\newcommand{\Fsc}{\Pi}%
+\newcommand{\Ftcs}{\Fts_\Fsc}%
+\newcommand{\Asol}{\mathcal{A}_s}%
+%
 Hereby we will introduce some definitions that will be used for the planning problem.
-\comment{I need to define a plan, the model.}
-
-\begin{nameddef}{Nondeterministic Planning Domain}
-A nondeterministic planning domains is a tuple 
-$\mathcal{D} = \planningdomain$
-with
-$S$ the set of states,
-$S_0$ the set of initial states,
-$\mathcal{A}$ the set of actions and
-$\gamma : S \times \mathcal{A} \rightarrow 2^S$ the transition function.
-\end{nameddef}
-
-Note that as the model is nondeterministic, for $(s,a) \in S \times \mathcal{A}$ we might have $|\gamma(s,a)|>1$.
-
-\begin{nameddef}{Finite-State Controller (FSC)}
-For a nondeterministic planning domain
-$\mathcal{D} = \planningdomain$,
-$\Pi = \controller$ is a finite-state controller where
+In order to solve the planning problem, we will introduce the Finite-State Controller (FSC):
+\begin{nameddef}{Finite-State Controller}
+$\Fsc = \controller$ is a finite-state controller where
 $C$ is the set of states,
 $c_0$ is the initial state,
-$\Gamma = S$ is the controller input alphabet,
-$\Lambda = Act$ is the output alphabet,
+$\Gamma$ is the controller input alphabet,
+$\Lambda$ is the output alphabet,
 $\delta: C \times \Gamma \rightarrow C$ is the transition function and 
 $\Omega: C \rightarrow \Lambda$ is the output function.
 \end{nameddef}
+In practice, for a product automaton $\Aprod = \systuple{Q',Q'_0,\delta', U,Y,\mathcal{Q}'}$, the controller $\Fsc = \controller$ will be chosen with $C = Q' \cup \{c_0\}$, $\Lambda = U$ and $\Gamma = Y$.
+$\Fsc$ is said to be \textit{closed} if every reachable state of $\Aprod$ is associated with a control action.
+If $\Fsc$ is closed, this controller could be composed with the FTS $\Fts$: $\Ftcs = \Fts \circ \Fsc = \systuple{X_\Fsc,X_{\Fsc 0},\systransition{\Ftcs}{},\{u\},Y,H}$.
+The input set of the composed system is a singleton, this is just a dumb input introduced mainly for compatibility with the rest of the definitions.
+Finally we can obtain the product of the composed system:
+$\Asol = \Aphi \otimes \Ftcs = \systuple{S,S_0,\delta,G}$.
+Due to the special form of the controller, $\Asol$ correspond to the product automaton $\Aprod$ selecting just one of the input.
+$\Fsc$ is \textit{proper} if the acceptance set of $\Asol$ is reachable from every initial state and $\Fsc$ is said \textit{fair} if the acceptance set is reachable in finite time from every nodes of $\Asol$.
+We will say that $\Fsc$ is a valid controller if $\Fsc$ is \textit{closed}, \textit{proper} and \textit{fair}.
 
-\begin{nameddef}{Non terminating nondeterministic Problem}
-A nonterminating nondeterministic problem $P = \planningproblem$ where $\mathcal{D}$ is a nondeterministic planning problem and $G \subseteq S$ is the goal subset. A finite-state controller $\Pi$ is a solution of $P$ if every $\Pi$-runs goes infinitely to the subset $G$ ($\forall \pi \in \Pi-runs, Inf(\pi) \cap G \neq \emptyset$).
-\end{nameddef}
+This is a non terminating problem as all trajectories will have to go infinitely to the goal set.
+It is shown in \cite{patrizi2013fair} that every non-terminating nondeterministic planning problem can be solved like a nondeterministic terminating planning problem where the the initial set of correspond to the union of the initial set and the goal set.
+Lets call $\Asol' = \systuple{S \cup G_0,S_0 \cup G_0,\delta',G}$ the solution of the nondeterministic terminating problem, where $G_0$ is a set of nodes that have the same transition relations than $G$ but does not belong to the goal set.
 
-\begin{nameddef}{Terminating nondeterministic Problem}
-A nondeterministic problem $P = \planningproblem$ where $\mathcal{D}$ is a nondeterministic planning problem and $G \subseteq S$ is the goal subset. A finite-state controller $\Pi$ is a solution of $P$ if every $\Pi$-runs goes to $G$ in a finite time.
-\end{nameddef}
-
-FSC $\Pi$ is said to be \textit{closed} if every reachable state is associated with a control  action, $\Pi$ is \textit{proper} if the the goal set is reachable from every state and $\Pi$ is said \textit{fair} if the goal is reachable in finite time from every nodes.
-We will say that the FSC $\Pi$ is a valid solution of the nondeterministic problem $\mathcal{D}$ if $\Pi$ is \textit{closed}, \textit{proper} and \textit{fair}.
-
-It is shown in \cite{patrizi2013fair} that every non-terminating nondeterministic planning problem $P$ can be solved like a nondeterministic planning problem $P'$ where the the initial set of $P'$ correspond to the union of the initial set and the goal set.
-
-In this next sections we will proof that every plans can be decomposed in strong cyclic components.
-Then we will investigate the necessity of the fairness property.
+In this next sections we will proof that every solutions can be decomposed in strong cyclic components.
+Then we will investigate the consequences of the fairness property over the set of solution.
 Finally, we will use all these properties in order to justify the planning algorithm that we used.
 
 \subsubsection{Strong cycle decomposition}
-\comment{Try to specify a bit more the language of the graph decomposition.
-Modules/components/subcomponents.}
+In this section we will use a constructive argument to show that every plan of a terminating nondeterministic planning problem can be decomposed in strong cyclic components that deterministically go to the goal set.
 
-In this section we will use a constructive argument to show that every plan can be decomposed in strong cyclic components.
-
-Let a $\mathcal{D} = \planningdomain$ a nondeterministic planning domain, $\Pi = \controller$ a finite-state controller that is a valid solution of the terminating nondeterministic planning problem $P = \planningproblem$.
-
-The main idea of the decomposition is to find every strong cyclic components of $\mathcal{D}$ that deterministically bring us to the goal set of nodes.
-To do this we will recursively find all the smallest strongly connected cycles that deterministically bring the state closer to the goal set.
+Let a $\Asol$ a solution of the planning problem.
+The main idea of the decomposition is to decompose $\Asol$ in strong cyclic components that deterministically bring us to the goal set of nodes.
+To do this we will recursively find all the smallest strongly connected cycles that deterministically bring the state closer to the goal set (closer in term of node distance).
 The description of the construction will be followed by a proof that for a valid plan  all the nodes of the plan belong to the decomposition.
 
-\paragraph{Strongly connected components,} they will be found using fixed point algorithm.
+Strongly connected components will be found using fixed point algorithm.
 Let $F_{t \rightarrow g}$ defined for $g,t \subseteq S$ by:
 \begin{equation}
 \begin{array}{llll}
@@ -313,38 +295,28 @@ F_{t \rightarrow g} :& 2^S & \rightarrow & 2^S\\
 
 
 For $x \subseteq y$ we have $F_{t \rightarrow g} (x) \subseteq F_{t \rightarrow g}(y)$, so $F_{t \rightarrow g}$ is a monotonic functional and theorem \ref{th:tarski} ensure that $F_{t \rightarrow g}$ have a unique least fixed point.
-As the cardinality of $S$ is finite, we can compute the fixed point of $F_{t \rightarrow g}$ in a finite time
-(\textit{Can I talk about computability instead of computable in finite time?}).
+As the cardinality of $S$ is finite, we can compute the fixed point of $F_{t \rightarrow g}$ in a finite time.
+The functional $F_{t \rightarrow g}$ ensure that all the fixed points are strongly connected if $t \subseteq S$ is strongly connected.
 
-\textit{Do I really need to prove the strong connectivity ?}
-\begin{prop}
-For $t,g \subseteq S$, if $t$ is a strongly component of a graph $G$, the least fixed point of $F_{t \rightarrow g}$ is strongly connected.
-\end{prop}
-
-\begin{proof} 
-Let $x \subseteq S$ the least fixed point of $F_{t \rightarrow g}$.
-By definition of $F_{t \rightarrow g}$, there exist a path from all the nodes in $t$ to all the nodes.
-We need now to show that there always exists a path from every nodes in $x$ to $t$ or $g$.
-As the 
-\end{proof}
-
-Let $\mathcal{F}_g(t) = F_{t \rightarrow g}$ the least fixed point of $F_{t \rightarrow g}$.
+Let $\mathcal{F}_g(t) = \mu F_{t \rightarrow g}$ the least fixed point of $F_{t \rightarrow g}$.
+This fixed point can be computed in practice thanks to the theorem \ref{th:tarski}.
 $\mathcal{F}_g(t)$ correspond to the smallest strongly connected cycle containing the subset $t$ that can reach the subset $g$.
+Thanks to the definition of the functional $F_{t \rightarrow g}$, $\mathcal{F}_g(t) \cap g = \emptyset$ and $Post(\mathcal{F}_g(t)) \subseteq t \cup g$.
+More over, let $t,g \subseteq S$ so that $Post(t) \cap g \neq \emptyset$, then any trajectory $s_0,s_1,s_2,...$ of $\Asol'$ starting in $\mathcal{F}_g(t)$ ($s_0 \in \mathcal{F}_g(t)$) stay in $\mathcal{F}_g(t)$, until it reach $g$, in other words $\forall i\in \mathbb{N}, (s_i \in \mathcal{F}_g(t)) \lor (\exists j<i, s_j \in g)$.
+This decomposition allow us to consider modules of the nondeterministic graph that have deterministic transitions.
 
 Lets now define the decomposition of the plan in strongly connected components.
-
 For $g \subseteq S$, let $\mathfrak{F}_g = \{ \mathcal{F}_g(\{n\}) \mid n \in \inpre(g) \}$.
 $\mathfrak{F}_g$ correspond to the set of all the smallest strongly connected components that deterministically go to the subset $g$.
-\textit{Do I really need the uniqueness property.}
 The uniqueness of  $F_{t \rightarrow g}$ least fixed point ensure the uniqueness of $\mathfrak{F}_g$.
 
 For a set of set $X \subset 2^{2^S}$, let $\tilde{X} = \bigcup_{x \in X} x$.
-
 Let the sequence $\{\mathcal{K}_i\}_{i \in \mathbb{N}}$ define by:
 \begin{equation*}
-\mathcal{K}_{i+1}  = \mathfrak{F}_{\tilde{\mathcal{K}}_i} \cup \mathcal{K}_i
-\textrm{, }
-\mathcal{K}_0 = G
+\begin{split}
+\mathcal{K}_{i+1} &= \mathfrak{F}_{\tilde{\mathcal{K}}_i} \cup \mathcal{K}_i\\
+\mathcal{K}_0 &= G
+\end{split}
 \end{equation*}
 for $i \in \mathbb{N}$. 
 
@@ -359,9 +331,7 @@ is a monotonic functional on a finite set $2^{2^S}$ and by using theorem \ref{th
 As $\mathcal{K}_i = H^i(\emptyset)$, we can deduce that the sequence $\{\mathcal{K}_i\}_{i \in \mathbb{N}}$ is converging to an element $\mathcal{K}^\star \in 2^{2^S}$ in a finite number of steps.
 
 $\mathcal{K}^\star$ corresponds to the decomposition of the plan in strongly connected cycles.
-\textit{I don't know if each of the fixed point are strong cycles, also I don't use this property.}
-
-We need now to be sure that the decomposition of the plan is complete \textit{Are you sure of this word?}, ie all the nodes of the plan belong to the decomposition:
+We need now to be sure that the decomposition of the plan is complete, ie all the nodes of the plan must belong to the decomposition:
 \begin{prop}
 For a valid plan, $\tilde{\mathcal{K}}^\star = S$.
 \end{prop}
@@ -546,3 +516,10 @@ Instead of finding the fixed points for a set of controls, we can also choose a 
 
 \section{Conclusion}
 In this chapter we have been presenting an algorithm that is using strong fairness property in order to find a plan for the quadricopter.
+
+
+
+In graph search algorithm, deterministic models are actually preferable to non deterministic one. One goal of the translation algorithm to NBA is to reduce the non determinism as much as possible. 
+To reduce the non determinism, it is possible to consider one fragment of LTL formulas that only produce DBA instead of NBA.
+However, this reduce the expressiveness. Another way is to use other class of automata (ex: Rabin Automaton) that tend to produce more deterministic results.
+In our algorithm, the complexity of the algorithm increasing as the non determinism increase, we have been using the \buchi{} Automaton anyway.

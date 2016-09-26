@@ -4,17 +4,19 @@ Let $X$ be a set. We will denote by $X^\star$ the set of all finite sequence wit
 The cartesian product between the set $X$ and $Y$ will be noted $X \times Y$. $X|_Y$ denotes the projection of the set $X$ on the set $Y$.
 
 \section{Introduction}
-In abstraction of dynamical systems, the knowledge of the sequence of inputs applied to the plant might sometimes be preferable to the knowledge of the full state.
-%
-%The transient states of the system make the control synthesis more complex in some situation (small environment, or noisy environment).
-%More accurate models (second integrator with a small discretization of the state space) could be used with some drawbacks on the complexity and on the computation time.
-Hereby we present an abstraction of a dynamical model (discrete or continuous time) obtained by extending the state with the knowledge of the finite sequence of inputs lastly applied to the system.
-We have successfully used this abstraction in order to control quadricopters. Obtained abstraction were a good alternative to solve the controller synthesis while keeping the complexity of the overall problem acceptable.
+In formal controller synthesis problems, the system dynamics and the given specifications does not always have analytical form easily manipulable.
+To reduce the complexity of the controller synthesis problem, we can try to work with an over-approximation of the model: an abstraction. If this abstraction encapsulate all the behaviour of the original model, the solution controller of the abstraction will be a solution as well for the dynamical system (therefore, the abstraction can be used instead of the complex dynamical system).
+The abstraction needs to be as simple as possible while solving the controller synthesis problem.
+This 2 constraints are antagonist and the overall challenge of abstraction design rely in choosing wisely the state (and eventually the discretization of the state space).
 
+Hereby we present an abstraction of a dynamical model (discrete or continuous time) obtained by extending the state with the knowledge of the finite sequence of inputs lastly applied to the system.
+We have successfully used this abstraction in order to control quadricopters. Obtained abstraction were a good alternative to solve the controller synthesis problem while keeping the overall complexity acceptable.
 
 % Property that needs to be verified by the abstraction
 In the next chapters, this abstraction will be used in order to find a controller for the system.
 If the system and the abstraction verify a relation (alternating simulation relation), then any property verified by the controlled abstraction will be verified as well by the controlled system with the same controller.
+
+Firstly, preliminaries about abstraction and reachable sets will be given. Secondly, we will detail the construction of the abstraction and proof the alternating simulation relation between the original system and the final abstraction. Thirdly, computation of reachable sets out of a sequence of inputs will be derived for a simple model: the linear time invariant system. Finally, some property (error sensitivity, complexity) of the system will be investigated.
 
 
 \section{Related work}
@@ -23,9 +25,13 @@ Talk about formal verifications methods.
 The needs of discrete abstraction.
 
 
+\comment{\cite{liu2014abstraction} have been investigating boundedness property in order ignore one part of the abstraction.
+Really good introduction about hierarchical control approach, give references.}
+
 \section{Preliminaries}
 \subsection{System}
-In order to find a discrete abstraction of the system, we need to have a common approach for both of them.
+Abstractions must at the same time deal with discrete or continuous state space, input space and time. 
+In order to work with all the different definitions, having a common approach for all of them can be a good strategy.
 The following definition (investiguated in \cite{tabuada2009verification}) is broad enough to encapsulate the different concepts:
 \begin{nameddef}{System}\label{def:system}
 $S = (X,X_0,\U, \systransition{S}{}, Y,H)$
@@ -53,7 +59,7 @@ Note: in the future we will use a second equivalent notations for the transition
 \end{equation}
 $\Post{S}{\u}(\x)$ correspond to the set of all the successors of the state $\x$ after applying $\u$.
 
-Now that we have a common definition for the different systems that we will use, we would like to check wether or not we can use one of them (the abstraction) as a simpler model than the other (the original system).
+Now that we have a common definition for the different systems that we will use, we would like to check whether or not we can use one of them (the abstraction) as a simpler model than the other (the original system).
 Intuitively, we can do this only if the abstraction "behave" the same than the system (which means that all trajectories of the system have an equivalent trajectory in the abstraction).
 %In order to ensure that the abstraction encapsulate all the behaviour of the original system.
 %The alternating simulation relation between 2 systems is the link between discrete abstraction and the continuous representation of this system.
@@ -68,17 +74,19 @@ $\forall x_b' \in \Post{\sysB}{u_b}(x_b),\exists x_a' \in \Post{\sysA}{u_a}(x_a)
 \popQED
 \end{enumerate}
 \end{nameddef}
-We will have to perform different operations before getting the final abstraction.
+We will have to perform different operations on the system before getting to the final abstraction.
 So this is important to note that this relation is commuting: for 3 systems $\sysA$,$\sysB$ and $\sysC$, if $\sysA \altsim \sysB$ and $\sysB \altsim \sysC$, then $\sysA \altsim \sysC$.
-Another key property of this abstraction is that all the properties verified by the controlled abstraction will be verified as well by the controlled system (with the same controller). This allow us to use the abstraction for controller synthesis.
-\comment{I need to write the property saying why this definition is nice (behavioural), or at least explain it and then refer to the book of tabuada}
 
+If $\sysA$ is alternating simulated by $\sysB$, then all properties verified by the controlled system $\sysA$ are verified by the controlled system $\sysB$ (with the same controller).
+This key property allow us to use the abstraction for controller synthesis instead of the complex dynamical system of the initial problem (please refer to \cite{tabuada2009verification} for further details about this).
 
 \subsection{Reachable sets}
 %% INPUT SEQUENCE REACHABLE SETS
-In the next sections, we will focus on systems with input memories. The knowledge of unobserved variables will be replaced by computation of reachable sets thanks to the last input sequence $\Pastuseq$.
-The reachable sets will have an analytical form for simpler models. We would like first to give a general definitions of these sets.
-First we define the reachable sets for a fully known sequence of controls, then for a the last $n$ inputs applied to the system.
+In the next sections, we will focus on systems with input memories.
+The knowledge of unobserved states will be replaced by computation of reachable sets out of the last input sequence $\Pastuseq$.
+Even if reachable sets will have simpler analytical form for simpler models (Linear Time Invariant aka LTI), we would like first to give a general definitions of these sets.
+
+Firstly, we will define the reachable sets for a fully known sequence of controls, then for the last $n$ inputs applied to the system.
 For a system $S$, let $\Reach{S}{U} \subseteq X$ defined for a finite sequence $U \in \U^\star$ of $N \in \mathbb{N}$ control actions by:
 \begin{equation}
 \begin{split}
@@ -116,7 +124,8 @@ The creation of the abstraction is done in the following steps (summarized in \r
 \item $S_a \rightarrow S_a':$ finally, the state space is discretized.
 \end{itemize}
 
-We will see that there is no alternating simulation relation between $S$ and $S'$ mainly for technical reasons that does not affect the rest of the abstraction computation. The 2 last transformations will need the alternating simulation relations to make possible the controller synthesis over the system $S'$.
+We will see that there is no alternating simulation relation between $S$ and $S'$ mainly for technical reasons that does not affect the rest of the abstraction computation.
+The 2 last transformations require the alternating simulation relations so that the controller synthesis on $S_a'$ is valid as well for the system $S'$.
 
 \begin{figure}
 \includestandalone[width=\linewidth]{abstraction_process_2}
@@ -129,48 +138,47 @@ Let the system $\sys = (\tuple{X,X_0,\U,\systransition{S}{},Y,H})$
 and the same system with a state extended by memories of the last $\Ninputs$ control actions applied to the system, $\sys'$ defined by
 $\sys' =  (\tuple{X',X_{0}',\U,\systransition{S'}{},Y',H'})$ 
 where:
-\begin{itemize}[nolistsep,noitemsep]
-\item $X' = X \times \U^{\Ninputs}$ the set of states, 
-\item $X_{0}' = X_0 \times \U^{\Ninputs}$ the set of initial states,
+\begin{itemize}[nolistsep,noitemsep] 
+\item $X' = \{ (\x,\u_{n - \Ninputs},...,\u_{n-1}) \in X \times \U^{\Ninputs} \mid \x \in \ReachSeq{S}{\u_{n - \Ninputs},...,\u_{n-1}} \}$ the set of states, 
+\item $X'_0 = \{ (\x_0,\u_{ - \Ninputs},...,\u_{-1}) \in X_0 \times \U^{\Ninputs} \mid \x_0 \in \ReachSeq{S}{\u_{n - \Ninputs},...,\u_{n-1}} \}$ the set of initial states,
 \item $Y' = Y \times \U^{\Ninputs}$ the set of outputs,
 \item $H'$ the output map defined for all $(x,\Pastuseq) \in X'$ as $H'(x') = (H(x),\Pastuseq)$
 \item and the transition relation defined by:
 \begin{equation}
 \begin{split}
+\forall (\x,\u_{n - \Ninputs},...,\u_{n-1})  \in X',&
+\forall \x' \in X, \forall \u \in \U,\\
 (\x,\u_{n - \Ninputs},...,\u_{n-1}) 
 \systransition{S'}{\u} &
  (\x',\u_{n+1-\Ninputs},...,\u_{n-1},\u)\\
 \Longleftrightarrow 
 &
-\left\{
-\begin{split}
-&\x \systransition{S}{\u} \x' \\
-&\x \in \ReachSeq{S}{\u_{n - \Ninputs},...,\u_{n-1}}
-\end{split}
-\right.
+\x \systransition{S}{\u} \x' \\
 \end{split}
 \end{equation}
 \end{itemize}
 As the system $S$ and the system $S'$ do not have the same set of outputs, it is not possible to find an alternating simulation relation between the 2 systems.
 This has further implications: the controller synthesis will not be applicable for $S$ but only for $S'$ as the controller solution for $S'$ cannot be composed with the system $S$.
 However, we found interesting to perform this first transformation from $S$ to $S'$ to underline the key difference between the 2 systems (apart from the state extension): for a sequence of inputs, all the states that are not reachable has been suppressed.
-We do not lose any crucial information as all the trajectories of the system $S$ are in the system $S'$ and vice versa.
+The main difference between the 2 systems comes from the initial set. Every initial state that is not reachable with the set of inputs $\U$ will not belong to the system $S'$.
+Except this, we do not lose any crucial information as all the trajectories of the system $S$ are in the system $S'$ and vice versa.
 
 \subsection{$S' \rightarrow S_a$}
 In this part, we change the state of the system by considering only a subspace of it.
-To counteract the loss of information, we have to replace it with computation of reachable sets out of the sequence of inputs (that is part of the state).
+To counteract the loss of information, we have to replace it with computation of reachable sets out of the sequence of inputs (that is part of the state of the system $S'$).
 
-We will assume that the state $\x$ of the system $\sys$ can be decomposed in this way $\displaystyle\T{\x} = \T{[\T{\xobs},\T{\xunobs}]}$ where $\xobs \in Y$  is observed and $\xunobs$ is an unobserved (internal) state.
+We will assume that the state $\x$ of the system $\sys$ can be decomposed in this way $\displaystyle\x = \T{[\T{\xobs},\T{\xunobs}]}$ where $\xobs \in Y$  is observed and $\xunobs$ is an unobserved (internal) state.
 Lets call $\SSunobs$ the subspace of $\xunobs$ and $\SSobs$ the one of $\xobs$.
-The states of the input extended state abstraction $\sysa$ will be expressed by $\xa_n = (\xobs_n,\Pastuseq)$ where $\Pastuseq = [\pastuseq] \in \U^{\Ninputs}$.
+Let $\Xobs = \X' \proj{\SSobs}$ the set of observed states, and 
+$\Xobs_0 = \X'_0 \proj{\SSobs}$ the set of initial observed states.
+The state of the input extended state abstraction $\sysa$ will be expressed by $\xa_n = (\xobs_n,\Pastuseq)$ where $\Pastuseq = [\pastuseq] \in \U^{\Ninputs}$.
 
-Let the set
-$$\Xunobs(\Pastuseq) = \Reach{S}{\Pastuseq} \proj{\SSunobs}$$.
+Let the set $$\Xunobs(\Pastuseq) = \Reach{S}{\Pastuseq} \proj{\SSunobs}$$.
 $\Xunobs(\Pastuseq)$ correspond to all the unobserved states that can be reached by the system $S'$ after applying a control sequence terminating with $\Pastuseq$.
 We can now "replace" the knowledge of the state  $\xunobs$ by the set of all the possible states $\Xunobs(\Pastuseq)$.
 % Definition of the reduced system
 Let the system
-$\sysa =  (X_a,X_{a 0}, \sysaU, \transition, Y_a, H_a)$ 
+$\sysa =  (X_a,X_{a 0}, \sysaU, \systransition{S_a}{}, Y_a, H_a)$ 
 where:
 \begin{itemize}[nolistsep,noitemsep]
 \item $X_a = \Xobs \times \sysaU^{\Ninputs}$ the set of states, 
@@ -180,11 +188,14 @@ where:
 \item and the transition relation is defined by:
 \begin{equation}
 \begin{split}
-(\xobs_n,\vect{u}_{n - \Ninputs},...,\vect{u}_{n-1}) 
-\labelledtransition{\vu} 
-& (\xobs_{n+1},\vect{u}_{n+1-\Ninputs},...,\vect{u}_{n-1},\vu)\\ \Longleftrightarrow 
+\forall (\xobs_n,\u_{n - \Ninputs},...,\u_{n-1}) \in \X_a,&
+\forall \u \in \U,\forall \xobs_{n+1} \in \Xobs, \\
+(\xobs_n,\u_{n - \Ninputs},...,\u_{n-1}) 
+\systransition{S_a}{\u} 
+& (\xobs_{n+1},\u_{n+1-\Ninputs},...,\u_{n-1},\vu)\\
+\Longleftrightarrow 
 \xobs_{n+1} \in 
-& H_a(Post^S_{\vu}(\{\xobs\} \times \Xunobs(\vect{u}_{n - \Ninputs},...,\vect{u}_{n-1}))
+& H (Post^S_{\u}(\{\xobs\} \times \Xunobs(\u_{n - \Ninputs},...,\u_{n-1})) 
 \end{split}
 \end{equation}
 \end{itemize}
@@ -201,44 +212,42 @@ R = \{ (\x',\xa) \in X' \times X_a \mid H'(\x') = H_a(\xa) \}
 \end{equation}
 By definition of the systems $S'$, $\sysa$ and of the relation $R$, conditions 1 and 2 of definition \ref{def_alt_sim} are already verified.
 
-In order to prove that condition 3 lie, it is sufficient to show that the unobserved part of $\x$ is contained in the set $\Xunobs(\Pastuseq)$.
-
 Let $(\x',\xa) \in R$, $\u \in U$ and $\x'_+ \in \Post{S'}{\u}(\x')$.
-As $H'(\x') = H_a(\xa)$, $\x' \proj{\U^\Ninputs} = \xa \proj{\U^\Ninputs}$, to put this in words, the states have the same past inputs, we will denote this sequence with $\Pastuseq$.
+As $H'(\x') = H_a(\xa)$, $\x' \proj{\U^\Ninputs} = \xa \proj{\U^\Ninputs}$, to put this in words, the states have the same last $\Ninputs$ inputs, we will denote this sequence with $\Pastuseq$.
 By definition of $\Xunobs(\Pastuseq)$,
 we know that $\x' \proj{\SSunobs} \in \Xunobs(\Pastuseq)$,
 so
 $\x' \in \{\x' \proj{\SSobs} \} \times \Xunobs(\Pastuseq) \times \Pastuseq$
 which imply that
 $\x'_+ \in \Post{S'}{\u}(\{\x' \proj{\SSobs} \} \times \Xunobs(\Pastuseq) \times \Pastuseq )$.
-By taking $\xa_+ = H_a(\x'_+) \in \Post{S_a}{\u}(\xa)$,
+By taking $\xa_+ = H'(\x'_+) \in \Post{S_a}{\u}(\xa)$,
 we have $(\x'_+,\xa_+) \in R$.
 \end{proof}
 
 \subsection{$S_a \rightarrow S_a'$}
 In order to apply computer science tools, we would like to have an abstraction with finite state space and finite input space.
-In order to have this, we will discretize both of them.
+Finiteness is obtained by discretization with finite set of symbols.
 
 \newcommand{\symbD}{P}
 \newcommand{\setD}{\mathcal{P}}
 \newcommand{\sizeD}{\mathcal{I}}
 We first define the discretization of the state space.
-Let $\symbD_i$ a finite set of symbols associated with the finite set of subsets $\setD_i \subset X_a$ for $i>\sizeD \in \mathbb{N}$ so that:
+Let $\symbD_i$ a finite set of symbols associated with the finite set of subsets $\setD_i \subset X_a$ for $i \leq \sizeD \in \mathbb{N}$ so that:
 \begin{equation}
 \begin{split}
-&\bigcap_{0 \leq i < \sizeD} \setD_i = X_a \\
-&\forall i,j< \sizeD,0<i,j, \setD_i \cap \setD_j = \emptyset\\
+&\bigcup_{0 < i \leq \sizeD} \setD_i = X_a \\
+&\forall i,j \leq \sizeD,0 < i,j, \setD_i \cap \setD_j = \emptyset\\
 \end{split}
 \end{equation}
 \newcommand{\symbU}{V}
 \newcommand{\setU}{\mathcal{V}}
 \newcommand{\sizeU}{\mathcal{J}}
 We define in the same way the discretization of the input space. 
-Let $\symbU_i$ a finite set of symbols associated with the finite set of subsets $\setU_i \subset X_a$ for $i>\sizeU \in \mathbb{N}$ so that:
+Let $\symbU_i$ a finite set of symbols associated with the finite set of subsets $\setU_i \subset X_a$ for $i \leq \sizeU \in \mathbb{N}$ so that:
 \begin{equation}
 \begin{split}
-&\bigcap_{0 \leq i < \sizeU} \setU_i = \U \\
-&\forall i,j< \sizeU,0<i,j, \setU_i \cap \setU_j = \emptyset\\
+&\bigcup_{0 < i \leq \sizeU} \setU_i = \U \\
+&\forall i,j \leq \sizeU,0 < i,j, \setU_i \cap \setU_j = \emptyset\\
 \end{split}
 \end{equation}
 
@@ -252,7 +261,7 @@ The final abstraction is then defined in this way. Let the system $S_a' = (\tupl
 \item $X_a' = \{\symbD_1,\dots,\symbD_\sizeD\}$ the set of states, 
 \item $X_{a 0}' \subseteq X_a'$ the set of initial states defined for $i$, $\symbD_i \in X_{a 0}' \Leftrightarrow \setD_i \cap X_{a 0} \neq \emptyset$,
 \item $Y_a' = \{\symbO_1,\dots,\symbO_\sizeO\}$ the set of outputs,
-\item $H_a'$ the output map defined for $\symbD_i = \in X_a'$ by $H_a(\symbD_i)$ the only symbol $\symbO_j$ in $Y_a'$ so that $\setD_i |_{\SSobs} = \setO_j$ (by shoosing the same discretization than the state space, the existence and unicity is ensured),
+\item $H_a'$ the output map defined for $\symbD_i \in X_a'$ by $H_a(\symbD_i)$ the only symbol $\symbO_j$ in $Y_a'$ so that $\setD_i |_{\SSobs} = \setO_j$ (by choosing the same discretization than the state space, the existence and unicity is ensured),
 \item and the transition relation is defined by:
 \begin{equation}
 \symbD_i 
@@ -265,17 +274,13 @@ The final abstraction is then defined in this way. Let the system $S_a' = (\tupl
 \end{itemize}
 
 The previous definition is using a small abuse of notation: the discretization should have been done in the first place as the chosen output maps now differe from the initial system, however, this does not change the rest of the proof.
-The alternating simulation relation is ensured by the fact that we are doing over approximation of the state through the discretization. So we have $S_a \altsim S_a'$.
+The alternating simulation relation is ensured by the fact that we are doing over approximation of the state through the discretization. So we have $S_a' \altsim S_a$.
 
 As the relation $\altsim$ is commuting, we have the following property:
 $S_a' \altsim S'$. This is the main property that we needs in order to use this abstraction for the controller synthesis.
 
-
-\comment{You need to see with PJ how to go for this part, when do I need to introduce the symbols because right now $S_a$ and $S_a'$ have different output maps. So I need to have a more uniform approach there.}
-
 \section{Dynamical systems}
-The definition \ref{def:system} of a system can be used in order to represent continuous and discrete dynamical systems.
-In this case, the computation of the sets $\Xunobs(\Pastuseq)$ is a reachability problem.
+In the case of dynamical models (discrete or continuous time), the computation of the sets $\Xunobs(\Pastuseq)$ is a reachability problem.
 It can be solved in 2 steps: find the smallest invariant $\Xuinv$ of $\sys$ dynamics on $\SSunobs$ and compute the image $\Xunobs(\Pastuseq)$ of $\Xuinv$ after applying the control sequence $\Pastuseq$.
 
 \begin{figure}
@@ -289,4 +294,4 @@ Interesting case scenarios happen when the knowledge about $\Xunobs(\Pastuseq)$ 
 If $\Xunobs(\Pastuseq)$ is unbounded, the final abstraction might have an infinite number of successors. The impact on our ability to find a solution must be investigated for each systems, however this property is unlikely to be desirable.
 We will therefore focus on systems that have bounded invariant sets $\Xuinv$.
 
-From now we will use linear time invariant systems. We use them mainly for their ease of manipulation.
+From now we will use discrete time linear time invariant systems. We chose them mainly for their ease of manipulation. However, as we have showed before, this can be applied to a broader class of systems.

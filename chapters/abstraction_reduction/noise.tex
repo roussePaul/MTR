@@ -15,8 +15,8 @@
 \newcommand{\Xr}{X_r}%
 %
 \newcommand{\Xrinv}{\mathcal{X}_r}%
-\newcommand{\xrinf}{\minf{\x}_r}%
-\newcommand{\xrsup}{\msup{\x}_r}%
+\newcommand{\xrinf}{\minf{\x}^r}%
+\newcommand{\xrsup}{\msup{\x}^r}%
 %
 %
 \newcommand{\Wsup}{\msup{W}}%
@@ -36,6 +36,7 @@
 %
 \newcommand{\xkn}{\x_{k+1}}%
 \newcommand{\xk}{\x_{k}}%
+\newcommand{\xrk}{\xr_{k}}%
 \newcommand{\uk}{\u_{k}}%
 \newcommand{\wk}{\w_{k}}%
 \newcommand{\yk}{\y_{k}}%
@@ -76,9 +77,9 @@ In our case, we will find all the admissible models with the same dynamic as the
 
 As we do not observe $\xunobs$, the error on $\SSunobs$ does not have a direct effect on the input extended state abstraction.
 However, it does have an impact as the dynamics on $\SSunobs$ influence the one on $\SSobs$.
-In this part, we will see that the admissible noise set is actually bigger (in the sense of inclusion) than the noise set used for the modellisation.
+In this part, we will see that the admissible noise set is actually bigger (in the sense of inclusion) than the noise set used in the model.
 
-We will consider the system definition \ref{lin_sys_decoupled} with noise sets and input sets 2 monotone sets expressed by:
+We will consider the system definition \ref{lin_sys_decoupled}, adding the monotonic property to the entire system, with noise sets and input sets two monotone sets expressed by:
 \begin{equation}
 \begin{aligned}
 \U &= [\minf{\u},\msup{\u}]\\
@@ -140,18 +141,22 @@ We would like to have a condition over the noise only. However, the process $\xr
 \begin{equation}
 \zkn = \Ar \zk + \Er \wk + \Br \msup{\u}
 \end{equation}
-Thanks to the monotone property and to $\uk \mleq \msup{\u}$, for any trajectory if $\x_0 \mleq \z_0$, then:
+Thanks to the monotone property and to $\uk \mleq \msup{\u}$, for any trajectory if $\xr_0 \mleq \z_0$, then:
 \begin{equation}\label{process_ineq}
-\xk \mleq \zk
+\xrk \mleq \zk
 \end{equation}
-Lets define $\zk^* = \zk + (\Ar-I)^{-1} \Br \msup{\u}$, for all $k\in \mathbb{N}$:
+We will choose $\z_0  = \xr_0$.
+Lets define $\zk^* = \zk - \Ar^k \xr_0  + (\Ar-I)^{-1} \Br \msup{\u}$, for all $k\in \mathbb{N}$:
 \begin{equation}
-\zkn^* = \Ar \zk^* + \Er \wk
+\begin{split}
+\zkn^* &= \Ar \zk^* + \Er \wk\\
+\z_0^* &= \vect{0}
+\end{split}
 \end{equation}
 
 Then by using the inequality \ref{process_ineq} and equivalence \ref{equi_upp}, we have the following implication:
 \begin{equation}
-\Aro (\zk^* - (\Ar-I)^{-1} \Br \msup{\u} ) + CE \wk 
+\Aro (\zk^* + \Ar^k \xr_0 - (\Ar-I)^{-1} \Br \msup{\u} ) + CE \wk 
 \mleq \Aro \xrsup + CE \msup{\w}
 \Rightarrow 
 \ykn \mleq \sykn
@@ -164,23 +169,25 @@ Finally, we have that:
 \begin{equation}
 \Aro \zk^* + CE \wk 
 \mleq 
-\ssup
+\ssup_k
 \Rightarrow 
 \ykn \mleq \sykn
 \label{impl_upp}
 \end{equation}
-with $\ssup = \Aro ( \xrsup + (\Ar-I)^{-1} \Br \msup{\u} ) + CE \msup{\w}$
+with $\ssup_k = \Aro ( \xrsup - \Ar^k \xr_0 + (\Ar-I)^{-1} \Br \msup{\u} ) + CE \msup{\w}$
 
 The same implication can be done with the lower bound of $\yk$:
 \begin{equation}
 \Aro \zk^* + CE \wk 
 \mleq 
-\sinf
+\sinf_k
 \Rightarrow 
 \ykn \mleq \sykn
 \label{impl_low}
 \end{equation}
-with $\sinf = \Aro ( \xrinf + (\Ar-I)^{-1} \Br \minf{\u} ) + CE \minf{\w}$
+with $\sinf_k = \Aro ( \xrinf - \Ar^k \xr_0 + (\Ar-I)^{-1} \Br \minf{\u} ) + CE \minf{\w}$
+
+Please note that the term $\Ar^k \xr_0$ correspond to a transient effect. We are only interested in the permanent behaviour of the system, and as the system $\Sunobs$ is stable, the quantity $\Ar^k \xr_0$ goes to 0 as $k$ goes to infinity. For the rest of the study, we will assume that $\xr_0 = 0$ therefore: $\sinf_k = \sinf$ and $\ssup_k = \ssup$.
 
 We will express these 2 implications with a filter inequality.
 Let the following filter $\filter$:
@@ -200,8 +207,6 @@ The set $\W_a$ of noise sequences that verify:
 \end{equation}
 is a subset of the admissible noise sequences.
 
-\comment{In fact the set $\W_G$ is just a subset of the admissible noise sequences, however, this remain a good tool to see how the noise is affected. Give the example of the noise sequence $\frac{(-1)^n}{n}$}
-
 By linearity of the filter, we know that if the sequences $\{\wk^1\}_{k\in \mathbb{N}}$ and  $\{\wk^2\}_{k\in \mathbb{N}}$ are admissible, then the sequence defined by $\{a\wk^1 + b\wk^2\}_{k\in \mathbb{N}}$ with $a,b>0$ and $a+b = 1$ is an admissible noise sequence.
 Lets now consider the bode $G$ function of the filter $\filter$ and the set $\W'$ defined by:
 $$\W_G = 
@@ -215,6 +220,3 @@ It will also help us to understand some experiments.
 
 Please note that the maximum constant noise remains unchanged.
 However, noises of higher frequencies can have greater magnitudes than the one modelled initially. 
-
-
-\comment{Add property that the convex polyhedra of the sinusoidal signals with magnitude less than $u$ correspond to the set of all signals so that $u_n<u$ for all $n$.}
