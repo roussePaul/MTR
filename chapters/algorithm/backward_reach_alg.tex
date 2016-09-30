@@ -458,8 +458,7 @@ From now, we will assume that the fairness property of a dynamical system $S$ is
 \begin{equation}
 \Tesc:X \times \U \rightarrow \R \cup \{+\infty\}
 \end{equation}
-$\Tesc$ is taking as an input the nodes of the module and the chosen control actions.
-
+$\Tesc$ is taking as an input the nodes of the module and the chosen control actions and output the maximal time that the system will stay in the set of nodes. If the result is strictly less than $+\infty$ then the system will escape the set of nodes in a finite number of steps, otherwise the result is $+\infty$ and the system might stay forever in the set of nodes (not fair).
 
 \subsubsection{Fairness property of product systems}
 In our case the systems that that we will use are products of FTS and BA. We will have the information about the fairness property for each of the system, so we need to investigate the link between the fairness property of the product system and all the systems.
@@ -513,23 +512,21 @@ How do I add the $F_p$ sets, what transitions do I keep, which on do I get ride 
 \begin{algorithm}[H]
 \SetAlgoNoLine
 \KwData{$\mathcal{A}_p, T_{escape},cost$}
-\KwResult{$\mathcal{P}$} 
+\KwResult{$\Fsc$} 
 
- $Q = \{ Expand(\mathcal{F}) \}$\;
+ $\mathcal{K} = \{ G \}$\;
 
  $Q^\star$: set of valid plan for the system\; 
- \While{$Q\neq\emptyset$}{
+ \While{$\mathcal{K} \neq \emptyset$}{
  	$Q = Sort_{cost}(Q)$\;
  	$Plan,F_p = Pop(Q)$\;
  	
   \uIf{
-  $T_{escape}(F_p) < \infty$
+  $T_{escape}(F_p) < +\infty$
   or
-  $F_p \hookrightarrow Plan$}{
-  
+  $\outpost{F_p} \in Nodes of Plan$}{
     Add $F_p$ to $Plan$\;
-	Update visited set\;
-	
+	Update visited set\;	
 	\uIf{$init \subseteq Plan$ and $\mathcal{F} \subseteq Reach_{Plan}(init)$}{
        Add path to $Q^\star$\;
      }
@@ -541,7 +538,7 @@ How do I add the $F_p$ sets, what transitions do I keep, which on do I get ride 
    }
  }
  
- $\mathcal{P} = \argmin_{cost}{Q^\star}$\;
+ $\Fsc = \argmin_{cost}{Q^\star}$\;
  
  \caption{Backward reachability algorithm}
 \end{algorithm}
