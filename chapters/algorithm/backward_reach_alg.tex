@@ -240,15 +240,18 @@ Please note that if $a$ and $b$ are least fixed points of the monotonic function
 \section{Decomposition in strongly connected cyclic components}
 \newcommand{\planningdomain}{\ensuremath{ \tuple{\langle S, S_0, \mathcal{A}, \gamma \rangle} }}%
 %
-\newcommand{\controller}{\ensuremath{\tuple{ \langle C, c_0, \Gamma, \Lambda, \delta, \Omega \rangle}}}%
+\newcommand{\controller}{\ensuremath{\systuple{ C, \{c_0\}, \Gamma, \Lambda, \systransition{\Fsc}{}, \Omega }}}%
 %
 \newcommand{\planningproblem}{\ensuremath{\tuple{ \langle \mathcal{D}, G \rangle}}}%
 \newcommand{\Fsc}{\Pi}%
 \newcommand{\Ftcs}{\Fts_\Fsc}%
-\newcommand{\Asol}{\mathcal{A}_s}%
+\newcommand{\Asol}{\mathcal{A}_s'}%
+\newcommand{\Aterm}{\mathcal{A}_s}%
 %
-Hereby we will introduce some definitions that will be used for the planning problem.
-In order to solve the planning problem, we will introduce the Finite-State Controller (FSC):
+Hereby we will introduce the definition of the controller and of the controlled system.
+For every possible trajectories of the controlled system, the LTL formula $\varphi$ should be verified, this implies that the product of $\Aphi$ and the controlled system will verify reachability and fairness properties to the acceptance set.
+Finally we will show that the controller must be solution of a terminating nondeterministic planning problem.
+
 \begin{nameddef}{Finite-State Controller}
 $\Fsc = \controller$ is a finite-state controller where
 $C$ is the set of states,
@@ -258,34 +261,83 @@ $\Lambda$ is the output alphabet,
 $\delta: C \times \Gamma \rightarrow C$ is the transition function and 
 $\Omega: C \rightarrow \Lambda$ is the output function.
 \end{nameddef}
-In practice, for a product automaton $\Aprod = \systuple{Q',Q'_0,\delta', U,Y,\mathcal{Q}'}$, the controller $\Fsc = \controller$ will be chosen with $C = Q' \cup \{c_0\}$, $\Lambda = U$ and $\Gamma = Y$.
-$\Fsc$ is said to be \textit{closed} if every reachable state of $\Aprod$ is associated with a control action.
-If $\Fsc$ is closed, this controller could be composed with the FTS $\Fts$: $\Ftcs = \Fts \circ \Fsc = \systuple{X_\Fsc,X_{\Fsc 0},\systransition{\Ftcs}{},\{u\},Y,H}$.
-The input set of the composed system is a singleton, this is just a dumb input introduced mainly for compatibility with the rest of the definitions.
-Finally we can obtain the product of the composed system:
-$\Asol = \Aphi \otimes \Ftcs = \systuple{S,S_0,\delta,G}$.
-Due to the special form of the controller, $\Asol$ correspond to the product automaton $\Aprod$ selecting just one of the input.
-$\Fsc$ is \textit{proper} if the acceptance set of $\Asol$ is reachable from every initial state and $\Fsc$ is said \textit{fair} if the acceptance set is reachable in finite time from every nodes of $\Asol$.
-We will say that $\Fsc$ is a valid controller if $\Fsc$ is \textit{closed}, \textit{proper} and \textit{fair}.
+In practice, for a product automaton $\Aprod = \systuple{Q',Q'_0,\delta',\mathcal{Q}'}$ and a FTS $\Fts = \systuple{X,X_0,\systransition{\Fts}{},U,Y,H}$, the controller $\Fsc = \controller$ will then be chosen with $C = Q' \cup \{c_0\}$, $\Lambda = U$ and $\Gamma = Y$.
+A trajectory of the composed system will be:
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\tikzstyle{tr}=[-stealth]
 
-This is a non terminating problem as all trajectories will have to go infinitely to the goal set.
-It is shown in \cite{patrizi2013fair} that every non-terminating nondeterministic planning problem can be solved like a nondeterministic terminating planning problem where the the initial set of correspond to the union of the initial set and the goal set.
-Lets call $\Asol' = \systuple{S \cup G_0,S_0 \cup G_0,\delta',G}$ the solution of the nondeterministic terminating problem, where $G_0$ is a set of nodes that have the same transition relations than $G$ but does not belong to the goal set.
+\newcommand{\sysar}[2]{edge node[left,anchor=south west,yshift=-2pt,xshift=-2pt,pos=0]{\scalebox{0.7}{$#1$}}
+node[anchor=south east,yshift=-3pt,xshift=-0pt,pos=1]{\scalebox{0.55}{$#2$}}}
 
-In this next sections we will proof that every solutions can be decomposed in strong cyclic components.
-Then we will investigate the consequences of the fairness property over the set of solution.
-Finally, we will use all these properties in order to justify the planning algorithm that we used.
+\newcommand{\fakebox}[1]{...}
+  \matrix (m) [matrix of math nodes,row sep=0em,column sep=1.3em,text height=2ex]
+  {
+  \Fts: & & x_0 & & x_1 & & x_2 & & \fakebox{x_1} \\
+  \Fsc: &  c_0 & & c_1 & & c_2 & & c_3 & \fakebox{c_1}\\
+  \Ftcs: & & (x_0,c_1) & & (x_1,c_2) & & (x_2,c_3) & &  \fakebox{c_1}\\
+};
+     
+  \draw[tr] (m-1-3) \sysar{\Fts}{\Omega(c_1)} (m-1-5);
+  \draw[tr] (m-1-5) \sysar{\Fts}{\Omega(c_2)} (m-1-7);
+  \draw[tr] (m-1-7) \sysar{\Fts}{\Omega(c_3)} (m-1-7-|m-1-9.west);
+  
+  \draw[tr] (m-2-2) \sysar{\Fsc}{H(x_0)} (m-2-4);
+  \draw[tr] (m-2-4) \sysar{\Fsc}{H(x_1)} (m-2-6);
+  \draw[tr] (m-2-6) \sysar{\Fsc}{H(x_2)} (m-2-8);
+  
+  \draw[tr] (m-3-3) \sysar{\Ftcs}{H(x_1)} (m-3-5);
+  \draw[tr] (m-3-5) \sysar{\Ftcs}{H(x_2)} (m-3-7);
+  \draw[tr] (m-3-7) \sysar{\Ftcs}{H(x_3)} (m-3-7-| m-3-9.west);
+\end{tikzpicture}
+\end{figure}
+This controller can be composed with the FTS $\Fts$: $\Ftcs = \Fts \circ \Fsc = \systuple{X_\Fsc,X_{\Fsc 0},\systransition{\Ftcs}{},Y,H_\Fsc}$ where:
+\begin{itemize}[nolistsep,noitemsep]
+\item $\X_\Fsc = X \times C$ the set of states,
+\item $\X_{\Fsc 0} \subseteq X_0 \times C$ the set of initial states, defined by $(x_0,c) \in \X_{\Fsc 0} \Leftrightarrow c_0 \systransition{\Fsc}{H(x_0)} c$,
+\item $\systransition{\Ftcs}{}$ the transition relation defined by:
+\begin{equation}
+(x,c) \systransition{\Ftcs}{} (x_+,c_+) \Leftrightarrow 
+\left\{
+\begin{split}
+x &\systransition{\Fts}{\Omega(c)} x_+\\
+c &\systransition{\Fsc}{H(x_+)} c_+
+\end{split}
+\right.
+\end{equation}
+\item $H_\Fsc$ the observation map: for $(x,c) \in X_\Fsc$, $H_\Fsc((x,c)) = H(x)$.
+\end{itemize}
+Contrary to the FTS, the controlled system does not have any inputs, however it is still possible to use operations on automaton previously defined by using a dumb input for all the transitions.
+$\Fsc$ is said to be \textit{closed} if every reachable state of the controlled system $\Ftcs$ is associated with a control action.
+Finally we can obtain the product of the composed system $\Ftcs$ and the BA $\Aphi$:
+$\Asol = \Aphi \otimes \Ftcs = \systuple{S',S_0',\delta',G'}$.
+$\Fsc$ is \textit{proper} if the acceptance set of $\Asol$ is reachable from every initial state and $\Fsc$ is said \textit{fair} if the acceptance set is reachable in finite time from every reachable states of $\Asol$.
+We will say that $\Fsc$ is a valid controller if $\Fsc$ is \textit{closed}, \textit{proper} and \textit{fair}. If $\Fsc$ is a valid controller, we will say that the corresponding product automaton $\Asol$ is a solution of the problem.
+
+Thanks to the special form of the controller, $\Asol$ correspond to the product automaton $\Aprod$ selecting just one control action for each of the reachable nodes.
+Thanks to this property, we can work only with the product automaton in order to find a controller solution of the problem.
+
+Due to the nature of the LTL formulas (that works on infinite sequences of observations), this problem is a non terminating planning problem.
+It is shown in \cite{patrizi2013fair} that every non terminating nondeterministic planning problem can be solved like a nondeterministic terminating planning problem where the the initial set of the new planning problem correspond to the union of the initial set and the goal set.
+Lets call $\Aterm = \systuple{S,S_0,\delta,G}$ the product solution of the nondeterministic terminating problem.
+Where $S = S' \cup G_{post}$, with $G_{post}$ a set of nodes that have the same post transitions than the set $G'$ in $\Asol$, $G = G_{pre}$ a set of nodes that have the same predecessor transitions than $G'$ in $\Asol$, $S_0 = S_0' \cup G_{post}$ and $\delta$ defined by previous definitions of $G_{post}$ and $G_{pre}$ plus transitions of $\delta|_{(S' \setminus G')^2}$.
+
+We showed that the controller synthesis with LTL formula can in fact be treated as a terminating nondeterministic planning problem. In the next sections, we will work with $\Aterm$ to solve the problem.
 
 \subsubsection{Strong cycle decomposition}
-In this section we will use a constructive argument to show that every plan of a terminating nondeterministic planning problem can be decomposed in strong cyclic components that deterministically go to the goal set.
+A plan of a nondeterministic planning problem might have cycles outside of the goals set. Unfortunately, these cycles can keep the agent from reaching the goal set in finite time (a trajectory looping infinitely in a cycle will never reach the goal set).
+By showing that the dynamical system cannot stay in each of the cycles indefinitely, it is possible to prove that despite the cycles, the fairness property hold.
+This motivate the decomposition of the graph in cycles.
+Hereby, we will use a constructive argument to show that every plan solution of a terminating nondeterministic planning problem can be decomposed in strongly connected cyclic components that deterministically go to the goal set. Later, this decomposition will be used to 
+The strongly connected cyclic components correspond to subparts of the graph where every node is reachable from other nodes and that have cyclic trajectories.
 
-Let a $\Asol$ a solution of the planning problem.
-The main idea of the decomposition is to decompose $\Asol$ in strong cyclic components that deterministically bring us to the goal set of nodes.
-To do this we will recursively find all the smallest strongly connected cycles that deterministically bring the state closer to the goal set (closer in term of node distance).
-The description of the construction will be followed by a proof that for a valid plan  all the nodes of the plan belong to the decomposition.
+Let $\Aterm = \systuple{S,S_0,\delta,G}$ a solution of the terminating nondeterministic problem.
+The main idea of $\Aterm$'s decomposition is to encapsulate in modules all subgraphs that have cyclic trajectories. The modules will be found recursively starting from the goal set until all the graph is decomposed.
+The description of the decomposition will be followed by a proof that for a valid plan all the nodes of the plan belong to the decomposition.
 
 Strongly connected components will be found using fixed point algorithm.
-Let $F_{t \rightarrow g}$ defined for $g,t \subseteq S$ by:
+Let $F_{t \rightarrow g}$ defined for $g,t \subseteq S$, $g \cup t = \emptyset$ by:
 \begin{equation}
 \begin{array}{llll}
 F_{t \rightarrow g} :& 2^S & \rightarrow & 2^S\\
@@ -293,24 +345,26 @@ F_{t \rightarrow g} :& 2^S & \rightarrow & 2^S\\
 \end{array}
 \end{equation}
 
-
-For $x \subseteq y$ we have $F_{t \rightarrow g} (x) \subseteq F_{t \rightarrow g}(y)$, so $F_{t \rightarrow g}$ is a monotonic functional and theorem \ref{th:tarski} ensure that $F_{t \rightarrow g}$ have a unique least fixed point.
+For $x \subseteq y \subseteq S$ we have $F_{t \rightarrow g} (x) \subseteq F_{t \rightarrow g}(y)$, so $F_{t \rightarrow g}$ is a monotonic functional and theorem \ref{th:tarski} ensure that $F_{t \rightarrow g}$ have a unique least fixed point.
 As the cardinality of $S$ is finite, we can compute the fixed point of $F_{t \rightarrow g}$ in a finite time.
 The functional $F_{t \rightarrow g}$ ensure that all the fixed points are strongly connected if $t \subseteq S$ is strongly connected.
 
-Let $\mathcal{F}_g(t) = \mu F_{t \rightarrow g}$ the least fixed point of $F_{t \rightarrow g}$.
-This fixed point can be computed in practice thanks to the theorem \ref{th:tarski}.
-$\mathcal{F}_g(t)$ correspond to the smallest strongly connected cycle containing the subset $t$ that can reach the subset $g$.
+Let $\mathcal{F}_g(t) = \mu F_{t \rightarrow g}$ the least fixed point of $F_{t \rightarrow g}$ for $t,g \subseteq S$.
+This fixed point can be computed in practice thanks to a direct application of the theorem \ref{th:tarski}.
+$\mathcal{F}_g(t)$ correspond to the smallest strongly connected cycle containing $t$ that can reach the subset $g$.
 Thanks to the definition of the functional $F_{t \rightarrow g}$, $\mathcal{F}_g(t) \cap g = \emptyset$ and $Post(\mathcal{F}_g(t)) \subseteq t \cup g$.
-More over, let $t,g \subseteq S$ so that $Post(t) \cap g \neq \emptyset$, then any trajectory $s_0,s_1,s_2,...$ of $\Asol'$ starting in $\mathcal{F}_g(t)$ ($s_0 \in \mathcal{F}_g(t)$) stay in $\mathcal{F}_g(t)$, until it reach $g$, in other words $\forall i\in \mathbb{N}, (s_i \in \mathcal{F}_g(t)) \lor (\exists j<i, s_j \in g)$.
-This decomposition allow us to consider modules of the nondeterministic graph that have deterministic transitions.
+More over, let $t,g \subseteq S$ so that $Post(t) \cap g \neq \emptyset$, then any trajectory $s_0,s_1,s_2,...$ of $\Asol$ starting in $\mathcal{F}_g(t)$ ($s_0 \in \mathcal{F}_g(t)$) stays in $\mathcal{F}_g(t)$, until it reach $g$, in other words $\forall i\in \mathbb{N}, (s_i \in \mathcal{F}_g(t)) \lor (\exists j<i, s_j \in g)$.
+This decomposition allow us to consider modules of the nondeterministic graph that have deterministic transitions to $g$.
 
 Lets now define the decomposition of the plan in strongly connected components.
-For $g \subseteq S$, let $\mathfrak{F}_g = \{ \mathcal{F}_g(\{n\}) \mid n \in \inpre(g) \}$.
+For $g \subseteq S$, let 
+\begin{equation}
+\mathfrak{F}_g = \{ \mathcal{F}_g(\{n\}) \mid n \in \inpre(g), \forall p \in \inpre(g) \setminus \{n\}, \mathcal{F}_g(\{p\}) \nsubseteq \mathcal{F}_g(\{n\}) \}
+\end{equation}
 $\mathfrak{F}_g$ correspond to the set of all the smallest strongly connected components that deterministically go to the subset $g$.
 The uniqueness of  $F_{t \rightarrow g}$ least fixed point ensure the uniqueness of $\mathfrak{F}_g$.
 
-For a set of set $X \subset 2^{2^S}$, let $\tilde{X} = \bigcup_{x \in X} x$.
+For  of set $X \subset 2^S$, let $\tilde{X} = \bigcup_{x \in X} x \subseteq S$.
 Let the sequence $\{\mathcal{K}_i\}_{i \in \mathbb{N}}$ define by:
 \begin{equation*}
 \begin{split}
@@ -323,20 +377,20 @@ for $i \in \mathbb{N}$.
 By observing that,
 \begin{equation}
 \begin{array}{llll}
-H : &2^{2^S} &\rightarrow &2^{2^S}\\
-&X & & \mathfrak{F}_{\tilde{X}} \cup X \cup \{ g \}
+\mathcal{H} : &2^{2^S} &\rightarrow &2^{2^S}\\
+&X & & \mathfrak{F}_{\tilde{X}} \cup X \cup \{ G \}
 \end{array}
 \end{equation}
-is a monotonic functional on a finite set $2^{2^S}$ and by using theorem \ref{th:tarski}, we know that the least fixed point of $H$ exist and is computable in finite time.
+is a monotonic functional on a finite set $2^{2^S}$ and by using theorem \ref{th:tarski}, we know that the least fixed point of $\mathcal{H}$ exists and is computable in finite time.
 As $\mathcal{K}_i = H^i(\emptyset)$, we can deduce that the sequence $\{\mathcal{K}_i\}_{i \in \mathbb{N}}$ is converging to an element $\mathcal{K}^\star \in 2^{2^S}$ in a finite number of steps.
 
 $\mathcal{K}^\star$ corresponds to the decomposition of the plan in strongly connected cycles.
+Some properties need now to be verified. First, the completeness of the decomposition, second, we need to be sure that the final decomposition does not present any cycles in between the possible module transitions.
 We need now to be sure that the decomposition of the plan is complete, ie all the nodes of the plan must belong to the decomposition:
 \begin{prop}
 For a valid plan, $\tilde{\mathcal{K}}^\star = S$.
 \end{prop}
 \begin{proof}
-
 By definition of $\mathcal{F}_g$, we have:
 \begin{equation}
 n \in S \setminus g \Leftrightarrow \mathcal{F}_g(\{n\}) \neq \emptyset
@@ -350,51 +404,61 @@ Moreover, by definition of $\mathfrak{F}_g$:
 \begin{equation} \label{eqn:f_empty}
 \tilde{\mathfrak{F}}_g \cap g = \emptyset
 \end{equation}
-For $\mathcal{K}^\star$, as $\mathcal{K}^\star = \mathfrak{F}_{\tilde{\mathcal{K}}^\star} \cup \mathcal{K}^\star$ and thanks to equality \ref{eqn:f_empty}, we have $\mathfrak{F}_{\tilde{\mathcal{K}}^\star} = \emptyset$.  
+Let $\mathcal{K}^\star$ the set of set of $S$ previously introduced.
+As $\mathcal{K}^\star = \mathfrak{F}_{\tilde{\mathcal{K}}^\star} \cup \mathcal{K}^\star$ and thanks to equality \ref{eqn:f_empty}, we have $\mathfrak{F}_{\tilde{\mathcal{K}}^\star} = \emptyset$.  
 By using equivalence \ref{eqn:equiv_f_empty}, we prove that $Pre(\tilde{\mathcal{K}}^\star) = \emptyset$.
 
 By using the definition of $\mathcal{F}_g$,
-we can show that for all $F \in \mathcal{K}^\star \setminus \{G\}$, $\outpost(F) \subset \tilde{\mathcal{K}}^\star$.
+we can show that for all $F \in \mathcal{K}^\star$, $\outpost(F) \subset \tilde{\mathcal{K}}^\star$.
 This imply that $\outpost(\tilde{\mathcal{K}}^\star) = \outpost(G)$.
 As the problem is a terminating problem, $\outpost(G) = \emptyset$, this imply that 
 $\outpost(\tilde{\mathcal{K}}^\star)  = \emptyset$.
 
 As $\inpre(\tilde{\mathcal{K}}^\star)  = \emptyset$ and $\outpost(\tilde{\mathcal{K}}^\star)  = \emptyset$, all the nodes outside $\tilde{\mathcal{K}}^\star$ are not connected to $G$.
-Then the validity of the plan prove that all the nodes outside   $\tilde{\mathcal{K}}^\star$ cannot belong to the plan.
+The plan is a valid solution of the problem, this means that all nodes outsides $\tilde{\mathcal{K}}^\star$ cannot belong to the plan as they do not reach the goal set.
+\end{proof}
+
+Lets define the directed graph of the decomposition: $\systuple{\mathcal{K}^*, \sigma}$, where $\mathcal{K}^*$ is the set of nodes and $\sigma \in (\mathcal{K}^*)^2$ the set of transitions defined by $u,v \in \mathcal{K}^*$, $(u,v) \in \sigma$ iff $Post(u) \cap v \neq \emptyset$. 
+
+\begin{prop}\label{prop:nocycles}
+The graph of the decomposition does not have any cycles.
+\end{prop}
+
+\begin{proof}
+Thanks to the definition of the $\mathcal{F}_g$, we know that:
+\begin{equation}
+\forall k \in \mathcal{K}_{i+1}, \outpost(k) \subseteq \mathcal{K}_i
+\end{equation}
+More over, thanks to the definition of the problem, we have $\mathcal{K}_0 = G$ and $\outpost(G) = \emptyset$.
+This implies that the graph of the decomposition does not have any cycles.
 \end{proof}
 
 
+The decomposition of a plan is shown \ref{fig:plan_decomposition}. If we manage to prove with the definition of the system that every module of the decomposition (ie every cyclic behaviour) leave the corresponding set of states in finite time, then it show that the goal set is reached in finite time.
 \begin{figure}
 	\center
 	\includestandalone[width=0.7\textwidth]{plan_decomposition}
 	\caption{Decomposition of the plan in strong cycles components (red boxes) and transitions between them (blue arrows). The agent goes from area \textit{init} to stay in the set \textit{G} (in the green box) following the controls actions (in black arrows).}
-	\label{fig:environment}
+	\label{fig:plan_decomposition}
 \end{figure}
 
 \subsubsection{Fairness property}
 In the previous section we have settled the decomposition of the graph in strong cyclic components.
 We will now investigate when these strong cyclic components need to verify fairness property.
 
-If the plan $P$ is a solution of the nondeterministic planning problem, then every run reach the set $G$ in a finite time.
+If the plan $\Aterm$ is a solution of the terminating nondeterministic planning problem, then every run reach the set $G$ in a finite time.
 Lets $\mathcal{K}^\star$ be the previously defined decomposition of the plan $P$.
-In the following paragraph, we will establish when the fairness property must be verified for each element of $\mathcal{K}^\star$.
+Thanks to property \ref{prop:nocycles}, we know that the graph of the decomposition does not have any cycles. More over, the goal set is reachable from every initial nodes.
+Proving that every modules of $\mathcal{K}^*$ is fair, then it shows that the fairness property of the plan is verified (and therefore, all the trajectories will reach the goal set in a finite time).
 
-Let define the following subsets of $\mathcal{K}^\star$:
-\begin{align}
-\mathcal{K}_{unfair} &= \{ F \in \mathcal{K} \mid F \subseteq G \}\\
-\mathcal{K}_{fair} &= \mathcal{K}^\star \setminus \mathcal{K}_{unfair}
-\end{align}
-
-\begin{prop}
-All the elements of $\mathcal{K}^\star \setminus {G}$ verify fairness property.
-\end{prop}
-
-\begin{proof}
-Let $\Pi$ a finite-state controller that is a solution of the problem $P$ and $\mathcal{F} \in \mathcal{K}^\star \setminus \{G\}$ a $\Pi$-reachable set of nodes.
-If $\mathcal{F}$ does not verify the fairness property we can choose a $\Pi$-run $\pi = \{s_i\}_{i\in\mathbb{N}}$ so that it exists $k\in\mathbb{N}$ where $\forall k'>k, s_{k'} \in \mathcal{F}$, this means that $Inf(\pi) \subset \mathcal{F}$
-
-As $G \cap \mathcal{F} = \emptyset$, we have $Inf(\pi) \cap G =\emptyset$, so this run is not accepted, which contradict the fact that $\Pi$ is a solution of $P$.
-\end{proof}
+The FTS $\Fts$ does not have any information on the fairness property of a subpart of the system. In order to get this, we need to use the definition of the dynamical and investigate if such infinite trajectories in a cycles might happen to the system.
+The next chapter will discuss how such a property can be determined for dynamical systems.
+From now, we will assume that the fairness property of a dynamical system $S$ is defined for a modules by a function:
+\newcommand{\Tesc}{T_{escape}^S}%
+\begin{equation}
+\Tesc:X \times \U \rightarrow \R \cup \{+\infty\}
+\end{equation}
+$\Tesc$ is taking as an input the nodes of the module and the chosen control actions.
 
 
 \subsubsection{Fairness property of product systems}
@@ -422,26 +486,16 @@ The escape function of the product automaton $S$ is:
 $$T_{escape}^S = \min{T_{escape}^{S_i}}$$
 where $T_{escape}^{S_i}$ is the escape function of the system $S_i$.
 \end{property}
-
-\begin{proof}
-\textit{I need to provide something more rigorous.}
-If the faster system $S_i$ escape the set of nodes $\mathcal{F}|_{S_i}$ in $T^{S_i}_{escape}(\mathcal{F})$, then the product system escape the set of nodes $\mathcal{F}$ in $T^{S_i}_{escape}(\mathcal{F})$.
-\end{proof}
+This property can be easily understood: for a module $\mathcal{F}$, if the faster system $S_i$ escape the set of nodes $\mathcal{F}|_{S_i}$ in $T^{S_i}_{escape}$, then the product system escape the set of nodes $\mathcal{F}$ in $T^{S_i}_{escape}$ at maximum.
 
 \section{Backward reachability algorithm}
-In the previous section we have seen that every plan can be decomposed in a strongly connected cyclic components.
-We also have established when modules of a valid plan needs to verify fairness property.
-In this section we will present the algorithm that use the previous observations in order to find a plan.
+Every solution plan of the terminating nondeterministic problem can be decomposed in an acyclic graph of modules that verify a fairness property.
+This observation will justify the following graph search algorithm.
 
-The main idea of our algorithm is to visit the strong cyclic components from the smallest (in term of number of nodes) to the biggest using a Breadth First Search (BFS). The rest of the plan is done with a Depth First Search (DFS) algorithm .
-Our goal is to find the decomposition of the plan so that the decomposition verify the previous property (fairness and reachability to the goal set).
-
-As we have seen in the previous section, all the plan can be decomposed in this structure, this means that this algorithm is complete.
-
-We will associate the escaping function to the planning domain:
-\begin{equation}
-T_{escape} : G,U \rightarrow \mathbb{R}^\star \cup \{+\infty\}
-\end{equation}
+The main idea of our algorithm is to visit the possible modules of the decomposition (strong cyclic components) from the smallest (in term of number of nodes) to the biggest using a Breadth First Search (BFS).
+Then the graph of the decomposition is found using a Depth First Search (DFS) algorithm.
+These choices are relevant in case of motion planning as the nondeterminism is mainly present locally (noise on the position of the robot for example). The challenge of finding the strongly connected components rely more in finding the right control combinations for a small set of nodes that bring to the goal set.
+Whereas the graph of the decomposition require finding a potentially long path from the goal set to the initial, so the DFS is more suitable for this task.
 
 Lets use the following notation $F_p \hookrightarrow Plan$ for the truth value of the following assertion:
 $$\forall n \in \mathcal{F}_p \mid \forall v \in Post_{u_n}(n), \exists w \in Post_{u_n}(n) \cap Plan, H(v)=H(w)$$
@@ -456,9 +510,7 @@ How do I add the $F_p$ sets, what transitions do I keep, which on do I get ride 
 \item 
 \end{itemize}}
 
-
-
-\begin{algorithm}
+\begin{algorithm}[H]
 \SetAlgoNoLine
 \KwData{$\mathcal{A}_p, T_{escape},cost$}
 \KwResult{$\mathcal{P}$} 

@@ -15,11 +15,12 @@
 \usepackage{amsmath, amsfonts, amsthm, amssymb}
 %%%!!!!!!!!! I might have to remove amssymb as in the LTL temporal operator section of this part I just load the Dash symbols !!!!!!! (this package is actually colliding with an other one but I dont remember which one).
 \usepackage{nicefrac}
-\usepackage{breqn}
 \usepackage{tabularx}
 \usepackage{stmaryrd} % for llbracket and rrbracket
 \usepackage[ruled]{algorithm2e}
 
+
+\usepackage{calc}
 % LTL temporal operator
 \DeclareFontFamily{U}{matha}{\hyphenchar\font45}
 \DeclareFontShape{U}{matha}{m}{n}{
@@ -70,6 +71,7 @@
 
 %% GRAPHICS
 \usepackage{graphicx}
+\usepackage{float}
 \graphicspath{{./plots/}{./env/}{./results/}}
 \usepackage[mode=buildnew]{standalone}
 \usepackage{epstopdf}
@@ -79,6 +81,7 @@
 \usepackage{pgfplots}
 \usepgfplotslibrary{groupplots,fillbetween}
 \usepackage{relsize}
+\usepackage{tikz-cd}
 
 % DEFINITION/THEOREM ENVIRONMENTS
 \newcommand{\inlinedef}[1]{\textit{#1}}
@@ -163,9 +166,57 @@
 %  \xymatrix{\ar@<-.5ex>@{-|>}[r]^{\scalebox{0.4}{$#1,#2$}}&}%
 %  	}%
 %  }%
-\newcommand{\systransition}[2]{
-  \ensuremath{ \xymatrix{\ar@{-|>}[r]|{\scalebox{0.5}{$#1,#2$}}&} }
-  }
+%\newcommand{\systransition}[2]{
+%  \ensuremath{ \xymatrix{\ar@{-|>}[r]|{\scalebox{0.6}{$#1,#2$}}&} }
+%  }
+  
+%\newcommand{\systransition}[2]{%
+%  \ensuremath{ 
+%\xymatrix{\ar@<-.5ex>@{-|>}[r]^(0.45)*!/u-2pt/{
+%\makebox[22pt]
+%{\scalebox{0.7}{$#1$}
+%\hfill
+%\scalebox{0.55}{$#2$}} }&}}}
+
+
+\newlength{\trlng}
+\newsavebox\myb
+\newlength{\myl}
+\newcommand{\systransitionvar}[3]{%
+  \ensuremath{%
+\setlength{\trlng}{#3+3pt}%
+\xymatrix@C=\trlng{\ar@<-.5ex>@{-|>}[r]^(0.45)*!/u-2pt/{%
+\makebox[#3]%
+{\scalebox{0.7}{$#1$}%
+\hfill%
+\scalebox{0.55}{$#2$}} }&}}}%
+\newcommand{\systransition}[2]{%
+\savebox{\myb}{\scalebox{0.7}{$#1$} \scalebox{0.55}{$#2$}}%
+\setlength{\myl}{\wd\myb}%
+\ifdim \myl > 22.pt%
+\systransitionvar{#1}{#2}{\myl}%
+\else%
+\systransitionvar{#1}{#2}{22pt}%
+\fi%
+}
+
+
+\newsavebox\mybleft%
+\newsavebox\mybright%
+\newlength{\mylleft}%
+\newlength{\mylright}%
+%
+\newcommand{\systr}[2]{
+\savebox{\mybleft}{\scalebox{0.8}{$#1$}}%
+\savebox{\mybright}{\scalebox{0.6}{$#2$}}%
+\setlength{\mylleft}{0.5\wd\mybleft + 7pt}%
+\global\mylleft=\mylleft%
+\setlength{\mylright}{-0.5\wd\mybright - 9pt}%
+\global\mylright=\mylright%
+\ar@<-.5ex>@{-|>}[rr]%
+^(0.85)*!<\mylright,-2pt>{\scalebox{0.6}{$#2$}}%
+^(0.25)*!<\mylleft,-2pt>{\scalebox{0.8}{$#1$}}%
+}%
 
 \newcommand{\Post}[2]{Post_{#2}^{#1}}
 \newcommand{\Reach}[2]{Reach^{#1}({#2})}
