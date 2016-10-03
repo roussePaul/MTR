@@ -1,24 +1,26 @@
-\section{Notations}
+\section*{Notations}
 
 Let $\llbracket a,b \rrbracket = \left \{n \in \mathbb{N} \mid a \leq n \leq b \right \}$, $\left [ a,b \right ]= \left \{x \in \mathbb{R} \mid a \leq n \leq b \right \}$, $\mathbb{R}_+$ the positive subset of $\mathbb{R}$, $\mathbb{R}_+^\star = \mathbb{R}_+ \setminus \{0\}$.
 Let $\left \| X \right \|$ the maximum distance of 2 points in the set $X$ ( $\left \| X \right \| = \sup_{a,b \in X} \left \| a-b\right \|$).
 For a set $X$, $X^{\mathbb{N}}$ is an infinite sequence in $X$, for $x$ in $X^{\mathbb{N}}$ and $k$ in $\mathbb{N}$, $x_k$ is the $k^{\textrm{th}}$ element of the sequence $x$.
 The Minkowski sum of $A,B \in X$ noted $A+B$ is the set $\left \{a+b \mid a \in A, b\in B \right \}$.
 For $r>0$, let $\mathcal{B}(r) = \left \{ x \in \mathbb{R}^n \mid \left \| x \right \| \leq r \right \}$ the closed ball of radius $r$.
+For $a,b$ 2 vectors of the euclidian space build on $\R^n$ for $n\in \mathbb{N}$, we will denote by $a \cdot b$ the scalar product of $a$ and $b$.
 
 \section{Introduction}
-The escape time function used in the strong cyclic algorithm is giving whether or not the system will leave a set of cells in a finite time.
-This escape property must be deduced from the dynamical system, this is a complementary information for the abstraction.
-In this part we present one possible escape property for a monotone system.
+The escape time function used to prove the fairness property is saying whether or not the system will leave a set of cells in a finite time.
+This escape property must be deduced from the dynamical system, this is a complementary information to the FTS.
+In this part we present one possible escape property for monotone systems.
 
-In the section \ref{sec_escape}, we will lever a practical criteria over control actions to check if the state of a system can escape a subset of the state space in a finite time.
-Then (section \ref{sec_ext_escape}) we will extend the criteria to the noisy case.
+In the section \ref{sec_escape}, we will lever a practical criteria over control actions of a single integrator system to check if the state can escape a subset of the state space in a finite time.
+Then (section \ref{sec_ext_escape}) we will extend the criteria to the noisy case, and in a more general case to a monotone dynamical system.
 And finally (section \ref{sec_timing}) we will integrate the notion of escaping time to use this criteria in frameworks with time constraints such as Metric Interval Temporal Logic (MITL).
-
-\comment{Explain that this is only for the dynamical systems, other systems can be obtained by composition of systems. The escape might be also an assumption of the system (we know that the camera needs to have 5 seconds max of movie).}
 
 \section{Escaping proof}\label{sec_escape}
 In this section we will derive a condition over the control sequence of a first integrator system to check if the system can escape a bounded subset of the state space in a finite time.
+
+In the previous sections, we have been using a controller that is respectively applying a control action $v_1,v2,...,v_n$ in region $X_1,X_2,...,X_n$ ($n \in \mathbb{N}$). Hereby, we will perform all the proofs over the $X_0 = X_1 \cup X_2 \cup ... \cup X_n$ with controls randomly chosen $\{v_1,v2,...,v_n\}$.
+All the behaviours of the first system are included in the second system (as defined in \cite{tabuada2009verification}). This also means that any property valid for any trajectories of the second system will be valid for any trajectories of the first system. The following escape time function is therefore an upperbound function.
 
 Let the system $S$:
 \begin{equation}
@@ -143,7 +145,8 @@ The set $\bigcup_{i\in \llbracket 1,n^t \rrbracket} \mathcal{V}^t_i$ is a finite
 
 It follows that for any trajectories $(x,u)$ of the system $S'$ with controls chosen in $\mathcal{U}_t \subseteq \mathcal{U}$, $F( \bigcup_{i\in \llbracket 1,n^t \rrbracket} \mathcal{V}^t_i) \neq \emptyset$ implies that the state $x_k$ will escape $X_0$ in a finite time.
 
-\section{Monotone system extention}
+\section{Monotone system extention}\label{monotone}
+We introduced the escape time function for the single integrator model. This is somehow restrictive. We will in this section extend this result for a wider class of systems by building an alternating simulation relation between them and the single integrator system.
 Let the monotone system defined by:
 \begin{equation}
 S:\left\{
@@ -168,7 +171,7 @@ S':\left\{
 \end{split}
 \right.
 \end{equation}
-with 
+with
 $$\U' = \{ g(\x,\u) \mid \u \in \U, \x \in X_0\}$$,
 $$g(\x,\u) = \frac{1}{2}(f(\x,\u_k,\minf{\w})+f(\x,\u_k,\msup{\w})) -\x$$
 and 
@@ -236,9 +239,8 @@ we have $x_T = x_0 + T \, \bar{u}$. $\bar{u}$ is an element of $C_{\mathcal{U}_t
 \end{proof}
 
 \section{Conclusion}
-\comment{How efficient is this model? It is the worst case scenario of the state (a rough upper bound that might be not).}
+We have been introducing an escape time property valid a wide class of systems: monotone system. This is however a rough over-approximation and it might be that the state leave the set of considered cell in finite time but the ecape time property do not see it (even for the single integrator model).
+Thanks to this function, we are able to ensure the fairness property despite the presence of self-loops in the final system.
 
-\comment{can we use other escape time property?}
-
-\comment{Say something about MITL?}
-pouet
+The fairness property only check the finiteness of infiniteness of trajectories in a set of cells. We will see in the next sections that such situations could have been solved by a more precise discretization of the state space by trying to avoid any self-loops in the FTS (this have further complexity implication that we will develop later). Between these 2 approaches, the escape time property one do not provide time information any more.
+However, we have been providing an upper bound of the time. This allows to use MITL frameworks.

@@ -488,87 +488,70 @@ where $T_{escape}^{S_i}$ is the escape function of the system $S_i$.
 This property can be easily understood: for a module $\mathcal{F}$, if the faster system $S_i$ escape the set of nodes $\mathcal{F}|_{S_i}$ in $T^{S_i}_{escape}$, then the product system escape the set of nodes $\mathcal{F}$ in $T^{S_i}_{escape}$ at maximum.
 
 \section{Backward reachability algorithm}
-Every solution plan of the terminating nondeterministic problem can be decomposed in an acyclic graph of modules that verify a fairness property.
+Every solution plan of the terminating nondeterministic problem can be decomposed in an acyclic graph of fair modules.
 This observation will justify the following graph search algorithm.
 
-The main idea of our algorithm is to visit the possible modules of the decomposition (strong cyclic components) from the smallest (in term of number of nodes) to the biggest using a Breadth First Search (BFS).
+The main idea of our algorithm is to visit the possible modules of the decomposition (strong cyclic components) from the smallest to the biggest  one (in term of number of nodes) using a Breadth First Search (BFS).
 Then the graph of the decomposition is found using a Depth First Search (DFS) algorithm.
-These choices are relevant in case of motion planning as the nondeterminism is mainly present locally (noise on the position of the robot for example). The challenge of finding the strongly connected components rely more in finding the right control combinations for a small set of nodes that bring to the goal set.
-Whereas the graph of the decomposition require finding a potentially long path from the goal set to the initial, so the DFS is more suitable for this task.
+This strategy is relevant in case of motion planning as the nondeterminism is mainly visible locally (noise on the position of the robot for example; this is not the case in action planning).
 
-Lets use the following notation $F_p \hookrightarrow Plan$ for the truth value of the following assertion:
-$$\forall n \in \mathcal{F}_p \mid \forall v \in Post_{u_n}(n), \exists w \in Post_{u_n}(n) \cap Plan, H(v)=H(w)$$
+The DFS of the graph's decomposition is starting from the goal and going backward in order to find the initial set. Such an algorithm is calld a \textit{backward reachability algorithm}. This use is justified in our case mainly because it follows the graph decomposition define earlier.
 
-The function $Expand(Plan)$ is performing the BFS to find sets of nodes in $Q \setminus Plan$ and controls that verify $Post(F_p) \rightarrow Plan$.
+In algorithm \ref{algo}, we present the pseudo-code of the planning algorithm.
+The function 
+$PrevModules(X)$ performs the BFS over all the possible modules that goes to $\tilde{X}$, it returns the list of modules sorted according to the size of the modules.
+One possible module will correspond to a mapping that associate to each node of the module a control action and a set of successors.
+$m_G$ correspond to the goal module ($\mathcal{K}_0$ in the decomposition algorithm) with no successors and no control action associated.
 
-\comment{Here I must describe a bit more the construction of the plan:
-How do I add the $F_p$ sets, what transitions do I keep, which on do I get ride of...
-\begin{itemize}
-\item Escape function
-\item define the escape function
-\item 
-\end{itemize}}
-
-\begin{algorithm}[H]
+\begin{algorithm}
 \SetAlgoNoLine
 \KwData{$\mathcal{A}_p, T_{escape},cost$}
-\KwResult{$\Fsc$} 
-
- $\mathcal{K} = \{ G \}$\;
-
- $Q^\star$: set of valid plan for the system\; 
- \While{$\mathcal{K} \neq \emptyset$}{
- 	$Q = Sort_{cost}(Q)$\;
- 	$Plan,F_p = Pop(Q)$\;
- 	
+\KwResult{$\Fsc$}
+ $Q = List\{ (\{m_G\},F) \mid m \in PrevModules(\{m_G\}) \}$\; 
+ $\mathcal{K}^\star$: set of valid plan for the system\;  
+ $K_{visited}$: visited plans\;
+ \While{$Q \neq \emptyset$}{
+ 	$Q = Sort_{cost}(Q)$\; 	
+ 	$K,F = Pop(Q)$\;
   \uIf{
-  $T_{escape}(F_p) < +\infty$
-  or
-  $\outpost{F_p} \in Nodes of Plan$}{
-    Add $F_p$ to $Plan$\;
-	Update visited set\;	
-	\uIf{$init \subseteq Plan$ and $\mathcal{F} \subseteq Reach_{Plan}(init)$}{
-       Add path to $Q^\star$\;
+  $\outpost (F) \in \tilde{K}$
+  and
+  $T_{escape}(F) < +\infty$
+  }{
+    Add $F$ to $K$\;
+	Update visited set $K_{visited}$ with $K$\;	
+	\uIf{$init \subseteq \tilde{K}$ and $G \subseteq Reach_{K}(init)$}{
+       Add plan $K$ to $\mathcal{K}^\star$\;
      }
-     \uElse
+     \uElseIf{$K \notin K_{visited}$}
      {
-       Generate the set of predecessors of $Plan$\;
-       Add $Expand(Plan)$ to $Q$\;
+       Add $List\{ (K,F) \mid m \in PrevModules(K)\} $ to $Q$\;
      }
    }
  }
- 
- $\Fsc = \argmin_{cost}{Q^\star}$\;
- 
+ $\Fsc = \argmin_{cost}{\mathcal{K}^\star}$\;
  \caption{Backward reachability algorithm}
+ \label{algo}
 \end{algorithm}
 
-Talk about the complexity of the algorithm.
-
-I need to do a tikz picture to show how the algorithm is working.
-
 \section{Discussion}
-\comment{Not so sure about it:}
-From our observations, it is possible to determine what is the biggest fixed point size for a specific systems.
-In the case of the single integrator model the maximum fixed point is equal to the maximum number of cells of the abstraction that can cover the set of successors for a chosen control.
-This constraint reduce the size of possible solutions.
-However this parameter is not easy to determine, it depends on the formula and on abstraction.
-We will see in the \textit{results section} that most of the cases that we have been evaluating, the size of the fixed point can be quite small for a single system. however, there size blow up in case of multi agent control.
+%% Size of the modules
+From our observations, it is possible to determine the biggest module's size for a specific system and environment.
+In the case of the single integrator model the maximum module size is equal to the maximum number of cells of the abstraction that can cover the set of successors for a chosen control.
+By introducing such a constraint, we can reduce the size of all the possible solutions (ie the complexity of the planning algorithm).
+%% problem of multi agent
+In the simulation chapter, we will see that in most of the cases we have been evaluating, the size of the modules can be quite small for a single agent system.
+In the case of multi-agent systems, the size of these modules will be exponential to the number of agents.
 
-Until then, we have used a system that is fully observable, this imply that the \buchi{} automaton used is deterministic.
-This restrict the set of LTL formula usable. 
-
-The previously defined algorithm can be extended to be used with nondeterministic BA, this increase the complexity of the algorithm. 
-Instead of finding the fixed points for a set of controls, we can also choose a the set of observations.
-
-\comment{Talk about the fixed points and the complexity}
+%% Nondeterminism of the BA
+The module BFS is searching over all the possible observations of the successors.
+As the FTS will usually be fully observable, it does not affect the complexity of the algorithm. However this might not be the case of the BA. Any nondeterminism transition form the BA increase the number of possible modules.
+On way to reduce the complexity of the planning algorithm is to chose a BA that is as deterministic as possible.
+Other translations could have been investigated as they are known to produce more deterministic automata (ex: Rabin Automaton).
 
 \section{Conclusion}
-In this chapter we have been presenting an algorithm that is using strong fairness property in order to find a plan for the quadricopter.
+In this chapter, we have formulated the LTL planning problem in a terminating nondeterministic planning problem, the controller has been introduced, and we have been presenting a planning algorithm that is going through all the possible graph decomposition in strongly connected fair cycles.
+Many issues has not been investigated (such as the complexity of the algorithm). However, this has been mainly done to show what are the advantages of considering the escaping time property.
+The simulation and result chapters will show how this planning algorithm can decrease the complexity of the problem.
 
-
-
-In graph search algorithm, deterministic models are actually preferable to non deterministic one. One goal of the translation algorithm to NBA is to reduce the non determinism as much as possible. 
-To reduce the non determinism, it is possible to consider one fragment of LTL formulas that only produce DBA instead of NBA.
-However, this reduce the expressiveness. Another way is to use other class of automata (ex: Rabin Automaton) that tend to produce more deterministic results.
-In our algorithm, the complexity of the algorithm increasing as the non determinism increase, we have been using the \buchi{} Automaton anyway.
+The nested shape of the algorithm (a BFS in a DFS) increase a lot the complexity. This becomes limiting in multi-agent scenarios where the modules that are searched by the BFS are exponentially dependant on the number of agent.
